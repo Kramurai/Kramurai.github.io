@@ -1,5 +1,4 @@
-/* Kramurai-Testvorschau: Register, Petrol und Koralle.
-   Die Seite bleibt ohne festes Logo; das K ist weiterhin ein Platzhalter. */
+/* Kramurai: Register, Petrol und Koralle. */
 :root{
   --navy:#1b504b;
   --navy-2:#245f57;
@@ -161,4 +160,94 @@ footer{background:#b8cfc3}
   }
   .helper-page .summary-key{color:#315448;font-weight:700}
   .helper-page .summary-row>div:last-child{color:#172e26}
+}
+
+
+/* Rechtsseiten */
+body.legal-page-body{
+  background:
+    radial-gradient(circle at 85% 4%,rgba(145,203,181,.22),transparent 26rem),
+    #c8dad2;
+}
+.legal-page{
+  width:min(920px,calc(100% - 32px));
+  padding:44px 0 10px;
+}
+.legal-card{
+  background:#fff;
+  border:2px solid #527765;
+  border-top:5px solid #b8462e;
+  border-radius:22px;
+  box-shadow:0 16px 38px rgba(13,58,50,.16);
+  padding:clamp(24px,4vw,46px);
+}
+.legal-card h1{
+  margin:0 0 10px;
+  color:#173934;
+  font-size:clamp(2rem,5vw,2.8rem);
+  line-height:1.08;
+  letter-spacing:-.035em;
+}
+.legal-card h1::after{
+  content:"";
+  display:block;
+  width:62px;
+  height:4px;
+  margin-top:16px;
+  border-radius:99px;
+  background:#b8462e;
+}
+.legal-card h2{
+  margin:36px 0 10px;
+  color:#184c46;
+  font-size:1.28rem;
+  line-height:1.25;
+  letter-spacing:-.015em;
+}
+.legal-card h3{
+  margin:28px 0 9px;
+  color:#245f57;
+  font-size:1.05rem;
+  line-height:1.35;
+}
+.legal-card p{
+  margin:0 0 16px;
+  color:#2f4d43;
+  font-size:1rem;
+  line-height:1.72;
+}
+.legal-card strong{color:#173934}
+.legal-card a{
+  color:#8c321f;
+  text-decoration-thickness:1px;
+  text-underline-offset:3px;
+}
+.legal-card a:hover{color:#641f13}
+.legal-card code{
+  padding:.12em .35em;
+  border:1px solid #c8d8cf;
+  border-radius:5px;
+  background:#eef5f0;
+  color:#173934;
+  font-size:.9em;
+}
+.legal-page>.legal-links{
+  margin:18px 0 34px;
+  padding:15px 18px;
+  background:rgba(255,255,255,.64);
+  border:1px solid #91aa9d;
+  border-radius:14px;
+  font-weight:700;
+}
+.legal-page>.legal-links a{
+  color:#245f57;
+  text-decoration:none;
+}
+.legal-page>.legal-links a:hover{text-decoration:underline}
+@media(max-width:600px){
+  .legal-page{padding-top:24px}
+  .legal-card{padding:24px 20px;border-radius:17px}
+  .legal-card h2{margin-top:30px;font-size:1.18rem}
+  .legal-card p{font-size:.96rem;line-height:1.68}
+  .legal-page>.legal-links{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
 }
