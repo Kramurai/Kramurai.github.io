@@ -9,7 +9,7 @@
   <link rel="canonical" href="https://kramurai.github.io/">
 
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/register-theme.css?v=20261003b">
+  <link rel="stylesheet" href="/register-theme.css?v=20261005a">
   <style id="kramurai-raven-home">
   .brand-logo-frame{width:54px;height:54px;flex:none;display:grid;place-items:center;overflow:hidden;border-radius:11px;background:#f6f8f3}
   .brand-logo{display:block;width:64px;height:auto;max-width:none;flex:none;transform:translate(-6px,-2px)}
@@ -27,7 +27,7 @@
   .trust-panel .trust-item{background:rgba(225,245,232,.15);border:1.5px solid rgba(236,249,239,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
   .trust-panel .trust-item p{color:rgba(255,255,255,.88)}
   .hero-raven{align-self:stretch;display:grid;align-items:end;justify-items:center;min-width:0}
-  .hero-raven img{display:block;width:min(100%,470px);height:auto;max-height:535px;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 15px 17px rgba(18,59,54,.12))}
+  .hero-raven img{display:block;width:min(100%,470px);height:auto;max-height:535px;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 15px 17px rgba(18,59,54,.12));transform:scaleX(-1)}
   @media(min-width:521px) and (max-width:900px){
     .hero-grid{grid-template-columns:minmax(0,1fr) minmax(205px,.55fr);gap:12px;min-height:0}
     .hero-raven img{max-height:430px}
@@ -40,13 +40,13 @@
     .hero h1{grid-area:title;font-size:clamp(2.02rem,8.4vw,2.65rem);line-height:1.07;margin:0 0 17px}
     .hero .lead{grid-area:lead;align-self:center;font-size:1rem;line-height:1.44}
     .hero-raven{grid-area:raven;align-self:stretch;align-items:end;justify-items:start;overflow:visible}
-    .hero-raven img{width:176px;max-width:none;max-height:none;transform:translateX(-24px)}
+    .hero-raven img{width:176px;max-width:none;max-height:none;transform:translateX(-24px) scaleX(-1)}
     .hero .actions{grid-area:actions;margin-top:22px}
     .hero .hero-trust{grid-area:trust;display:flex;gap:5px 14px;margin:17px 0 28px;font-size:.78rem}
   }
   @media(max-width:350px){
     .hero-grid{grid-template-columns:minmax(0,1fr) 132px}
-    .hero-raven img{width:162px;transform:translateX(-20px)}
+    .hero-raven img{width:162px;transform:translateX(-20px) scaleX(-1)}
   }
 </style>
 </head>
