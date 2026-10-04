@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Handy / Elektronik an Ankaufportal schicken – Kramurai Testversion</title>
+  <meta name="description" content="Zustand, Gerätekennung, Zubehör, Account-Status, Verpackung und Versand an ein Ankaufportal strukturiert dokumentieren.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://kramurai.github.io/handy-trade-in-dokumentieren/">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .wizard{padding:30px 0 56px}
+    .wizard-head{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
+    .wizard-head h1{font-size:clamp(1.9rem,7vw,3rem)}
+    .progress{height:8px;background:#e9edf2;border-radius:999px;overflow:hidden;margin-top:18px}
+    .progress>span{display:block;height:100%;background:var(--brand);width:16.66%;transition:width .2s ease}
+    .progress-label{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:var(--muted);font-size:.9rem}
+    .step{display:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(20px,5vw,32px);box-shadow:0 6px 20px rgba(23,32,51,.05)}
+    .step.active{display:block}
+    .step h2{font-size:1.55rem}
+    .intro{color:var(--muted);margin-bottom:22px}
+    .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+    .field.full{grid-column:1/-1}
+    label,.label{font-weight:750}
+    .hint{color:var(--muted);font-size:.88rem}
+    input,textarea,select{
+      width:100%;font:inherit;color:var(--text);background:#fff;border:1px solid #cfd7e3;border-radius:12px;
+      padding:12px 13px;min-height:48px
+    }
+    textarea{min-height:110px;resize:vertical}
+    input:focus,textarea:focus,select:focus{outline:3px solid rgba(23,105,170,.14);border-color:var(--brand)}
+    .choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .choice{position:relative}
+    .choice input{position:absolute;opacity:0;pointer-events:none}
+    .choice label{display:block;border:1px solid var(--line);border-radius:12px;padding:13px;cursor:pointer;background:#fbfcfe}
+    .choice input:checked+label{border-color:var(--brand);background:var(--soft);color:var(--brand-dark)}
+    .check-list{display:grid;gap:10px}
+    .check{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfcfe}
+    .check input{width:20px;min-height:20px;margin-top:2px}
+    .photo-list{display:grid;gap:14px}
+    .photo-task{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fbfcfe}
+    .photo-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .photo-title{font-weight:800}
+    .photo-status{font-size:.82rem;font-weight:750;color:var(--muted)}
+    .photo-task.done .photo-status{color:#167444}
+    .photo-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .file-label{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 13px;border-radius:10px;background:var(--soft);color:var(--brand-dark);font-weight:750;cursor:pointer}
+    .file-label input{display:none}
+    .preview{display:none;max-width:220px;max-height:180px;border-radius:10px;margin-top:12px;border:1px solid var(--line)}
+    .preview.show{display:block}
+    .wizard-nav{display:flex;justify-content:space-between;gap:12px;margin-top:18px}
+    button{font:inherit;border:0;cursor:pointer}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;border-radius:12px;font-weight:800}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--line)}
+    .btn-danger{background:#fff;color:#9b2525;border:1px solid #e8caca}
+    .privacy-note{margin-top:18px;padding:16px;border:1px solid #cfe3f5;border-radius:14px;background:var(--soft);font-size:.92rem}
+    .summary{display:grid;gap:16px}
+    .summary-card{border:1px solid var(--line);border-radius:14px;padding:18px}
+    .summary-card h3{margin-bottom:10px}
+    .summary-row{display:grid;grid-template-columns:180px 1fr;gap:12px;padding:7px 0;border-bottom:1px solid #edf0f4}
+    .summary-row:last-child{border-bottom:0}
+    .summary-row>div{min-width:0;overflow-wrap:anywhere}
+    .summary-row>div:last-child{white-space:pre-wrap}
+    .summary-photo strong,.summary-photo .hint{overflow-wrap:anywhere}
+    .summary-key{color:var(--muted)}
+    .summary-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .summary-photo{break-inside:avoid}
+    .summary-photo img{width:100%;max-height:360px;object-fit:contain;border:1px solid var(--line);border-radius:10px;background:#fafafa}
+    .summary-photo strong{display:block;margin-top:6px}
+    .warning{background:var(--note);border:1px solid var(--note-line);border-radius:12px;padding:14px;margin-bottom:16px}
+    .btn-tertiary{background:transparent;color:var(--muted);border:1px solid transparent}
+    .final-actions{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:10px;margin:0 0 18px}
+    .final-actions .btn{width:100%}
+    .document-head{
+      position:relative;overflow:hidden;margin:0 0 18px;color:#172033;border:1px solid #d7e3ef;
+      border-radius:16px;background:#fff;box-shadow:0 4px 14px rgba(13,55,94,.08)
+    }
+    .document-banner{
+      position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;
+      padding:16px 18px;background:linear-gradient(105deg,#0a2c57 0%,#0d4f86 58%,#1386c9 100%);color:#fff
+    }
+    .document-banner::after{
+      content:"";position:absolute;left:0;bottom:0;width:100%;height:4px;
+      background:linear-gradient(90deg,#ff7a00 0 86px,#1597e5 86px 100%)
+    }
+    .document-logo{
+      width:70px;height:70px;display:grid;place-items:center;border:2px solid rgba(255,255,255,.92);
+      border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 5px 16px rgba(0,0,0,.18)
+    }
+    .document-logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .document-identity{display:flex;align-items:center;gap:14px;min-width:0}
+    .document-brand{font-size:20pt;font-weight:850;line-height:1.05;letter-spacing:-.025em;color:#fff}
+    .brand-formular{color:#fff}.brand-fuchs{color:#4bc3ff}
+    .document-tagline{font-size:8.2pt;color:rgba(255,255,255,.78);margin-top:5px;letter-spacing:.12em;text-transform:uppercase}
+    .document-meta{text-align:right;font-size:8.4pt;line-height:1.5;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.28);border-radius:11px;padding:9px 11px}
+    .document-title-area{position:relative;padding:19px 20px 18px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)}
+    .document-title{margin:0;font-size:22pt;line-height:1.08;letter-spacing:-.025em;color:#172033}
+    .document-subtitle{margin:6px 0 0;font-size:9.5pt;color:#5b6577}
+    .document-watermark{position:absolute;right:18px;bottom:-13px;font-size:58px;line-height:1;font-weight:900;color:#1597e5;opacity:.035;pointer-events:none;letter-spacing:-.08em}
+    .print-only{display:none}
+    @media(max-width:720px){
+      .field-grid,.choice-grid,.summary-photos{grid-template-columns:1fr}
+      .summary-row{grid-template-columns:1fr;gap:2px}
+      .wizard-nav{position:sticky;bottom:0;background:rgba(245,247,250,.96);padding:10px 0}
+      .wizard-nav .btn{flex:1}
+      .final-actions{grid-template-columns:1fr}
+      .final-actions .btn{width:100%}
+    }
+
+    /* Kramurai – gut erkennbare mobile Eingaben und Aktionen */
+    @media screen{
+      .helper-page{
+        --brand:#09558f;
+        --brand-dark:#07365f;
+        --muted:#46576a;
+        --line:#c5d4e2;
+        --soft:#e5f1fa;
+        --text:#172538;
+        background:#eaf1f7;
+      }
+      .helper-page header{
+        background:linear-gradient(110deg,#081f3e 0%,#103e6c 100%);
+        border-bottom:3px solid #1597e5;
+      }
+      .helper-page header .brand{
+        color:#fff;
+        font-size:1.22rem;
+        font-weight:850;
+        gap:12px;
+      }
+      .helper-brand-mark{
+        display:block;
+        width:54px;
+        height:54px;
+        flex:none;
+        object-fit:contain;
+        border:2px solid #fff;
+        border-radius:13px;
+        background:#fff;
+        box-shadow:0 4px 14px rgba(0,0,0,.23);
+      }
+      .helper-brand-name{color:#fff;letter-spacing:-.025em}
+      .helper-brand-name span{color:#78d8ff}
+      .helper-page .wizard-head,.helper-page .step{
+        border-color:#c3d2df;
+        box-shadow:0 7px 22px rgba(12,49,88,.08);
+      }
+      .helper-page .intro,.helper-page .hint,
+      .helper-page .progress-label,.helper-page .summary-key{
+        color:#44566a;
+      }
+      .helper-page input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+      .helper-page textarea,.helper-page select{
+        border:2px solid #9bb2c8;
+        background:#fff;
+        color:#172538;
+      }
+      .helper-page input::placeholder,.helper-page textarea::placeholder{color:#5a6a7b;opacity:1}
+      .helper-page input:focus-visible,.helper-page textarea:focus-visible,
+      .helper-page select:focus-visible{
+        outline:3px solid #80caff;
+        outline-offset:2px;
+        border-color:#09558f;
+      }
+      .helper-page .choice label{
+        display:flex;
+        align-items:center;
+        min-height:49px;
+        border:2px solid #a9bfd2;
+        background:#f0f6fb;
+        color:#193b5d;
+        font-weight:800;
+      }
+      .helper-page .choice input:checked+label{
+        border-color:#07365f;
+        background:#09558f;
+        color:#fff;
+        box-shadow:0 3px 10px rgba(9,85,143,.20);
+      }
+      .helper-page .choice input:checked+label::before{
+        content:"✓";
+        margin-right:9px;
+        font-weight:900;
+      }
+      .helper-page .choice input:focus-visible+label{
+        outline:3px solid #80caff;
+        outline-offset:3px;
+      }
+      .helper-page .check{
+        background:#f0f6fb;
+        border:2px solid #c0cfdd;
+        color:#193b5d;
+      }
+      .helper-page .check input{accent-color:#09558f}
+      .helper-page .check:has(input:checked){
+        background:#e0f0fb;
+        border-color:#09558f;
+      }
+      .helper-page .photo-task{
+        border:2px solid #c2d3e1;
+        background:#f0f6fb;
+      }
+      .helper-page .photo-task.done{
+        border-color:#78a78c;
+        background:#edf8f1;
+      }
+      .helper-page .photo-task.done .photo-status{color:#165d37}
+      .helper-page .photo-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        margin-top:12px;
+      }
+      .helper-page .file-label{
+        min-height:48px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:10px 15px;
+        border:2px solid #07365f;
+        border-radius:11px;
+        background:#09558f;
+        color:#fff;
+        font-weight:800;
+        cursor:pointer;
+      }
+      .helper-page .file-label.file-gallery{
+        border-color:#5184ab;
+        background:#e0effa;
+        color:#07365f;
+      }
+      .helper-page .file-label:hover,
+      .helper-page .file-label:focus-within{filter:brightness(.96)}
+      .helper-page .file-label:focus-within{outline:3px solid #80caff;outline-offset:2px}
+      .helper-page .file-label input{
+        display:block;
+        position:absolute;
+        width:1px;
+        height:1px;
+        min-height:0;
+        padding:0;
+        margin:0;
+        opacity:0;
+        overflow:hidden;
+        clip-path:inset(50%);
+      }
+      .helper-page .btn{
+        border-radius:11px;
+        font-weight:850;
+        transition:filter .15s ease,transform .15s ease;
+      }
+      .helper-page .btn:hover{filter:brightness(.95)}
+      .helper-page .btn:focus-visible{outline:3px solid #80caff;outline-offset:3px}
+      .helper-page .btn-primary{background:#09558f;color:#fff;border:2px solid #07365f}
+      .helper-page .btn-secondary{
+        background:#e6f0f9;
+        color:#07365f;
+        border:2px solid #648fb2;
+      }
+      .helper-page .btn-tertiary{
+        background:#dfeef9;
+        color:#07365f;
+        border:2px solid #648fb2;
+      }
+      .helper-page .btn-danger{
+        background:#fff0ef;
+        color:#832123;
+        border:2px solid #b96a6c;
+      }
+      .helper-page .btn:disabled{opacity:.75;cursor:default}
+      @media(max-width:720px){
+        .helper-page .photo-actions .file-label{flex:1 1 130px}
+        .helper-page .wizard-nav{background:rgba(234,241,247,.97)}
+      }
+    }
+    @media screen{
+      .helper-page .wizard-head .eyebrow{
+        background:#e2f0fa;
+        color:#07365f;
+        border:2px solid #91b7d6;
+        font-weight:900;
+        letter-spacing:.005em;
+      }
+      .helper-page .local-case-note{
+        margin-top:20px;
+        padding:16px;
+        border:2px solid #bad0e1;
+        border-radius:13px;
+        background:#edf5fb;
+        color:#193b5d;
+      }
+      .helper-page .local-case-note strong{color:#07365f}
+      .helper-page .local-case-note p{margin:6px 0 14px;color:#344c61}
+      .helper-page .final-actions{
+        grid-template-columns:1fr 1.35fr;
+        gap:10px;
+      }
+      @media(max-width:720px){
+        .helper-page .final-actions{grid-template-columns:1fr}
+      }
+    }
+    @media screen{
+      .helper-page .receipt-download{display:inline-flex;margin-top:10px;text-decoration:none}
+      .helper-page .receipt-help{margin-top:5px;line-height:1.4}
+      .helper-page .receipt-print-note{font-weight:750;color:#07365f}
+    }
+
+    /* Mehrere Vorgänge – kompakt auf Mobilgeräten, nur im Browser sichtbar */
+    .helper-page .case-manager{
+      margin:17px 0 6px;
+      padding:15px;
+      border:2px solid #b6ccde;
+      border-radius:14px;
+      background:#eef5fb;
+      color:#163b5b;
+    }
+    .helper-page .case-manager-heading{font-weight:850;color:#07365f}
+    .helper-page .case-manager-hint{font-size:.85rem;color:#40596e;margin:3px 0 12px}
+    .helper-page .case-manager-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+    .helper-page .case-manager-actions label{display:grid;gap:5px;font-size:.87rem}
+    .helper-page .case-manager-actions select{width:100%;min-width:0}
+    .helper-page .case-manager-actions .btn{white-space:normal;text-align:center}
+    .helper-page .missing-check{
+      margin:0 0 18px;padding:15px;border:2px solid #bed6e6;
+      border-radius:13px;background:#edf6fd;color:#193b5d
+    }
+    .helper-page .missing-check strong{color:#07365f}
+    .helper-page .missing-check p{margin:5px 0 8px}
+    .helper-page .missing-check ul{margin:8px 0 8px;padding-left:22px}
+    .helper-page .missing-check li{margin:4px 0}
+    .helper-page .missing-check .missing-ok{color:#17613f}
+    @media(max-width:720px){
+      .helper-page .case-manager-actions{grid-template-columns:1fr}
+      .helper-page .case-manager-actions .btn{width:100%}
+    }
+    @media print{
+      header,.wizard-head,.wizard-nav,.privacy-note,.screen-only{display:none!important}
+      body{background:#fff;font-size:11pt;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .wrap{width:100%;max-width:none}
+      .wizard{padding:0}
+      .step{display:none!important;box-shadow:none;border:0;padding:0}
+      #step-7{display:block!important}
+      #step-7>h2,#step-7>.intro{display:none!important}
+      .summary-card{border:0;border-bottom:1px solid #dfe6ee;border-radius:0;padding:9px 0;break-inside:avoid;page-break-inside:avoid}
+      .summary-card.photo-summary-card{break-inside:auto;page-break-inside:auto}
+      /* Nur ausnahmsweise lange Textkarten über Seiten umbrechen;
+         Standardfälle behalten die getestete kompakte Aufteilung. */
+      .summary-card.summary-card-long{break-inside:auto;page-break-inside:auto}
+      .summary-card.summary-card-long .summary-row-long{
+        display:block;
+        break-inside:auto;
+        page-break-inside:auto;
+      }
+      .summary-card.summary-card-long .summary-row-long .summary-key{
+        margin-bottom:4px;
+      }
+      .summary-card.photo-summary-card h3{break-after:avoid;page-break-after:avoid}
+      .summary-photo{break-inside:avoid;page-break-inside:avoid}
+      /* Foto und Bildunterschrift bleiben immer zusammen. */
+      .summary-photo{break-inside:avoid;page-break-inside:avoid}
+      .summary-photo img{max-height:250px;object-fit:contain}
+      .summary-photos{gap:10px}
+      /* Bei genau drei Beweisfotos verhindert eine Zeile mit zwei
+         Bildern plus einem verwaisten Einzelbild die leere Folgeseite. */
+      .summary-photos.print-three-images{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        column-gap:9px;
+      }
+      .summary-photos.print-three-images .summary-photo img{
+        height:160px;
+        max-height:160px;
+        width:100%;
+        object-fit:contain;
+      }
+      .summary-photos.print-three-images .summary-photo strong{font-size:9pt}
+      .summary-photos.print-three-images .summary-photo .hint{font-size:8pt}
+      .receipt-print-note{font-weight:650;color:#233d54}
+      .summary-card h3{break-after:avoid;page-break-after:avoid;color:#1769aa;border-left:3px solid #d9822b;padding-left:8px}
+      .summary-row{break-inside:avoid;page-break-inside:avoid}
+      .warning{break-inside:avoid;page-break-inside:avoid;margin:10px 0 14px;background:#fff8e8;border-color:#f0d899;color:#3b3528}
+      .summary-photos{grid-template-columns:1fr 1fr}
+      .print-only{display:block!important}
+      .document-head{break-inside:avoid;page-break-inside:avoid}
+      a{color:inherit;text-decoration:none}
+    }
+  </style>
+  <link rel="stylesheet" href="/register-theme.css?v=20261003b">
+</head>
+<body class="helper-page">
+<header>
+    <div class="wrap">
+      <a class="brand" href="/" aria-label="Kramurai Startseite"><span class="helper-brand-name">Kramurai</span></a>
+    </div>
+  </header>
+
+  <main class="wrap wizard">
+    <div class="wizard-head">
+      <div class="eyebrow">Testversion · Daten bleiben auf deinem Gerät</div>
+      <h1>Handy / Elektronik an Ankaufportal schicken</h1>
+      <p class="lead">Halte Zustand, Gerätekennung, Zubehör, Account-Status, Verpackung und Versand vor dem Ankauf fest.</p>
+      <div class="case-manager screen-only">
+        <div class="case-manager-heading">Meine Vorgänge <span id="caseCount"></span></div>
+        <p class="case-manager-hint">Lokal in diesem Browser gespeichert. Mit einer Sicherungsdatei kannst du einen Vorgang samt gespeicherten Fotos und Belegen später wieder öffnen – auch auf einem anderen Gerät.</p>
+        <div class="case-manager-actions">
+          <label for="caseSelect">Gespeicherten Vorgang öffnen
+            <select id="caseSelect" aria-label="Gespeicherten Vorgang öffnen"></select>
+          </label>
+          <button class="btn btn-secondary" type="button" id="createCaseTopBtn">+ Neuer Vorgang</button>
+        </div>
+        <div class="backup-actions">
+          <button class="btn btn-secondary" type="button" id="backupExportBtn">Vorgang sichern</button>
+          <button class="btn btn-secondary" type="button" id="backupImportBtn">Sicherung öffnen</button>
+          <input type="file" id="backupFile" accept=".json,application/json" hidden aria-label="Vorgangssicherung auswählen">
+        </div>
+        <p class="case-manager-hint">Die Sicherungsdatei enthält deine Angaben und gespeicherten Dateien unverschlüsselt. Bewahre sie sicher auf. Beim Öffnen wird ein zusätzlicher Vorgang angelegt. Das PDF bleibt die lesbare Dokumentation.</p>
+        <p id="backupStatus" class="case-manager-hint" role="status" aria-live="polite"></p>
+      </div>
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      <div class="progress-label"><span id="progressText">Schritt 1 von 7</span><span id="saveStatus">lokal gespeichert</span></div>
+    </div>
+
+    <form id="returnForm" novalidate>
+      <section class="step active" id="step-1" data-step="1">
+        <h2>1. Gegenstand</h2>
+        <p class="intro">Welches Gerät schickst du an ein Ankaufportal?</p>
+        <div class="field-grid">
+          <div class="field full">
+            <label for="itemName">Gerät *</label>
+            <input id="itemName" data-field="item.name" required placeholder="z. B. iPhone 15, Galaxy S24, MacBook Air">
+          </div>
+          <div class="field">
+            <label for="manufacturer">Hersteller</label>
+            <input id="manufacturer" data-field="item.manufacturer" placeholder="optional">
+          </div>
+          <div class="field">
+            <label for="model">Modell</label>
+            <input id="model" data-field="item.model" placeholder="optional">
+          </div>
+          <div class="field">
+            <label for="imei">IMEI / Gerätekennung</label>
+            <input id="imei" data-field="item.imei" placeholder="optional">
+          </div>
+          <div class="field">
+            <label for="offerAmount">Ursprüngliches Angebot (€)</label>
+            <input id="offerAmount" inputmode="decimal" data-field="offer.originalAmount" placeholder="z. B. 325">
+          </div>
+          <div class="field">
+            <label for="offerClass">Angegebene Zustandsklasse</label>
+            <input id="offerClass" data-field="offer.originalClass" placeholder="z. B. Sehr gut">
+          </div>
+          <div class="field">
+            <label for="serial">Seriennummer / Kennung</label>
+            <input id="serial" data-field="item.serial" placeholder="optional">
+            <span class="hint">Bei Geräten besonders hilfreich.</span>
+          </div>
+          <div class="field">
+            <label for="sender">Absender / Name</label>
+            <input id="sender" data-field="party.sender" placeholder="optional">
+          </div>
+          <div class="field">
+            <label for="seller">Ankaufportal / Empfänger</label>
+            <input id="seller" data-field="party.recipient" placeholder="optional">
+          </div>
+          <div class="field full">
+            <label for="reason">Anlass der Einsendung</label>
+            <textarea id="reason" data-field="item.reason" placeholder="z. B. Verkauf über Ankaufportal"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="step" id="step-2" data-step="2">
+        <h2>2. Zustand</h2>
+        <p class="intro">Wie würdest du den Zustand des Geräts unmittelbar vor dem Versand beschreiben?</p>
+        <div class="choice-grid">
+          <div class="choice"><input type="radio" id="c1" name="condition" value="Ungeöffnet" data-radio="condition.rating"><label for="c1">Ungeöffnet</label></div>
+          <div class="choice"><input type="radio" id="c2" name="condition" value="Sehr gut" data-radio="condition.rating"><label for="c2">Sehr gut</label></div>
+          <div class="choice"><input type="radio" id="c3" name="condition" value="Gebraucht" data-radio="condition.rating"><label for="c3">Gebraucht</label></div>
+          <div class="choice"><input type="radio" id="c4" name="condition" value="Sichtbare Gebrauchsspuren" data-radio="condition.rating"><label for="c4">Sichtbare Gebrauchsspuren</label></div>
+          <div class="choice"><input type="radio" id="c5" name="condition" value="Defekt" data-radio="condition.rating"><label for="c5">Defekt</label></div>
+          <div class="choice"><input type="radio" id="c6" name="condition" value="Beschädigt" data-radio="condition.rating"><label for="c6">Beschädigt</label></div>
+        </div>
+        <div class="field" style="margin-top:18px">
+          <label for="conditionNote">Zustand genauer beschreiben</label>
+          <textarea id="conditionNote" data-field="condition.note" placeholder="Kratzer, bekannte Schäden, Funktionszustand oder andere Besonderheiten"></textarea>
+        </div>
+      </section>
+
+      <section class="step" id="step-3" data-step="3">
+        <h2>3. Zubehör und Inhalt</h2>
+        <p class="intro">Markiere Zubehör und Unterlagen, die du tatsächlich mitsendest.</p>
+        <div class="check-list">
+          <label class="check"><input type="checkbox" data-check="accessories.powerSupply"><span><strong>Netzteil / Ladegerät</strong><br><span class="hint">nur falls tatsächlich mitgesendet</span></span></label>
+          <label class="check"><input type="checkbox" data-check="accessories.cable"><span><strong>Ladekabel / Anschlusskabel</strong><br><span class="hint">nur falls tatsächlich mitgesendet</span></span></label>
+          <label class="check"><input type="checkbox" data-check="accessories.manual"><span><strong>Originalunterlagen</strong></span></label>
+          <label class="check"><input type="checkbox" data-check="accessories.originalBox"><span><strong>Originalverpackung</strong></span></label>
+        </div>
+        <div class="field" style="margin-top:18px">
+          <label for="accessoriesOther">Weiteres Zubehör / Inhalt</label>
+          <textarea id="accessoriesOther" data-field="accessories.other" placeholder="Ein Eintrag pro Zeile, z. B. Hülle&#10;Adapter&#10;Originalrechnung"></textarea>
+        </div>
+      </section>
+
+      <section class="step" id="step-4" data-step="4">
+        <h2>4. Gerät dokumentieren und Daten sichern</h2>
+        <p class="intro">Fotografiere das Gerät und – falls möglich – den eingeschalteten Bildschirm <strong>vor dem Zurücksetzen</strong>. Prüfe danach die für dich passenden Punkte zur Datensicherung und Rücksetzung. Ein ungeöffnetes Gerät musst du dafür nicht öffnen.</p>
+        <h3 style="margin:0 0 12px">Gerätefotos vor der Rücksetzung (optional)</h3>
+        <div class="photo-list">
+          <div class="photo-task" data-task="overall">
+            <div class="photo-top"><div><div class="photo-title">1. Gesamtansicht des Geräts</div><div class="hint">Gut erkennbar, bevor du es verpackst.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="overall" aria-label="Foto für overall aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="overall" aria-label="Bild für overall aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="overall" alt="Vorschau Gesamtansicht">
+          </div>
+          <div class="photo-task" data-task="serial">
+            <div class="photo-top"><div><div class="photo-title">2. Seriennummer / IMEI / Geräteinfo</div><div class="hint">Falls vorhanden und lesbar.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="serial" aria-label="Foto für serial aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="serial" aria-label="Bild für serial aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="serial" alt="Vorschau Seriennummer">
+          </div>
+          <div class="photo-task" data-task="displayOn">
+            <div class="photo-top"><div><div class="photo-title">3. Display / Gerät eingeschaltet</div><div class="hint">Falls möglich, Funktionszustand sichtbar festhalten.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="displayOn" aria-label="Foto für displayOn aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="displayOn" aria-label="Bild für displayOn aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="displayOn" alt="Vorschau eingeschaltetes Gerät">
+          </div>
+          <div class="photo-task" data-task="back">
+            <div class="photo-top"><div><div class="photo-title">4. Rückseite / Gehäuse</div><div class="hint">Kratzer, Dellen oder Gebrauchsspuren gut erkennbar.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="back" aria-label="Foto für back aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="back" aria-label="Bild für back aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="back" alt="Vorschau Rückseite">
+          </div>
+        </div>
+        <h3 style="margin:23px 0 12px">Daten und Konten vorbereiten</h3>
+        <div class="check-list">
+          <label class="check"><input type="checkbox" data-check="privacy.backup"><span><strong>Backup erstellt</strong></span></label>
+          <label class="check"><input type="checkbox" data-check="privacy.simRemoved"><span><strong>SIM-Karte entfernt</strong></span></label>
+          <label class="check"><input type="checkbox" data-check="privacy.sdRemoved"><span><strong>SD-/Speicherkarte entfernt</strong></span></label>
+          <label class="check"><input type="checkbox" data-check="privacy.accountRemoved"><span><strong>Apple-/Google-/Herstellerkonto entfernt</strong></span></label>
+          <label class="check"><input type="checkbox" data-check="privacy.lockDisabled"><span><strong>„Wo ist?“ / Aktivierungssperre deaktiviert</strong></span></label>
+          <label class="check"><input type="checkbox" data-check="privacy.reset"><span><strong>Auf Werkseinstellungen zurückgesetzt</strong></span></label>
+        </div>
+        <div class="privacy-note"><strong>Keine Zugangsdaten eintragen.</strong><br>Passwörter, PINs oder Entsperrcodes gehören nicht in diese Dokumentation.</div>
+      </section>
+
+      <section class="step" id="step-5" data-step="5">
+        <h2>5. Zubehör und Verpackung fotografieren</h2>
+        <p class="intro">Nachdem die benötigten Daten gesichert und Konten entfernt sind, dokumentiere das mitgesendete Zubehör und das Verpacken. Die Fotos werden lokal verarbeitet; nichts wird automatisch an Kramurai übertragen.</p>
+        <div class="photo-list">
+          <div class="photo-task" data-task="accessories">
+            <div class="photo-top"><div><div class="photo-title">5. Gerät mit komplettem Zubehör</div><div class="hint">Gerät und alles mitgesendete Zubehör zusammen fotografieren.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="accessories" aria-label="Foto für accessories aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="accessories" aria-label="Bild für accessories aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="accessories" alt="Vorschau Zubehör">
+          </div>
+          <div class="photo-task" data-task="openPackage">
+            <div class="photo-top"><div><div class="photo-title">6. Inhalt im offenen Paket</div><div class="hint">Vor dem endgültigen Verschließen.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="openPackage" aria-label="Foto für openPackage aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="openPackage" aria-label="Bild für openPackage aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="openPackage" alt="Vorschau offenes Paket">
+          </div>
+          <div class="photo-task" data-task="protected">
+            <div class="photo-top"><div><div class="photo-title">7. Verpackung / Polsterung</div><div class="hint">Zeigt, wie das Gerät geschützt wurde.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="protected" aria-label="Foto für protected aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="protected" aria-label="Bild für protected aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="protected" alt="Vorschau Verpackung">
+          </div>
+          <div class="photo-task" data-task="closedPackage">
+            <div class="photo-top"><div><div class="photo-title">8. Geschlossenes Paket</div><div class="hint">Optional mit Versandetikett, sofern sensible Daten für dich in Ordnung sind.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-actions">
+              <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="closedPackage" aria-label="Foto für closedPackage aufnehmen"></label>
+              <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="closedPackage" aria-label="Bild für closedPackage aus Galerie wählen"></label>
+            </div>
+            <img class="preview" data-preview="closedPackage" alt="Vorschau geschlossenes Paket">
+          </div>
+        </div>
+      </section>
+
+      <section class="step" id="step-6" data-step="6">
+        <h2>6. Versand</h2>
+        <p class="intro">Diese Angaben kannst du auch später ergänzen.</p>
+        <div class="field-grid">
+          <div class="field">
+            <label for="carrier">Paketdienst</label>
+            <select id="carrier" data-field="shipment.carrier">
+              <option value="">Bitte wählen</option>
+              <option>DHL</option><option>Hermes</option><option>DPD</option><option>GLS</option><option>UPS</option><option>Deutsche Post</option><option>Sonstiger</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tracking">Sendungsnummer</label>
+            <input id="tracking" data-field="shipment.tracking" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="shipDate">Versanddatum</label>
+            <input id="shipDate" type="date" data-field="shipment.date">
+          </div>
+          <div class="field">
+            <label for="weight">Paketgewicht (kg)</label>
+            <input id="weight" inputmode="decimal" data-field="shipment.weight" placeholder="z. B. 2,4">
+          </div>
+        </div>
+        <div class="section-card" style="padding:18px;margin:18px 0 0">
+          <h3>Nach Prüfung durch das Ankaufportal</h3>
+          <p class="hint" style="margin-bottom:14px">Kannst du später ergänzen, falls das Ankaufportal sein Angebot ändert.</p>
+          <div class="field-grid">
+            <div class="field">
+              <label for="revisedAmount">Neues Angebot (€)</label>
+              <input id="revisedAmount" inputmode="decimal" data-field="offer.revisedAmount" placeholder="optional">
+            </div>
+            <div class="field">
+              <label for="revisedDate">Datum des neuen Angebots</label>
+              <input id="revisedDate" type="date" data-field="offer.revisedDate">
+            </div>
+            <div class="field full">
+              <label for="revisedReason">Begründung des Ankaufportals</label>
+              <textarea id="revisedReason" data-field="offer.revisedReason" placeholder="optional"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="photo-task" data-task="receipt">
+          <div class="photo-top"><div><div class="photo-title">Einlieferungsbeleg</div><div class="hint">Optional: Ein Foto wird in die Dokumentation eingefügt. Eine hochgeladene PDF-Datei muss separat mitgespeichert und beigefügt werden.</div></div><span class="photo-status">noch keine Datei</span></div>
+          <label class="file-label">Beleg auswählen<input type="file" accept="image/*,application/pdf" data-attachment="receipt"></label>
+          <img class="preview" data-preview="receipt" alt="Vorschau Einlieferungsbeleg">
+        </div>
+      </section>
+
+      <section class="step" id="step-7" data-step="7">
+        <div id="missingCheck" class="missing-check screen-only" aria-live="polite" hidden></div>
+        <div class="final-actions screen-only">
+          <button class="btn btn-secondary" type="button" id="finalBackBtn">Zurück</button>
+          <button class="btn btn-primary" type="button" id="finalPrintBtn">PDF speichern</button>
+        </div>
+        <div class="print-only document-head">
+          <div class="document-banner">
+            <div class="document-identity">
+
+              <div>
+                <div class="document-brand">Kramurai</div>
+                <div class="document-tagline">Einfach. Nützlich. Kostenlos.</div>
+              </div>
+            </div>
+            <div class="document-meta">
+              <div>Erstellt: <span id="docCreatedDate">–</span></div>
+              <div>Aktualisiert: <span id="docUpdatedDate">–</span></div>
+            </div>
+          </div>
+          <div class="document-title-area">
+            <div class="document-watermark" aria-hidden="true">Kramurai</div>
+            <h1 class="document-title">Handyverkauf und Zustand</h1>
+            <p class="document-subtitle">Ankaufportal · Zustand, Gerätekennung, Account-Check und Versand</p>
+          </div>
+        </div>
+        <h2>7. Zusammenfassung</h2>
+        <p class="intro">Kontrolliere deine Angaben. Du kannst jederzeit zurückgehen und etwas ergänzen.</p>
+        <div class="warning">Dieses Dokument gibt deine eigenen Angaben und beigefügten Unterlagen wieder. Kramurai prüft deren Richtigkeit oder rechtliche Beweiskraft nicht.</div>
+        <div id="summary" class="summary"></div>
+        <div class="screen-only local-case-note">
+          <strong>Automatisch lokal gespeichert</strong>
+          <p>Du kannst Angaben ändern, die PDF erneut speichern und weitere Vorgänge anlegen. Sichere die fertige PDF außerhalb dieses Browsers: Die gespeicherten Vorgänge und Fotos werden nicht auf ein neues Gerät übertragen und können beim Löschen von Browserdaten verloren gehen.</p>
+          <button class="btn btn-secondary" type="button" id="newCaseBtn">Neuen Vorgang starten</button>
+        </div>
+        <div class="screen-only" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+          <button class="btn btn-danger" type="button" id="deleteBtn">Vorgang löschen</button>
+        </div>
+      </section>
+
+      <div class="wizard-nav screen-only" id="wizardNav">
+        <button class="btn btn-secondary" type="button" id="backBtn">Zurück</button>
+        <button class="btn btn-primary" type="button" id="nextBtn">Weiter</button>
+      </div>
+    </form>
+
+    <div class="privacy-note screen-only">
+      <strong>🔒 Lokal auf diesem Gerät</strong><br>
+      Deine Eingaben und ausgewählten Dateien werden für diese Testversion im Browser gespeichert. Wenn du Browserdaten löschst, können auch diese Daten verloren gehen. Es findet keine automatische Übertragung an Kramurai statt.<br>
+      Fragen oder Rückmeldungen? <a href="mailto:FormularFuchs@genial.ms">FormularFuchs@genial.ms</a>
+    </div>
+    <nav class="legal-links screen-only" aria-label="Rechtliche Informationen"><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a></nav>
+  </main>
+
+  <script src="/assets/case-backup.js"></script>
+  <script src="/handy-trade-in-dokumentieren/app.js"></script>
+</body>
+</html>
