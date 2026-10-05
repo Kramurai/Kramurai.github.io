@@ -332,3 +332,68 @@ body.legal-page-body{
     margin-top:14px;
   }
 }
+
+
+/* Kramurai Wortmarke – Variante 2: markantes K, ruhiger Schriftzug */
+.sr-only{
+  position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;
+  overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
+}
+.kramurai-brand{gap:11px}
+.kramurai-brand .brand-lockup{
+  display:flex;flex-direction:column;justify-content:center;min-width:0;line-height:1;
+}
+.kramurai-brand .wordmark-line{
+  display:flex;align-items:center;gap:4px;color:#fff;white-space:nowrap;
+}
+.kramurai-brand .wordmark-rest{
+  font-size:1.42rem;font-weight:800;letter-spacing:-.045em;line-height:1;
+}
+.kramurai-brand .wordmark-tagline{
+  margin-top:5px;color:#dfeae4;font-size:.62rem;font-weight:600;letter-spacing:.125em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.wordmark-k{
+  position:relative;display:inline-block;flex:0 0 27px;width:27px;height:29px;color:#fff;
+}
+.wordmark-k i{position:absolute;display:block;background:currentColor}
+.wordmark-k .k-stem{left:0;top:0;width:7px;height:29px}
+.wordmark-k .k-upper{
+  left:5px;top:0;width:22px;height:15px;
+  clip-path:polygon(0 72%,68% 0,100% 0,31% 79%);
+}
+.wordmark-k .k-lower{
+  left:5px;bottom:0;width:22px;height:17px;
+  clip-path:polygon(0 18%,31% 18%,100% 100%,66% 100%);
+}
+.wordmark-k .k-accent{
+  left:7px;top:13px;width:17px;height:4px;background:#d75a3d;
+  transform:rotate(-38deg);transform-origin:left center;border-radius:1px;
+}
+@media(max-width:520px){
+  .kramurai-brand{gap:8px}
+  .kramurai-brand .wordmark-rest{font-size:1.22rem}
+  .kramurai-brand .wordmark-tagline{font-size:.52rem;letter-spacing:.095em}
+  .wordmark-k{width:23px;height:25px;flex-basis:23px}
+  .wordmark-k .k-stem{width:6px;height:25px}
+  .wordmark-k .k-upper{left:4px;width:19px;height:13px}
+  .wordmark-k .k-lower{left:4px;width:19px;height:15px}
+  .wordmark-k .k-accent{left:6px;top:11px;width:15px;height:3px}
+}
+
+/* Helfer-Header: sichtbarer Rückweg zusätzlich zum klickbaren Logo */
+.helper-page header .wrap{
+  min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.helper-page .helper-home-link{
+  color:#eef5f0;text-decoration:none;font-size:.9rem;font-weight:750;white-space:nowrap;
+  padding:8px 10px;border:1px solid rgba(255,255,255,.30);border-radius:9px;
+}
+.helper-page .helper-home-link:hover,.helper-page .helper-home-link:focus-visible{
+  color:#fff;border-color:#f2bda8;background:rgba(255,255,255,.08);
+}
+@media(max-width:520px){
+  .helper-page .brand-logo-frame{width:40px;height:40px}
+  .helper-page .brand-logo{width:50px}
+  .helper-page .helper-home-link{font-size:.82rem;padding:7px 8px}
+}
