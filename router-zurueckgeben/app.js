@@ -46,6 +46,7 @@
   const backBtn = document.getElementById("backBtn");
   const nextBtn = document.getElementById("nextBtn");
   const finalPrintBtn = document.getElementById("finalPrintBtn");
+  const finalPrintBtnBottom = document.getElementById("finalPrintBtnBottom");
   const finalBackBtn = document.getElementById("finalBackBtn");
   const newCaseBtn = document.getElementById("newCaseBtn");
   const caseSelect = document.getElementById("caseSelect");
@@ -53,6 +54,13 @@
   const createCaseTopBtn = document.getElementById("createCaseTopBtn");
   const missingCheck = document.getElementById("missingCheck");
   const wizardNav = document.getElementById("wizardNav");
+
+  function setPrintButtons(disabled, text) {
+    [finalPrintBtn, finalPrintBtnBottom].filter(Boolean).forEach(btn => {
+      btn.disabled = disabled;
+      btn.textContent = text;
+    });
+  }
 
 
   function loadState() {
@@ -282,18 +290,15 @@
     if (isFinal) {
       missingCheck.hidden = true;
       beginFileWork();
-      finalPrintBtn.disabled = true;
-      finalPrintBtn.textContent = "Fotos werden vorbereitet …";
+      setPrintButtons(true, "Fotos werden vorbereitet …");
       renderSummary().then(() => {
         endFileWork();
         if (state.currentStep === TOTAL_STEPS) {
-          finalPrintBtn.disabled = false;
-          finalPrintBtn.textContent = "PDF speichern";
+          setPrintButtons(false, "PDF speichern");
         }
       }).catch(() => {
         endFileWork();
-        finalPrintBtn.disabled = true;
-        finalPrintBtn.textContent = "PDF derzeit nicht verfügbar";
+        setPrintButtons(true, "PDF derzeit nicht verfügbar");
         missingCheck.hidden = false;
         missingCheck.textContent = "Die Dokumentation konnte nicht vollständig vorbereitet werden. Bitte Fotos prüfen und zur Zusammenfassung zurückkehren oder die Seite neu laden. Ein unvollständiges PDF wird nicht ausgegeben.";
       });
@@ -301,9 +306,12 @@
     }
     if (scroll) {
       const activeStep = document.getElementById("step-" + state.currentStep);
-      activeStep.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-        block: "start"
+      const stickyHeader = document.querySelector(".site-header");
+      const headerOffset = (stickyHeader ? stickyHeader.getBoundingClientRect().height : 0) + 12;
+      const targetTop = activeStep.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
       });
     }
   }
@@ -741,8 +749,8 @@
     renderMissingCheck(presentPhotoTypes);
   }
 
-  finalPrintBtn.addEventListener("click", () => {
-    window.print();
+  [finalPrintBtn, finalPrintBtnBottom].filter(Boolean).forEach(btn => {
+    btn.addEventListener("click", () => window.print());
   });
 
   document.getElementById("deleteBtn").addEventListener("click", async () => {
