@@ -280,7 +280,7 @@ p{margin:0}
 .quick-arrow{margin-left:auto;color:var(--navy-2);font-size:1.05rem}
 .product-card,.classic-card{scroll-margin-top:94px}
 
-/* Die echte FormularFuchs-Grafik: auf jeder Fläche vollständig anzeigen.
+/* Die Kramurai-Grafik: auf jeder Fläche vollständig anzeigen.
    Kein CSS-Zoom und kein variierender Anschnitt zwischen den Icon-Größen. */
 .brand-mark--fox,
 .fox-image{
