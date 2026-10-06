@@ -397,3 +397,55 @@ body.legal-page-body{
   .helper-page .brand-logo{width:50px}
   .helper-page .helper-home-link{font-size:.82rem;padding:7px 8px}
 }
+
+
+/* Finaler Header-Lockup: näher an der freigegebenen Variante 2.1 */
+.kramurai-brand{
+  gap:8px;
+  min-width:0;
+}
+.kramurai-brand .brand-raven-full{
+  display:block;
+  width:58px;
+  height:58px;
+  flex:0 0 58px;
+  object-fit:contain;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,.12));
+}
+.kramurai-brand .brand-lockup{min-width:0}
+.kramurai-brand .wordmark-line{gap:3px}
+.kramurai-brand .wordmark-rest{
+  font-size:1.48rem;
+  font-weight:850;
+  letter-spacing:-.055em;
+}
+.kramurai-brand .wordmark-tagline{
+  margin-top:4px;
+  font-size:.58rem;
+  letter-spacing:.115em;
+}
+.kramurai-brand .wordmark-k{
+  width:29px;height:30px;flex-basis:29px;
+}
+.kramurai-brand .wordmark-k .k-stem{width:8px;height:30px}
+.kramurai-brand .wordmark-k .k-upper{left:6px;width:23px;height:15px}
+.kramurai-brand .wordmark-k .k-lower{left:6px;width:23px;height:17px}
+.kramurai-brand .wordmark-k .k-accent{
+  left:7px;top:13px;width:18px;height:4px;background:#d75a3d;
+}
+@media(max-width:520px){
+  .kramurai-brand .brand-raven-full{
+    width:48px;height:48px;flex-basis:48px;
+  }
+  .kramurai-brand .wordmark-rest{font-size:1.18rem}
+  .kramurai-brand .wordmark-tagline{
+    font-size:.46rem;letter-spacing:.08em;margin-top:3px;
+  }
+  .kramurai-brand .wordmark-k{
+    width:23px;height:25px;flex-basis:23px;
+  }
+  .kramurai-brand .wordmark-k .k-stem{width:6px;height:25px}
+  .kramurai-brand .wordmark-k .k-upper{left:4px;width:19px;height:13px}
+  .kramurai-brand .wordmark-k .k-lower{left:4px;width:19px;height:15px}
+  .kramurai-brand .wordmark-k .k-accent{left:5px;top:11px;width:15px;height:3px}
+}
