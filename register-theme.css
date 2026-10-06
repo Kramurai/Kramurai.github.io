@@ -449,3 +449,32 @@ body.legal-page-body{
   .kramurai-brand .wordmark-k .k-lower{left:4px;width:19px;height:15px}
   .kramurai-brand .wordmark-k .k-accent{left:5px;top:11px;width:15px;height:3px}
 }
+
+
+/* Final: ursprüngliches Kramurai-Rabenlogo + Wortmarke aus dem freigegebenen Muster */
+.kramurai-brand{
+  display:flex;align-items:center;gap:10px;min-width:0;
+}
+.kramurai-brand .brand-raven-full,
+.kramurai-brand .brand-lockup{display:none!important}
+.kramurai-brand .brand-logo-frame{
+  width:54px;height:54px;flex:0 0 54px;display:grid;place-items:center;
+  overflow:hidden;border-radius:11px;background:#f6f8f3;
+}
+.kramurai-brand .brand-logo{
+  display:block;width:64px;height:auto;max-width:none;
+  transform:translate(-6px,-2px);
+}
+.kramurai-brand .brand-wordmark-img{
+  display:block;width:184px;height:auto;max-width:min(184px,55vw);
+}
+@media(max-width:520px){
+  .kramurai-brand{gap:8px}
+  .kramurai-brand .brand-logo-frame{width:44px;height:44px;flex-basis:44px}
+  .kramurai-brand .brand-logo{width:54px;transform:translate(-5px,-2px)}
+  .kramurai-brand .brand-wordmark-img{width:150px;max-width:44vw}
+}
+.helper-page .kramurai-brand .brand-wordmark-img{width:164px}
+@media(max-width:520px){
+  .helper-page .kramurai-brand .brand-wordmark-img{width:128px;max-width:38vw}
+}
