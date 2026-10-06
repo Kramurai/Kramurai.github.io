@@ -584,3 +584,84 @@ body.helper-page .helper-site-header .helper-home-link{
     gap:16px;
   }
 }
+
+
+/* Canonical Kramurai branding: one reusable icon + one true vector wordmark */
+.kramurai-brand .brand-wordmark-img,
+.helper-page .kramurai-brand .brand-wordmark-img{
+  width:176px;
+  height:auto;
+  max-width:min(176px,52vw);
+}
+.kramurai-brand .brand-tagline-readable,
+.helper-page .kramurai-brand .brand-tagline-readable{
+  margin-top:1px;
+  color:#f4f7f3;
+  font-size:.61rem;
+  line-height:1.15;
+  font-weight:650;
+  letter-spacing:.055em;
+}
+@media(max-width:520px){
+  .kramurai-brand .brand-wordmark-img,
+  .helper-page .kramurai-brand .brand-wordmark-img{
+    width:145px;
+    max-width:43vw;
+  }
+  .kramurai-brand .brand-tagline-readable,
+  .helper-page .kramurai-brand .brand-tagline-readable{
+    font-size:.54rem;
+    letter-spacing:.04em;
+  }
+}
+
+/* Print/PDF header uses exactly the same brand assets as the website */
+.helper-page .document-identity{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+}
+.helper-page .document-logo{
+  width:48px;
+  height:48px;
+  flex:0 0 48px;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:10px;
+  background:#f6f8f3;
+  overflow:hidden;
+  box-shadow:none;
+}
+.helper-page .document-logo img{
+  width:58px;
+  height:auto;
+  max-width:none;
+  transform:translate(-5px,-2px);
+  object-fit:contain;
+}
+.helper-page .document-brand-lockup{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-width:0;
+}
+.helper-page .document-wordmark{
+  display:block;
+  width:170px;
+  height:auto;
+}
+.helper-page .document-tagline{
+  margin-top:1px;
+  color:rgba(255,255,255,.88);
+  font-size:7.3pt;
+  line-height:1.15;
+  font-weight:650;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.helper-page .final-bottom-pdf .btn{
+  width:100%;
+  min-height:50px;
+}
