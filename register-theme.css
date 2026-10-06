@@ -522,3 +522,26 @@ body.legal-page-body{
     padding:6px 7px;
   }
 }
+
+
+/* Helfer: Markenblock exakt auf derselben Header-Achse wie die Startseite */
+.helper-page .helper-site-header .header-inner{
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+}
+.helper-page .helper-site-header .kramurai-brand{
+  margin:0;
+  align-self:center;
+}
+.helper-page .helper-site-header .helper-home-link{
+  margin-left:auto;
+}
+@media(max-width:720px){
+  .helper-page .helper-site-header .header-inner{
+    min-height:68px;
+    gap:16px;
+  }
+}
