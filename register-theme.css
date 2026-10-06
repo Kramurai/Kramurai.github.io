@@ -545,3 +545,42 @@ body.legal-page-body{
     gap:16px;
   }
 }
+
+
+/* Kanonische Header-Geometrie – identisch auf Startseite und Helfern */
+.site-header .header-inner{
+  position:relative;
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+}
+.site-header .kramurai-brand{
+  flex:0 0 auto;
+  margin:0;
+  padding:0;
+  gap:10px;
+  transform:none;
+}
+body.helper-page .helper-site-header .kramurai-brand{
+  flex:0 0 auto;
+  margin:0;
+  padding:0;
+  gap:10px;
+  transform:none;
+}
+body.helper-page .helper-site-header .helper-home-link{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  margin:0;
+}
+@media(max-width:720px){
+  .site-header .header-inner,
+  body.helper-page .helper-site-header .header-inner{
+    min-height:68px;
+    gap:16px;
+  }
+}
