@@ -6,7 +6,7 @@ body .site-header.kramurai-header {
 
 body .site-header.kramurai-header .header-inner {
   width: min(1080px, calc(100% - 32px));
-  min-height: 88px;
+  min-height: 84px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -16,7 +16,7 @@ body .site-header.kramurai-header .header-inner {
 body .site-header.kramurai-header .kramurai-brand {
   display: block;
   flex: 0 0 auto;
-  width: 330px;
+  width: 290px;
   margin: 0;
   padding: 0;
   transform: none;
@@ -51,7 +51,7 @@ body .site-header.kramurai-header .helper-home-link {
   flex: 0 0 auto;
   min-height: 44px;
   padding: 9px 12px;
-  border: 1px solid #789da7;
+  border: 1px solid #63838c;
   border-radius: 9px;
   color: #f4f1e8;
   font-size: .9rem;
@@ -70,7 +70,7 @@ body .site-header.kramurai-header .helper-home-link {
   height: 44px;
   padding: 0;
   color: #f4f1e8;
-  border: 1px solid #789da7;
+  border: 1px solid transparent;
   border-radius: 9px;
   list-style: none;
   cursor: pointer;
@@ -109,9 +109,9 @@ body .site-header.kramurai-header .helper-home-link {
 }
 
 @media (max-width: 720px) {
-  body .site-header.kramurai-header .header-inner { min-height: 76px; gap: 12px; }
+  body .site-header.kramurai-header .header-inner { min-height: 72px; gap: 20px; }
   body .site-header.kramurai-header .kramurai-brand {
-    width: clamp(228px, calc(100vw - 92px), 280px);
+    width: clamp(196px, calc(100vw - 112px), 232px);
   }
   .site-header.kramurai-header .main-nav { display: none; }
   .header-menu { display: block; }
