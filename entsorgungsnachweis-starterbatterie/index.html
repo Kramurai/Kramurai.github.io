@@ -14,7 +14,7 @@
     .battery-hero,.battery-section{background:#f8f6ef;border:1px solid #aec1b5;border-radius:20px;box-shadow:0 12px 30px rgba(18,59,54,.09)}
     .battery-hero{padding:clamp(26px,5vw,46px);border-top:5px solid #b8462e}
     .battery-hero .eyebrow{display:inline-block;margin:0 0 12px;color:#275e50;font-size:.76rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
-    .battery-hero h1{margin:0 0 14px;color:#18372f;font-size:clamp(2rem,7vw,3.2rem);line-height:1.08;letter-spacing:-.035em}
+    .battery-hero h1{margin:0 0 14px;color:#18372f;font-size:clamp(2rem,7vw,3.2rem);line-height:1.08;letter-spacing:-.035em;overflow-wrap:anywhere;hyphens:auto}
     .battery-hero .lead{margin:0;color:#38564c;font-size:clamp(1.02rem,2.5vw,1.18rem);max-width:760px}
     .battery-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
     .battery-actions .button{min-height:48px}
@@ -37,18 +37,19 @@
       .battery-section{padding:21px}
     }
   </style>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/assets/brand/favicon.ico" sizes="16x16 32x32 48x48 64x64">
+  <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" sizes="180x180">
+  <link rel="stylesheet" href="/assets/brand-header.css?v=20261008-master1">
+  <script src="/assets/brand-nav.js?v=20261008-master1" defer></script>
 </head>
 <body class="legal-page-body">
-  <header class="site-header">
+  <header class="site-header kramurai-header">
     <div class="wrap header-inner">
       <a class="brand kramurai-brand" href="/" aria-label="Kramurai Startseite">
-        <span class="brand-logo-frame"><img class="brand-logo" src="/assets/kramurai-icon.webp" alt=""></span>
-        <span class="brand-wordmark-wrap">
-          <img class="brand-wordmark-img" src="/assets/kramurai-wordmark-final-light.svg" alt="Kramurai">
-          <span class="brand-tagline-readable">Einfach. Nützlich. Kostenlos.</span>
-        </span>
+        <img class="brand-combination-img" src="/assets/brand/kramurai-logo-header.svg" width="915" height="165" alt="" decoding="async">
       </a>
-      <nav class="main-nav" aria-label="Hauptnavigation"><a href="/">Startseite</a></nav>
+      <a class="helper-home-link" href="/" aria-label="Zur Kramurai Startseite"><svg class="header-home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9"/></svg><span class="helper-home-label">Startseite</span></a>
     </div>
   </header>
 
