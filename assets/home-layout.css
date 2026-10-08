@@ -210,19 +210,21 @@ body.home-page {
 }
 @media (max-width: 720px) {
   .home-page .hero-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    grid-template-columns: minmax(155px, 1.25fr) minmax(0, 1fr);
+    grid-template-areas: "eyebrow eyebrow" "title title" "lead raven" "actions actions" "trust trust";
+    gap: 0 12px;
     min-height: 0;
     padding-block: 30px 22px;
   }
-  .home-page .eyebrow { margin-bottom: 14px; font-size: .68rem; letter-spacing: .07em; }
-  .home-page h1 { font-size: clamp(2rem, 8.5vw, 2.55rem); margin-bottom: 18px; line-height: 1.1; }
-  .home-page .lead { max-width: 46ch; font-size: 1rem; line-height: 1.6; }
-  .home-page .actions { flex-direction: column; align-items: stretch; gap: 4px; margin-top: 22px; }
+  .home-page .hero-copy { display: contents; }
+  .home-page .eyebrow { grid-area: eyebrow; margin-bottom: 14px; font-size: .68rem; letter-spacing: .07em; }
+  .home-page h1 { grid-area: title; font-size: clamp(2rem, 8.5vw, 2.55rem); margin-bottom: 22px; line-height: 1.1; }
+  .home-page .lead { grid-area: lead; align-self: center; max-width: none; font-size: 1rem; line-height: 1.6; }
+  .home-page .actions { grid-area: actions; flex-direction: column; align-items: stretch; gap: 4px; margin-top: 22px; }
   .home-page .button.primary { width: 100%; min-height: 52px; }
-  .home-page .hero-trust { margin-top: 10px; font-size: .79rem; text-align: center; }
-  .home-page .hero-raven { height: 136px; }
-  .home-page .hero-raven img { width: 160px; height: 136px; object-fit: contain; }
+  .home-page .hero-trust { grid-area: trust; margin-top: 10px; font-size: .79rem; text-align: center; }
+  .home-page .hero-raven { grid-area: raven; align-self: stretch; min-height: 150px; height: auto; }
+  .home-page .hero-raven img { width: min(calc(100% + 8px), 220px); height: auto; object-fit: contain; }
   .home-page .content-section, .home-page .trust-section { padding-top: 40px; }
   .home-page .section-heading { margin-bottom: 22px; }
   .home-page .section-kicker { margin-bottom: 8px; font-size: .69rem; }
