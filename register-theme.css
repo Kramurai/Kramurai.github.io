@@ -676,3 +676,15 @@ body.helper-page .helper-site-header .helper-home-link{
   object-fit:contain;
   transform:none;
 }
+
+
+/* Use the approved outlined wordmark in existing page footers. */
+.footer-brand .footer-wordmark{
+  display:block;
+  width:128px;
+  height:auto;
+  max-width:100%;
+  object-fit:contain;
+  border:0;
+  border-radius:0;
+}
