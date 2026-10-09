@@ -497,9 +497,7 @@ footer{
   .quick-links{gap:8px}
   .quick-links a{padding:10px;min-height:50px;font-size:.84rem}
   .quick-arrow{font-size:.95rem}
-  .classic-card{grid-template-columns:auto minmax(0,1fr)}
-  .classic-card>div{min-width:0}
-  .classic-card h3{overflow-wrap:anywhere;hyphens:auto}
+  .classic-card{grid-template-columns:auto 1fr}
   .classic-arrow{display:none}
   .trust-panel{padding:26px 22px}
   .trust-grid{grid-template-columns:1fr}

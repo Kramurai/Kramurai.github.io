@@ -1,7 +1,14 @@
-# Kramurai Website-Marke
+# Kramurai-Markenassets
 
-Aus dem Markenpaket 1.0 vom 8. Oktober 2026. Header: Rabenprofil mit Korallauge, Blick zum Namen; flache K-Facetten aus v13, Schriftfassung B. Für den dunkelpetrolfarbenen Header werden cremeweiße Buchstaben und Rabe verwendet. Das komplette Logo ist ein einzelnes SVG; dadurch bleiben die geprüften Abstände auf allen Seiten gleich.
+Freigegebene Vektorformen für die spätere Einbindung. Diese Dateien sind in diesem Entwurf noch nicht in die bestehende Website eingebunden. Inhalt, Farben, Layout, Navigation und Druckvorlagen der Website bleiben auf dem aktuellen Live-Stand.
 
-Die Wortmarke beruht auf angepassten DejaVu-Sans-Bold-Pfaden. FONT-LICENSE.txt enthält die Originalhinweise. Die SVGs haben ausgeformte Buchstaben und keine externen Ressourcen. favicon.svg und favicon.ico nutzen die größere Rabenbelegung für Browser-Tabs; apple-touch-icon.png verwendet den Profilbildrand für runde Zuschnitte.
+- `kramurai-wordmark-light-background.svg`: detaillierte Wortmarke für helle Flächen und PDFs.
+- `kramurai-wordmark-dark-background.svg`: detaillierte Wortmarke für dunkle Flächen.
+- `kramurai-logo-claim-light-background.svg`: Rabenprofil, Wortmarke und „Einfach. Nützlich. Kostenlos.“ für helle Flächen.
+- `kramurai-logo-claim-dark-background.svg`: dieselbe Kombination für dunkle Flächen.
+- `kramurai-logo-header.svg`: kompakte Kombination für dunkle Flächen und kleinere Darstellung, ohne Claim.
+- `favicon.svg`, `favicon.ico`, `apple-touch-icon.png`: vorbereitete Symbole.
 
-Die bestehende polygonale Ganzkörper-Illustration der Startseite liegt unverändert in `kramurai-raven-illustration.webp`. Sie ist eine begleitende Illustration und ersetzt nicht das Rabenprofil der Wortmarke oder des Favicons. Die linke Blickrichtung wird ausschließlich per CSS-Spiegelung angezeigt.
+Die SVG-Dateien enthalten ausgeformte Schriftpfade und benötigen keine installierte Schrift. Die Schriftlizenz liegt in `FONT-LICENSE.txt`. Wortmarke, Rabe und Kombinationen stammen unverändert aus dem Kramurai-Markenpaket 1.0.
+
+Zusätzliche Vorschläge zu Texten, Farben, Seitenaufteilung oder Navigation werden vor einer Umsetzung separat vorgestellt und vom Nutzer entschieden.
