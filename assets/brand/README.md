@@ -18,7 +18,9 @@ Die SVG-Dateien enthalten ausgeformte Schriftpfade und benötigen keine installi
 
 ## PDF-Vorlage
 
-`/assets/entsorgungsnachweis-starterbatterie-v1.0.pdf` behält beide Seiten, alle Texte und alle zehn interaktiven Felder. Die Marke wurde ausschließlich im freien Fußbereich ergänzt. Die Formularversion bleibt 1.0, da die Formularstruktur unverändert ist.
+Die Website bietet `/assets/entsorgungsnachweis-starterbatterie-v1.4.pdf` zum Download an. Die freigegebene Version 1.4 enthält die bereits vorhandene Gestaltung mit Vektorlogo und Vektorwortmarke im Kopfbereich, zwei Seiten und zehn unveränderte interaktive Formularfelder.
+
+Die ältere `/assets/entsorgungsnachweis-starterbatterie-v1.0.pdf` bleibt unter ihrer bisherigen Adresse erreichbar, damit bestehende Links gültig bleiben.
 
 `tools/brand_starterbatterie.py` reproduziert den Markenaustausch. Der unveränderte Ausgangsstand der Website-Vorlage ist im Git-Commit `06f5c32d86aec0d67c7f1c750ccefc5b9378efb6` enthalten. Das Skript erwartet eine Originaldatei unter `--source`, einen Zielpfad unter `--output` und die freigegebenen SVGs unter `--raven` und `--wordmark`. Der zusätzliche Schalter `--replace-header-images` ersetzt ausschließlich die zwei älteren Raster-Markenbilder in der separat vorhandenen Version 1.4.
 
