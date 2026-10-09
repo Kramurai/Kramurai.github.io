@@ -700,13 +700,36 @@ body.helper-page .helper-site-header .helper-home-link{
   .helper-page .photo-status{max-width:100%;overflow-wrap:anywhere}
 
   .helper-page details.case-manager>summary{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 36px;
+    gap:12px;
+    align-items:center;
+    list-style:none;
     cursor:pointer;
     color:#18372f;
     font-weight:850;
-    min-height:44px;
+    min-height:68px;
     line-height:1.4;
-    align-content:center;
   }
+  .helper-page details.case-manager>summary::marker{content:""}
+  .helper-page details.case-manager>summary::-webkit-details-marker{display:none}
+  .helper-page .case-manager-toggle-copy{display:grid;gap:2px;min-width:0}
+  .helper-page .case-manager-toggle-title{font-weight:850}
+  .helper-page .case-manager-toggle-description{font-size:.85rem;font-weight:500}
+  .helper-page .case-manager-toggle-hint{font-size:.82rem;font-weight:750;text-decoration:underline;text-underline-offset:3px}
+  .helper-page .case-manager-toggle-icon{
+    display:grid;
+    place-items:center;
+    width:36px;
+    height:36px;
+    border:2px solid #3f705c;
+    border-radius:8px;
+    background:#e0eee5;
+  }
+  .helper-page .case-manager-toggle-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+  .helper-page details.case-manager:not([open]) .case-manager-close-hint,
+  .helper-page details.case-manager[open] .case-manager-open-hint,
+  .helper-page details.case-manager[open] .case-manager-plus-vertical{display:none}
   .helper-page details.case-manager>summary:focus-visible{
     outline:3px solid #b8462e;
     outline-offset:4px;
