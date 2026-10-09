@@ -416,7 +416,7 @@
       a{color:inherit;text-decoration:none}
     }
   </style>
-  <link rel="stylesheet" href="/register-theme.css?v=20261009-helpers-v3">
+  <link rel="stylesheet" href="/register-theme.css?v=20261010-helpers-v4">
   <link rel="icon" href="/assets/brand/favicon.svg?v=20261009-brand-v1" type="image/svg+xml" sizes="any">
   <link rel="icon" href="/favicon.ico?v=20261009-brand-v1" sizes="16x16 32x32 48x48 64x64">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261009-brand-v1" sizes="180x180">
@@ -660,13 +660,15 @@
         <div class="screen-only local-case-note">
           <strong>Automatisch lokal gespeichert</strong>
           <p>Du kannst Angaben ändern, die PDF erneut speichern und weitere Vorgänge anlegen. Sichere die fertige PDF außerhalb dieses Browsers: Die gespeicherten Vorgänge und Fotos werden nicht auf ein neues Gerät übertragen und können beim Löschen von Browserdaten verloren gehen.</p>
+        </div>
+        <div class="screen-only final-bottom-actions">
+          <div class="final-bottom-pdf">
+            <button class="btn btn-primary" type="button" id="finalPrintBtnBottom">PDF speichern</button>
+          </div>
           <button class="btn btn-secondary" type="button" id="newCaseBtn">Neuen Vorgang starten</button>
         </div>
-        <div class="screen-only" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+        <div class="screen-only final-delete-action">
           <button class="btn btn-danger" type="button" id="deleteBtn">Vorgang löschen</button>
-        </div>
-        <div class="screen-only final-bottom-pdf" style="margin-top:18px">
-          <button class="btn btn-primary" type="button" id="finalPrintBtnBottom">PDF speichern</button>
         </div>
       </section>
 
