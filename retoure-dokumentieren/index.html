@@ -416,7 +416,7 @@
       a{color:inherit;text-decoration:none}
     }
   </style>
-  <link rel="stylesheet" href="/register-theme.css?v=20261009-brand-v5">
+  <link rel="stylesheet" href="/register-theme.css?v=20261009-helpers-v1">
   <link rel="icon" href="/assets/brand/favicon.svg?v=20261009-brand-v1" type="image/svg+xml" sizes="any">
   <link rel="icon" href="/favicon.ico?v=20261009-brand-v1" sizes="16x16 32x32 48x48 64x64">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261009-brand-v1" sizes="180x180">
@@ -442,7 +442,8 @@
       <div class="eyebrow">Lokal im Browser · Daten bleiben auf deinem Gerät</div>
       <h1>Retoure dokumentieren</h1>
       <p class="lead">Halte Gegenstand, Zustand, Zubehör, Fotos, Verpackung und Versand strukturiert fest.</p>
-      <div class="case-manager screen-only">
+      <details class="case-manager screen-only">
+        <summary>Meine Vorgänge · Sichern &amp; öffnen</summary>
         <div class="case-manager-heading">Meine Vorgänge <span id="caseCount"></span></div>
         <p class="case-manager-hint">Lokal in diesem Browser gespeichert. Mit einer Sicherungsdatei kannst du einen Vorgang samt gespeicherten Fotos und Belegen später wieder öffnen – auch auf einem anderen Gerät.</p>
         <div class="case-manager-actions">
@@ -458,7 +459,7 @@
         </div>
         <p class="case-manager-hint">Die Sicherungsdatei enthält deine Angaben und gespeicherten Dateien unverschlüsselt. Bewahre sie sicher auf. Beim Öffnen wird ein zusätzlicher Vorgang angelegt. Das PDF bleibt die lesbare Dokumentation.</p>
         <p id="backupStatus" class="case-manager-hint" role="status" aria-live="polite"></p>
-      </div>
+      </details>
       <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
       <div class="progress-label"><span id="progressText">Schritt 1 von 6</span><span id="saveStatus">lokal gespeichert</span></div>
     </div>
@@ -676,6 +677,6 @@
   </main>
 
   <script src="/assets/case-backup.js"></script>
-  <script src="/retoure-dokumentieren/app.js"></script>
+  <script src="/retoure-dokumentieren/app.js?v=20261009-helpers-v1"></script>
 </body>
 </html>

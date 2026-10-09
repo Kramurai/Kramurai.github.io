@@ -556,7 +556,7 @@
     const hints = [];
     const suggest = (message, step) => hints.push({ message, step });
     if (!String(state.party.recipient || "").trim())
-      suggest("Empfänger / Ankaufportal ergänzen, falls bekannt.", 1);
+      suggest("Händler / Empfänger ergänzen, falls bekannt.", 1);
     if (!state.condition.rating)
       suggest("Zustand unmittelbar vor dem Verpacken auswählen.", 2);
     if (!String(state.item.serial || "").trim())

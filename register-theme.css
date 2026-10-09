@@ -688,3 +688,29 @@ body.helper-page .helper-site-header .helper-home-link{
   border:0;
   border-radius:0;
 }
+
+/* Keep helper checklists and file status within narrow screens. */
+@media screen{
+  .helper-page .check-list{grid-template-columns:minmax(0,1fr)}
+  .helper-page .check{min-width:0}
+  .helper-page .check>span{min-width:0;overflow-wrap:anywhere}
+  .helper-page .check input{flex:0 0 20px}
+  .helper-page .photo-top{flex-wrap:wrap}
+  .helper-page .photo-top>div{min-width:0;flex:1 1 130px}
+  .helper-page .photo-status{max-width:100%;overflow-wrap:anywhere}
+
+  .helper-page details.case-manager>summary{
+    cursor:pointer;
+    color:#18372f;
+    font-weight:850;
+    min-height:44px;
+    line-height:1.4;
+    align-content:center;
+  }
+  .helper-page details.case-manager>summary:focus-visible{
+    outline:3px solid #b8462e;
+    outline-offset:4px;
+  }
+  .helper-page details.case-manager[open]>summary{margin-bottom:12px}
+  .helper-page details.case-manager:not([open]){padding-top:8px;padding-bottom:8px}
+}
