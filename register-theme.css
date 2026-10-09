@@ -665,3 +665,14 @@ body.helper-page .helper-site-header .helper-home-link{
   width:100%;
   min-height:50px;
 }
+
+
+/* Approved vector artwork in the existing header and document layout. */
+.kramurai-brand .brand-logo,
+.helper-page .document-logo img{
+  width:100%;
+  height:100%;
+  max-width:none;
+  object-fit:contain;
+  transform:none;
+}
