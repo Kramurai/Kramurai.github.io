@@ -29,3 +29,7 @@ Zusätzliche Vorschläge zu Texten, Farben, Seitenaufteilung oder Navigation wer
 ## Farbstand 10. Oktober 2026
 
 Freigegebene Farbversion B: Dunkelpetrol #18554D, mittlere Facetten #23695F und #2F8073, Relieflicht #78BEAB, Reliefschatten #0C3933. Auf dunklem Hintergrund: #A4C9BC, #BDD9CC, #D6E8DF und Reliefschatten #659687. Koralle #EA6B55, Korallenschatten #C74F40 und Creme #F4F1E8 bleiben erhalten. Formen, Pfade, Facettenanordnung und Seitenfarben sind unverändert. `tools/refresh_brand_colors.py` enthält die Farbzuordnung.
+
+## Lesbarer Claim im Website-Header
+
+„Einfach. Nützlich. Kostenlos.“ wird als separate Textzeile unter der Wortmarke gesetzt: 12 px auf größeren Displays, 10,5 px bis 520 px Bildschirmbreite und 3 px Abstand. Auf schmalen Helferseiten wechselt der Startseitenlink bei Platzmangel in eine weitere Zeile; sein Wortlaut bleibt vollständig sichtbar. Die Wortmarke und die Markenfarben sind unverändert.

@@ -595,12 +595,12 @@ body.helper-page .helper-site-header .helper-home-link{
 }
 .kramurai-brand .brand-tagline-readable,
 .helper-page .kramurai-brand .brand-tagline-readable{
-  margin-top:1px;
+  margin-top:3px;
   color:#f4f7f3;
-  font-size:.61rem;
-  line-height:1.15;
+  font-size:.75rem;
+  line-height:1.2;
   font-weight:650;
-  letter-spacing:.055em;
+  letter-spacing:.015em;
 }
 @media(max-width:520px){
   .kramurai-brand .brand-wordmark-img,
@@ -610,8 +610,20 @@ body.helper-page .helper-site-header .helper-home-link{
   }
   .kramurai-brand .brand-tagline-readable,
   .helper-page .kramurai-brand .brand-tagline-readable{
-    font-size:.54rem;
-    letter-spacing:.04em;
+    font-size:.65625rem;
+    letter-spacing:.015em;
+  }
+  body.helper-page .helper-site-header .header-inner{
+    flex-wrap:wrap;
+    gap:8px 12px;
+    padding-top:8px;
+    padding-bottom:8px;
+  }
+  body.helper-page .helper-site-header .helper-home-link{
+    position:static;
+    transform:none;
+    margin-left:auto;
+    flex-shrink:0;
   }
 }
 
