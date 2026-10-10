@@ -9,3 +9,11 @@ node tools/check_helper_workflows.cjs
 ```
 
 Bei separat installierten Laufzeiten können `PLAYWRIGHT_MODULE` (Pfad zum Playwright-Modul) und `CHROMIUM_EXECUTABLE` (Pfad zur Chromium-Datei) gesetzt werden. Testdateien, Screenshots und das JSON-Ergebnis landen in einem neuen temporären Ordner; dessen Pfad wird am Ende ausgegeben. Ein fehlgeschlagener Test liefert einen Exitcode ungleich null. Die Druckknöpfe werden auf den synchronen Aufruf von `window.print()` geprüft; der Betriebssystem-Druckdialog wird nicht geöffnet.
+
+## Beschriftungen, Tastatur und Seitenangaben
+
+```bash
+node tools/check_page_accessibility.cjs
+```
+
+Diese ergänzende Prüfung kontrolliert die Namen von Formularfeldern und Foto-Schaltflächen, Bildbeschreibungen, kanonische Seitenadressen und die Übernahme vorhandener Titel und Beschreibungen in Linkvorschauen. Die drei Helfer werden bei 320 und 1280 Pixeln per Tastatur durchlaufen: Fokus am neuen Schritt, Tab-Reihenfolge, Zurück und Öffnen des nativen Dateidialogs. Sie ist eine gezielte Prüfung dieser Abläufe, keine vollständige Prüfung aller Anforderungen an Barrierefreiheit.

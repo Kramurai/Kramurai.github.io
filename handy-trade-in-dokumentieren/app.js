@@ -311,6 +311,12 @@
     }
     if (scroll) {
       const activeStep = document.getElementById("step-" + state.currentStep);
+      // Nach einem Schrittwechsel beginnt die Tastaturbedienung beim neuen Inhalt.
+      const heading = activeStep.querySelector("h2");
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+      }
       const stickyHeader = document.querySelector(".site-header");
       const headerOffset = (stickyHeader ? stickyHeader.getBoundingClientRect().height : 0) + 12;
       const targetTop = activeStep.getBoundingClientRect().top + window.scrollY - headerOffset;
