@@ -33,3 +33,9 @@ Freigegebene Farbversion B: Dunkelpetrol #18554D, mittlere Facetten #23695F und 
 ## Lesbarer Claim im Website-Header
 
 „Einfach. Nützlich. Kostenlos.“ wird als separate Textzeile unter der Wortmarke gesetzt: 12 px auf größeren Displays, 10,5 px bis 520 px Bildschirmbreite und 3 px Abstand. Auf schmalen Helferseiten wechselt der Startseitenlink bei Platzmangel in eine weitere Zeile; sein Wortlaut bleibt vollständig sichtbar. Die Wortmarke und die Markenfarben sind unverändert.
+
+## Importgeprüfte Dateien
+
+Die SVGs verwenden nur eine äußere Zeichenfläche. Positionen der Logobestandteile und Schnittflächen der K-Facetten sind direkt in Gruppen und Pfaden dargestellt. Die freigegebene Ansicht bleibt erhalten. `tools/portable_brand_svg.py` reproduziert die Strukturvereinfachung (benötigt Shapely).
+
+Zu Logo, Rabe und Wortmarken stehen gleichnamige `.pdf`-Fassungen bereit. Sie enthalten echte Vektorpfade und benötigen keine installierte Schrift. SVG für Web/Vektorprogramme, transparentes PNG für bildbasierte Anwendungen, PDF für Layout und Druck. Beim Einfügen proportional skalieren.
