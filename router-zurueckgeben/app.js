@@ -148,6 +148,8 @@
     caseSelect.value = state.caseId;
     caseCount.textContent = "(" + entries.length + ")";
     const busy = fileBusyCount > 0;
+    // Die Zusammenfassung darf erst nach dem Speichern aller Fotos entstehen.
+    nextBtn.disabled = busy;
     caseSelect.disabled = busy;
     createCaseTopBtn.disabled = busy;
     newCaseBtn.disabled = busy;
