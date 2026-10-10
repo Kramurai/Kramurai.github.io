@@ -763,3 +763,43 @@ body.helper-page .helper-site-header .helper-home-link{
     .helper-page .final-bottom-actions>.btn{width:100%}
   }
 }
+
+/* Keep existing screen photo grids while grouping their print rows. */
+@media screen{
+  .helper-page .summary-photo-row{display:contents}
+}
+@media print{
+  body.helper-page{page:kramurai-helper}
+  .helper-page .summary{display:block}
+  .helper-page .summary-card{margin-bottom:8px}
+  .helper-page .summary-row{
+    grid-template-columns:190px minmax(0,1fr);
+    padding:3px 0;
+    line-height:1.4;
+  }
+  .helper-page .summary-key{overflow-wrap:normal;hyphens:manual}
+  .helper-page .summary-photos{row-gap:8px}
+  .helper-page .summary-photos.print-photo-rows{display:block}
+  .helper-page .summary-photo-row{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px 10px;
+    margin-bottom:8px;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .helper-page .summary-photo-row:last-child{margin-bottom:0}
+  .helper-page .summary-photo img{display:block}
+  .helper-page .summary-photo strong{font-size:10pt;line-height:1.3;margin-top:4px}
+  .helper-page .summary-photo .hint{font-size:8.5pt;line-height:1.3}
+}
+@page kramurai-helper{
+  size:A4;
+  margin:10mm 10mm 16mm;
+  @bottom-right{
+    content:"Seite " counter(page) " von " counter(pages);
+    font-family:Arial,sans-serif;
+    font-size:8.5pt;
+    color:#38564c;
+  }
+}

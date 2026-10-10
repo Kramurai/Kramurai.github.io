@@ -536,7 +536,7 @@
     const text = String(value ?? "");
     const isLong = text.length > 420 || text.split("\n").length > 8;
     return '<div class="summary-row' + (isLong ? ' summary-row-long' : '') +
-      '"><div class="summary-key">' + esc(key) + '</div><div>' + display(value) + '</div></div>';
+      '"><div class="summary-key">' + esc(key).replaceAll('/', '/<wbr>') + '</div><div>' + display(value) + '</div></div>';
   }
 
   function formatDate(value) {
@@ -728,6 +728,23 @@
     // Bildern drei gleich breite Spalten. Bildschirm-Layout unverändert.
     photos.classList.toggle("print-three-images",
       photos.querySelectorAll(".summary-photo").length === 3);
+    // In der Druckansicht bleiben Bildpaare zusammen. Bei ungerader
+    // Anzahl stehen die letzten drei Bilder als Gruppe auf einer Seite,
+    // damit ein einzelner Beleg nicht allein auf einer Folgeseite steht.
+    // display:contents erhält die bisherige Bildschirm-Anordnung.
+    const photoCards = [...photos.querySelectorAll(".summary-photo")];
+    if (photoCards.length >= 5) {
+      photos.classList.add("print-photo-rows");
+      const pairedCount = photoCards.length % 2 ? photoCards.length - 3 : photoCards.length;
+      for (let i = 0; i < photoCards.length;) {
+        const photoRow = document.createElement("div");
+        photoRow.className = "summary-photo-row";
+        const count = i < pairedCount ? 2 : 3;
+        photoCards.slice(i, i + count).forEach(card => photoRow.appendChild(card));
+        photos.appendChild(photoRow);
+        i += count;
+      }
+    }
     // Warten, bis die Foto-Vorschauen decodiert sind, bevor der Druckknopf
     // freigegeben wird. window.print() selbst bleibt synchron im Klick-Handler.
     const images = [...photos.querySelectorAll("img")];
