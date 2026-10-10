@@ -25,3 +25,7 @@ Die ältere `/assets/entsorgungsnachweis-starterbatterie-v1.0.pdf` bleibt unter 
 `tools/brand_starterbatterie.py` reproduziert den Markenaustausch. Der unveränderte Ausgangsstand der Website-Vorlage ist im Git-Commit `06f5c32d86aec0d67c7f1c750ccefc5b9378efb6` enthalten. Das Skript erwartet eine Originaldatei unter `--source`, einen Zielpfad unter `--output` und die freigegebenen SVGs unter `--raven` und `--wordmark`. Der zusätzliche Schalter `--replace-header-images` ersetzt ausschließlich die zwei älteren Raster-Markenbilder in der separat vorhandenen Version 1.4.
 
 Zusätzliche Vorschläge zu Texten, Farben, Seitenaufteilung oder Navigation werden vor einer Umsetzung separat vorgestellt und vom Nutzer entschieden.
+
+## Farbstand 10. Oktober 2026
+
+Freigegebene Farbversion B: Dunkelpetrol #18554D, mittlere Facetten #23695F und #2F8073, Relieflicht #78BEAB, Reliefschatten #0C3933. Auf dunklem Hintergrund: #A4C9BC, #BDD9CC, #D6E8DF und Reliefschatten #659687. Koralle #EA6B55, Korallenschatten #C74F40 und Creme #F4F1E8 bleiben erhalten. Formen, Pfade, Facettenanordnung und Seitenfarben sind unverändert. `tools/refresh_brand_colors.py` enthält die Farbzuordnung.

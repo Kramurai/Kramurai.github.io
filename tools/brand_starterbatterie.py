@@ -46,7 +46,7 @@ def add_brand(source, output, raven, wordmark):
         width, height = float(page.mediabox.width), float(page.mediabox.height)
         overlay_buffer = io.BytesIO()
         drawing = canvas.Canvas(overlay_buffer, pagesize=(width, height))
-        drawing.setFillColor(HexColor("#0F4C5C"))
+        drawing.setFillColor(HexColor("#18554D"))
         text = drawing.beginText(92, 84)
         text.setFont("Helvetica-Bold", 7.2)
         text.setCharSpace(0)
