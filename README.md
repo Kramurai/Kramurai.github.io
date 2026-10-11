@@ -55,6 +55,8 @@ Der vierte Helfer dokumentiert Fahrzeug und Beteiligte, bekannte Mängel und Rep
 
 Die gemeinsamen Ablauftests erfassen nun vier Helfer mit insgesamt 88 Einzelprüfungen. Die ergänzende Beschriftungs- und Tastaturprüfung umfasst 16 Szenarien, 54 Foto-Beschriftungen und 42 Vorwärtsschritte. `check_car_sale.cjs` prüft außerdem die Verkaufsangaben, widersprüchliche Zahlungs- und Übergabestände, das Entfernen einzelner Dateien und separate PDF-Belege. Die synthetischen Muster-PDFs wurden auf Seitenumbrüche und Lesbarkeit geprüft.
 
+Die ADAC-orientierte Überarbeitung zeigt den Vertragslink vor dem ersten Schritt, trennt Fahrbereitschaft und Mängel und bündelt Zusatzangaben in aufklappbaren Bereichen. Bis zu 20 zusätzliche Fotos mit Beschreibungen sind möglich. Wesentliche Widersprüche bleiben auch im PDF sichtbar; leere Zusatzfelder entfallen. Ältere lokale Vorgänge und Sicherungen werden mit unveränderten ursprünglichen Angaben und Dateischlüsseln übernommen. Die gemeinsame Sicherungsroutine bietet dafür eine optionale Migration vor ihrer strikten Prüfung; die übrigen Helfer verwenden weiterhin ihre bisherigen Schemas.
+
 ## Prüfungen wiederholen
 
 Voraussetzung: Node.js, Playwright und Chromium. Einzelheiten und die Optionen für separat installierte Laufzeiten stehen in [tools/README.md](tools/README.md).

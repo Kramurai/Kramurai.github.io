@@ -19,18 +19,52 @@
     "receipt": "Beleg zur Zahlung oder Übergabe"
 };
 
+  const extraPhotoTypes = Array.from({length: 20}, (_, i) => "extra" + (i + 1));
+  extraPhotoTypes.forEach((type, i) => { photoLabels[type] = "Zusätzliches Foto " + (i + 1); });
+  const emptyPhotoNotes = () => Object.fromEntries(Object.keys(photoLabels).filter(type => type !== "receipt").map(type => [type, ""]));
+  const emptyExtraPhotos = () => Object.fromEntries(extraPhotoTypes.map(type => [type, false]));
+
+  // Retain every original field and file key; only add the newly introduced fields.
+  function migrateState(input) {
+    if (!input || typeof input !== "object" || Array.isArray(input)) return input;
+    const result = {...input};
+    const additions = {
+      condition: {driveability: "", defects: ""},
+      documents: {coc: false, abe: false, digitalServices: ""},
+      handover: {hu: false, service: false, invoices: false, coc: false, abe: false}
+    };
+    for (const [group, fields] of Object.entries(additions)) {
+      if (!input[group] || typeof input[group] !== "object" || Array.isArray(input[group])) continue;
+      result[group] = {...input[group]};
+      for (const [key, value] of Object.entries(fields)) {
+        if (!Object.hasOwn(input[group], key)) result[group][key] = value;
+      }
+    }
+    if (input.condition && !Object.hasOwn(input.condition, "driveability")) {
+      const old = input.condition.rating;
+      if (old === "Gebraucht, fahrbereit nach eigener Einschätzung") result.condition.driveability = "Fahrbereit nach eigener Einschätzung";
+      else if (old === "Nicht fahrbereit" || old === "Nicht beurteilt") result.condition.driveability = old;
+    }
+    if (input.condition && !Object.hasOwn(input.condition, "defects") && input.condition.rating === "Bekannte Mängel vorhanden")
+      result.condition.defects = "Bekannte Mängel vorhanden";
+    if (!Object.hasOwn(input, "photoNotes")) result.photoNotes = emptyPhotoNotes();
+    if (!Object.hasOwn(input, "extraPhotos")) result.extraPhotos = emptyExtraPhotos();
+    return result;
+  }
+
   const defaultState = () => ({
     version: 1,
     caseId: (crypto.randomUUID ? crypto.randomUUID() : "case-" + Date.now()),
     createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), currentStep: 1,
     item: { name: "", manufacturer: "", model: "", serial: "", registration: "", firstRegistration: "", mileage: "", hu: "" },
     party: { seller: "", buyer: "", sellerContact: "", buyerContact: "" },
-    condition: { rating: "", note: "", accidents: "", checkedAt: "", damageHistory: "", repairs: "", inspection: "" },
+    condition: { driveability: "", defects: "", rating: "", note: "", accidents: "", checkedAt: "", damageHistory: "", repairs: "", inspection: "" },
     accessories: { extraWheels: false, chargingCable: false, tools: false, manual: false, other: "" },
-    documents: { partI: false, partII: false, hu: false, service: false, invoices: false, other: "", contractStatus: "", contractNote: "" },
+    documents: { coc: false, abe: false, digitalServices: "", partI: false, partII: false, hu: false, service: false, invoices: false, other: "", contractStatus: "", contractNote: "" },
     payment: { price: "", amount: "", status: "", method: "", date: "", note: "" },
-    handover: { status: "", registered: "", date: "", time: "", place: "", mileage: "", keyCount: "", vehicle: false, keys: false, partI: false, partII: false, accessories: false, papers: false, remote: false, note: "" },
-    followup: { insurance: false, registration: false, note: "" }
+    handover: { hu: false, service: false, invoices: false, coc: false, abe: false, status: "", registered: "", date: "", time: "", place: "", mileage: "", keyCount: "", vehicle: false, keys: false, partI: false, partII: false, accessories: false, papers: false, remote: false, note: "" },
+    followup: { insurance: false, registration: false, note: "" },
+    photoNotes: emptyPhotoNotes(), extraPhotos: emptyExtraPhotos()
   });
 
   let caseIndex = { ids: [], activeId: "" };
@@ -116,7 +150,7 @@
         : ids[0];
     caseIndex = { ids, activeId };
     try { localStorage.setItem(CASES_KEY, JSON.stringify(caseIndex)); } catch (e) {}
-    return saved.get(activeId);
+    return migrateState(saved.get(activeId));
   }
 
   function caseTitle(saved) {
@@ -151,6 +185,8 @@
     const busy = fileBusyCount > 0;
     // Die Zusammenfassung darf erst nach dem Speichern aller Fotos entstehen.
     nextBtn.disabled = busy;
+    document.getElementById("addPhotoBtn").disabled = busy || extraPhotoTypes.every(type => state.extraPhotos[type]);
+    document.querySelectorAll("[data-photo], [data-attachment]").forEach(input => { input.disabled = busy; });
     document.querySelectorAll("[data-remove-file]").forEach(button => { button.disabled = busy; });
     caseSelect.disabled = busy;
     createCaseTopBtn.disabled = busy;
@@ -199,7 +235,7 @@
       return;
     }
     resetCaseImages();
-    state = saved;
+    state = migrateState(saved);
     form.reset();
     hydrateForm();
     saveState(false);
@@ -245,7 +281,54 @@
     return path.split(".").reduce((acc, key) => acc && acc[key], obj);
   }
 
+  function renderPhotoTasks() {
+    const list = document.getElementById("extraPhotoList");
+    list.replaceChildren();
+    for (const type of extraPhotoTypes.filter(type => state.extraPhotos[type])) {
+      const task = document.createElement("div");
+      task.className = "photo-task"; task.dataset.task = type;
+      task.innerHTML = '<div class="photo-top"><div><div class="photo-title">' + photoLabels[type] + '</div><div class="hint">Optional. Ein neues Foto ersetzt das bisherige Bild dieses Feldes.</div></div><span class="photo-status">noch kein Foto</span></div>' +
+        '<div class="photo-actions"><label class="file-label">Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="' + type + '" aria-label="Fotografieren: ' + photoLabels[type] + '"></label><label class="file-label">Aus Galerie wählen<input type="file" accept="image/*" data-photo="' + type + '" aria-label="Aus Galerie wählen: ' + photoLabels[type] + '"></label></div>' +
+        '<img class="preview" data-preview="' + type + '" alt="Vorschau: ' + photoLabels[type] + '"><button type="button" class="btn btn-danger file-remove" data-remove-file="' + type + '">Fotoplatz entfernen</button>';
+      list.appendChild(task);
+    }
+    for (const [type, label] of Object.entries(photoLabels)) {
+      if (type === "receipt") continue;
+      const task = document.querySelector('[data-task="' + type + '"]');
+      if (!task || task.querySelector(".photo-note")) continue;
+      const field = document.createElement("div"); field.className = "field photo-note";
+      const caption = document.createElement("label"); caption.htmlFor = "photoNote-" + type; caption.textContent = "Beschreibung (optional)";
+      const input = document.createElement("input"); input.type = "text"; input.id = caption.htmlFor;
+      input.maxLength = 500; input.dataset.field = "photoNotes." + type; input.value = state.photoNotes[type] || "";
+      input.setAttribute("aria-label", "Beschreibung: " + label);
+      field.append(caption, input); task.appendChild(field);
+    }
+  }
+
+  function updateHandoverHelp() {
+    const occurred = state.handover.status === "Erfolgt", planned = state.handover.status === "Geplant";
+    document.querySelector('label[for="handoverDate"]').textContent = occurred ? "Datum der erfolgten Übergabe" : planned ? "Geplantes Übergabedatum" : "Übergabedatum (geplant oder erfolgt)";
+    document.getElementById("handoverPhase").textContent = occurred
+      ? "Die Übergabe ist als erfolgt erfasst. Nur tatsächlich ausgehändigte Dinge und den tatsächlichen Zahlungsstand dokumentieren."
+      : "Die Übergabe ist noch nicht als erfolgt erfasst. Termin und Ort können geplant sein; erledigte Punkte nur markieren, wenn sie tatsächlich erfolgt sind.";
+    const contents = [markedList(state.accessories, accessoryLabels), state.accessories.other, markedList(state.documents, documentLabels), state.documents.other].filter(Boolean).join("; ");
+    document.getElementById("handoverContentsPreview").textContent = contents ? "Zuvor als Zubehör oder Unterlagen erfasst: " + contents : "Zubehör und vorhandene Unterlagen kannst du in Schritt 3 erfassen.";
+  }
+
+  document.getElementById("addPhotoBtn").addEventListener("click", async () => {
+    if (fileBusyCount) return;
+    const type = extraPhotoTypes.find(type => !state.extraPhotos[type]);
+    if (!type) return;
+    beginFileWork();
+    try {
+      state.extraPhotos[type] = true; renderPhotoTasks(); saveState();
+      await restorePreviews();
+    } finally { endFileWork(); }
+    document.querySelector('[data-task="' + type + '"] input[type="file"]')?.focus();
+  });
+
   function hydrateForm() {
+    renderPhotoTasks();
     document.querySelectorAll("[data-field]").forEach(el => {
       const value = getPath(state, el.dataset.field);
       if (value !== undefined && value !== null) el.value = value;
@@ -256,15 +339,20 @@
     document.querySelectorAll("[data-check]").forEach(el => {
       el.checked = !!getPath(state, el.dataset.check);
     });
+    document.querySelectorAll("details[data-optional]").forEach(details => {
+      details.open = [...details.querySelectorAll("[data-field], [data-check]")].some(input =>
+        input.hasAttribute("data-check") ? input.checked : !!input.value.trim());
+    });
+    updateHandoverHelp();
   }
 
   function bindAutosave() {
-    document.querySelectorAll("[data-field]").forEach(el => {
-      el.addEventListener("input", () => {
-        setPath(state, el.dataset.field, el.value);
-        saveStatus.textContent = "speichert …";
-        saveState();
-      });
+    form.addEventListener("input", event => {
+      const el = event.target;
+      if (!el.matches("[data-field]")) return;
+      setPath(state, el.dataset.field, el.value);
+      saveStatus.textContent = "speichert …"; saveState();
+      if (el.dataset.field === "handover.status") updateHandoverHelp();
     });
     document.querySelectorAll("[data-radio]").forEach(el => {
       el.addEventListener("change", () => {
@@ -291,6 +379,7 @@
     const isFinal = state.currentStep === TOTAL_STEPS;
     wizardNav.style.display = isFinal ? "none" : "";
     saveState(false);
+    if (state.currentStep === 5) updateHandoverHelp();
     if (isFinal) {
       missingCheck.hidden = true;
       beginFileWork();
@@ -457,16 +546,28 @@
   }
 
   async function restorePreviews() {
+    const restoringCaseId = state.caseId;
+    const records = new Map(await Promise.all(Object.keys(photoLabels).map(async type => {
+      try { return [type, await getFile(type)]; } catch (_) { return [type, null]; }
+    })));
+    if (state.caseId !== restoringCaseId) return;
+    let recovered = false;
+    for (const type of extraPhotoTypes) {
+      if (records.get(type) && !state.extraPhotos[type]) { state.extraPhotos[type] = true; recovered = true; }
+    }
+    if (recovered) { renderPhotoTasks(); saveState(false); }
     for (const type of Object.keys(photoLabels)) {
       try {
-        const record = await getFile(type);
+        const record = records.get(type);
         if (record) {
           setPreview(type, record);
+          const details = document.querySelector('[data-task="' + type + '"]')?.closest("details[data-optional]");
+          if (details) details.open = true;
         } else {
           const task = document.querySelector('[data-task="' + type + '"]');
           if (!task) continue;
           task.classList.remove("done");
-          task.querySelector("[data-remove-file]").hidden = true;
+          task.querySelector("[data-remove-file]").hidden = !extraPhotoTypes.includes(type);
           const status = task.querySelector(".photo-status");
           if (status) status.textContent = type === "receipt" ? "noch keine Datei" : "noch kein Foto";
           const img = task.querySelector("[data-preview]");
@@ -483,8 +584,9 @@
     }
   }
 
-  document.querySelectorAll("[data-photo]").forEach(input => {
-    input.addEventListener("change", async () => {
+  form.addEventListener("change", async event => {
+      const input = event.target;
+      if (!input.matches("[data-photo]")) return;
       const file = input.files && input.files[0];
       if (!file) return;
       const type = input.dataset.photo;
@@ -504,7 +606,6 @@
         input.value = "";
         endFileWork();
       }
-    });
   });
 
   document.querySelectorAll("[data-attachment]").forEach(input => {
@@ -530,26 +631,28 @@
       }
     });
   });
-
-  document.querySelectorAll("[data-remove-file]").forEach(button => {
-    button.addEventListener("click", async () => {
-      if (fileBusyCount || !confirm("Diese Datei aus diesem Vorgang entfernen? Andere Fotos und Vorgänge bleiben erhalten.")) return;
-      beginFileWork();
-      try {
-        const db = await openDb();
-        await new Promise((resolve, reject) => {
-          const tx = db.transaction(STORE_NAME, "readwrite");
-          tx.objectStore(STORE_NAME).delete(state.caseId + ":" + button.dataset.removeFile);
-          tx.oncomplete = resolve;
-          tx.onabort = () => reject(tx.error);
-          tx.onerror = () => {};
-        });
-        await restorePreviews();
-        saveState();
-      } catch (_) {
-        alert("Die Datei konnte nicht entfernt werden. Bitte erneut versuchen.");
-      } finally { endFileWork(); }
-    });
+  form.addEventListener("click", async event => {
+    const button = event.target.closest("[data-remove-file]");
+    if (!button || fileBusyCount) return;
+    const type = button.dataset.removeFile, extra = extraPhotoTypes.includes(type);
+    const question = extra ? "Diesen Fotoplatz einschließlich Foto und Beschreibung entfernen? Andere Fotos und Vorgänge bleiben erhalten." : "Diese Datei aus diesem Vorgang entfernen? Andere Fotos und Vorgänge bleiben erhalten.";
+    if (!confirm(question)) return;
+    beginFileWork();
+    try {
+      const db = await openDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        tx.objectStore(STORE_NAME).delete(state.caseId + ":" + type);
+        tx.oncomplete = resolve; tx.onabort = () => reject(tx.error); tx.onerror = () => {};
+      });
+      if (extra) { state.extraPhotos[type] = false; state.photoNotes[type] = ""; renderPhotoTasks(); }
+      await restorePreviews(); saveState();
+    } catch (_) { alert("Die Datei konnte nicht entfernt werden. Bitte erneut versuchen."); }
+    finally {
+      endFileWork();
+      if (extra) document.getElementById("addPhotoBtn").focus();
+      else document.querySelector('[data-task="' + type + '"] input[type="file"]')?.focus();
+    }
   });
 
   const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[ch]));
@@ -559,8 +662,8 @@
     return Object.entries(labels).filter(([key]) => group[key] === true).map(([, label]) => label).join(", ");
   }
   const accessoryLabels = {extraWheels:"Zusätzlicher Radsatz", chargingCable:"Ladekabel", tools:"Bordwerkzeug / Pannenset", manual:"Betriebsanleitung"};
-  const documentLabels = {partI:"Zulassungsbescheinigung Teil I", partII:"Zulassungsbescheinigung Teil II", hu:"HU-Bericht", service:"Serviceheft / Wartungsnachweise", invoices:"Reparaturrechnungen / Prüfnachweise"};
-  const handoverLabels = {vehicle:"Fahrzeug übergeben", keys:"Schlüssel übergeben", partI:"Teil I ausgehändigt", partII:"Teil II ausgehändigt", accessories:"Erfasstes Zubehör übergeben", papers:"Weitere Unterlagen übergeben", remote:"Persönliche Fahrzeugkonten / Fernzugriffe getrennt"};
+  const documentLabels = {partI:"Zulassungsbescheinigung Teil I", partII:"Zulassungsbescheinigung Teil II", hu:"HU-Bericht", service:"Serviceheft / Wartungsnachweise", invoices:"Reparaturrechnungen / Prüfnachweise", coc:"CoC-Bescheinigung", abe:"ABE / Unterlagen zu Anbauteilen"};
+  const handoverLabels = {vehicle:"Fahrzeug übergeben", keys:"Schlüssel übergeben", partI:"Teil I ausgehändigt", partII:"Teil II ausgehändigt", accessories:"Erfasstes Zubehör übergeben", papers:"Weitere Unterlagen übergeben", hu:"HU-Bericht ausgehändigt", service:"Serviceheft / Wartungsnachweise ausgehändigt", invoices:"Reparaturrechnungen / Prüfnachweise ausgehändigt", coc:"CoC-Bescheinigung ausgehändigt", abe:"ABE / Unterlagen zu Anbauteilen ausgehändigt", remote:"Persönliche Fahrzeugkonten / Fernzugriffe getrennt"};
   function money(value) {
     const text = String(value || "").trim();
     return text ? text + " €" : "";
@@ -571,11 +674,12 @@
     return Number(text.replaceAll(".", "").replace(",", "."));
   }
 
-  function row(key, value) {
+  function row(key, value, required = false) {
     const text = String(value ?? "");
+    if (!text.trim() && !required) return "";
     const isLong = text.length > 420 || text.split("\n").length > 8;
     return '<div class="summary-row' + (isLong ? ' summary-row-long' : '') +
-      '"><div class="summary-key">' + esc(key).replaceAll('/', '/<wbr>') + '</div><div>' + display(value) + '</div></div>';
+      '"><div class="summary-key">' + esc(key).replaceAll('/', '/<wbr>') + '</div><div>' + (text.trim() ? display(value) : 'Nicht dokumentiert') + '</div></div>';
   }
 
   function formatDate(value) {
@@ -587,25 +691,45 @@
 
   function renderMissingCheck(photoTypes) {
     const hints = [];
-    const suggest = (message, step) => hints.push({ message, step });
+    const suggest = (message, step, important = false) => hints.push({ message, step, important });
     if (!state.item.serial.trim()) suggest("FIN ergänzen, falls bekannt.", 1);
-    if (!state.condition.rating) suggest("Zustand nach eigener Einschätzung ergänzen.", 2);
+    if (!state.condition.driveability && !state.condition.defects) suggest("Zustand nach eigener Einschätzung ergänzen.", 2);
     if (!photoTypes.has("overall")) suggest("Eine Gesamtansicht ergänzen, wenn möglich.", 4);
-    if (!state.documents.contractStatus || state.documents.contractStatus !== "Von beiden Parteien unterschrieben")
-      suggest("Der separate Kaufvertrag ist noch nicht als beidseitig unterschrieben erfasst. Diese Dokumentation ersetzt ihn nicht.", 3);
+    if (state.documents.contractStatus !== "Von beiden Parteien unterschrieben")
+      suggest(state.handover.status === "Erfolgt"
+        ? "Die Übergabe ist erfolgt; der separate Kaufvertrag ist noch nicht als beidseitig unterschrieben erfasst. Bitte prüfen. Diese Dokumentation ersetzt ihn nicht."
+        : "Für den Verkauf den separaten Kaufvertrag vorbereiten und unterschreiben. Diese Dokumentation ersetzt ihn nicht. Eine Vorbereitung kannst du schon jetzt als PDF speichern.", 3, state.handover.status === "Erfolgt");
     if (state.handover.status === "Erfolgt") {
       if (!state.party.seller.trim() || !state.party.buyer.trim()) suggest("Namen von Verkäufer und Käufer ergänzen.", 1);
       if (!state.handover.date || !state.handover.time) suggest("Datum und Uhrzeit der erfolgten Übergabe ergänzen.", 5);
       if (!state.payment.status) suggest("Tatsächlichen Zahlungsstand ergänzen.", 5);
       if (!state.handover.vehicle) suggest("Prüfen, ob das Fahrzeug als tatsächlich übergeben markiert werden soll.", 5);
     }
-    if (state.handover.status !== "Erfolgt" && Object.keys(handoverLabels).some(key => state.handover[key]))
-      suggest("Erledigte Übergabepunkte sind markiert, die Übergabe aber nicht als erfolgt. Bitte die Angaben prüfen.", 5);
+    if (state.handover.status !== "Erfolgt" && Object.keys(handoverLabels).some(key => key !== "remote" && state.handover[key]))
+      suggest("Erledigte Übergabepunkte sind markiert, die Übergabe aber nicht als erfolgt. Bitte die Angaben prüfen.", 5, true);
     const price = moneyNumber(state.payment.price), amount = moneyNumber(state.payment.amount);
     if (state.payment.status === "Vollständig erhalten" && price !== null && amount !== null && amount < price)
-      suggest("Als vollständig bezahlt erfasst, der erhaltene Betrag ist aber kleiner als der notierte Kaufpreis. Bitte prüfen.", 5);
-    if (state.payment.price.trim() && price === null) suggest("Kaufpreis im Format 4.500,00 prüfen.", 5);
-    if (state.payment.amount.trim() && amount === null) suggest("Erhaltenen Betrag im Format 500,00 prüfen.", 5);
+      suggest("Als vollständig bezahlt erfasst, der erhaltene Betrag ist aber kleiner als der notierte Kaufpreis. Bitte prüfen.", 5, true);
+    if (state.payment.price.trim() && price === null) suggest("Kaufpreis im Format 4.500,00 prüfen.", 5, true);
+    if (state.payment.amount.trim() && amount === null) suggest("Erhaltenen Betrag im Format 500,00 prüfen.", 5, true);
+    const paymentOpen = state.payment.status === "Zahlung offen" || state.payment.status === "Anzahlung erhalten" || (price !== null && amount !== null && amount < price);
+    if ((state.handover.status === "Erfolgt" || state.handover.vehicle) && paymentOpen)
+      suggest("Fahrzeugübergabe bei noch offener Zahlung erfasst. Tatsächlichen Zahlungseingang und Vereinbarung prüfen.", 5, true);
+    if (state.handover.partII && (state.payment.status !== "Vollständig erhalten" || paymentOpen))
+      suggest("Fahrzeugbrief als ausgehändigt erfasst, vollständige Zahlung aber noch nicht dokumentiert. Bitte prüfen.", 5, true);
+    if (state.handover.keyCount.trim() && !state.handover.keys)
+      suggest("Eine Anzahl übergebener Schlüssel ist eingetragen; Schlüsselübergabe ist noch nicht markiert.", 5, true);
+
+    const documentChecks = document.getElementById("documentChecks");
+    documentChecks.replaceChildren();
+    const important = hints.filter(hint => hint.important);
+    documentChecks.hidden = !important.length;
+    if (important.length) {
+      const heading = document.createElement("strong"); heading.textContent = "Offene Prüfhinweise zu den eingetragenen Angaben";
+      const list = document.createElement("ul");
+      important.forEach(hint => { const li = document.createElement("li"); li.textContent = hint.message; list.appendChild(li); });
+      documentChecks.append(heading, list);
+    }
     if (state.handover.registered === "Zugelassen" && state.handover.status === "Erfolgt" && (!state.followup.insurance || !state.followup.registration))
       suggest("Verkaufsmeldungen an Versicherung und Zulassungsstelle noch prüfen und dokumentieren.", 5);
 
@@ -651,26 +775,26 @@
     if (created) created.textContent = new Date(state.createdAt).toLocaleString("de-DE");
     if (updated) updated.textContent = new Date(state.updatedAt).toLocaleString("de-DE");
     let html = '<div class="summary-card"><h3>Fahrzeug und Beteiligte</h3>' +
-      row("Fahrzeug", state.item.name) + row("Hersteller", state.item.manufacturer) + row("Modell / Variante", state.item.model) +
-      row("FIN", state.item.serial) + row("Kennzeichen", state.item.registration) + row("Erstzulassung", formatDate(state.item.firstRegistration)) +
+      row("Fahrzeug", state.item.name, true) + row("Hersteller", state.item.manufacturer) + row("Modell / Variante", state.item.model) +
+      row("FIN", state.item.serial, true) + row("Kennzeichen", state.item.registration) + row("Erstzulassung", formatDate(state.item.firstRegistration)) +
       row("Abgelesener Kilometerstand", state.item.mileage ? state.item.mileage + " km" : "") + row("Nächste HU", state.item.hu) +
-      row("Verkäufer", state.party.seller) + row("Kontakt / Anschrift Verkäufer", state.party.sellerContact) +
-      row("Käufer", state.party.buyer) + row("Kontakt / Anschrift Käufer", state.party.buyerContact) + '</div>';
+      row("Verkäufer", state.party.seller, state.handover.status === "Erfolgt") + row("Kontakt / Anschrift Verkäufer", state.party.sellerContact) +
+      row("Käufer", state.party.buyer, state.handover.status === "Erfolgt") + row("Kontakt / Anschrift Käufer", state.party.buyerContact) + '</div>';
     html += '<div class="summary-card"><h3>Zustand nach eigener Angabe</h3>' +
-      row("Eigene Einschätzung", state.condition.rating) + row("Bekannte Mängel / Schäden", state.condition.note) +
+      row("Fahrbereitschaft nach eigener Einschätzung", state.condition.driveability, true) + row("Kenntnis zu Mängeln", state.condition.defects, true) + row("Frühere Zustandsangabe", state.condition.rating) + row("Bekannte Mängel / Schäden", state.condition.note) +
       row("Kenntnis zu Unfall- und Vorschäden", state.condition.accidents) + row("Schäden genauer beschrieben", state.condition.damageHistory) +
       row("Zustandsaufnahme am", formatDate(state.condition.checkedAt)) + row("Reparaturen / Wartung / Belege", state.condition.repairs) +
       row("Besichtigung / Probefahrt / Prüfung", state.condition.inspection) + '</div>';
     html += '<div class="summary-card"><h3>Zubehör, Unterlagen und separater Vertrag</h3>' +
       row("Zum Verkauf gehörendes Zubehör", markedList(state.accessories, accessoryLabels) || "Nicht als vorhanden erfasst") +
       row("Zubehör / Ausnahmen", state.accessories.other) + row("Vorliegende Unterlagen", markedList(state.documents, documentLabels) || "Nicht als vorhanden erfasst") +
-      row("Weitere / fehlende Unterlagen", state.documents.other) + row("Separater Kaufvertrag", state.documents.contractStatus) + row("Hinweis zum Vertrag / Anlagen", state.documents.contractNote) + '</div>';
+      row("Weitere / fehlende Unterlagen", state.documents.other) + row("Digitale Funktionen / Dienste", state.documents.digitalServices) + row("Separater Kaufvertrag", state.documents.contractStatus || "Noch nicht dokumentiert") + row("Hinweis zum Vertrag / Anlagen", state.documents.contractNote) + '</div>';
     html += '<div class="summary-card"><h3>Zahlung nach eigener Angabe</h3>' +
       row("Notierter Kaufpreis", money(state.payment.price)) + row("Erhaltener Betrag", money(state.payment.amount)) +
-      row("Zahlungsstand", state.payment.status) + row("Zahlungsart", state.payment.method) + row("Zahlungseingang am", formatDate(state.payment.date)) + row("Notizen / Beleg / offene Punkte", state.payment.note) + '</div>';
+      row("Zahlungsstand", state.payment.status, true) + row("Zahlungsart", state.payment.method) + row("Zahlungseingang am", formatDate(state.payment.date)) + row("Notizen / Beleg / offene Punkte", state.payment.note) + '</div>';
     html += '<div class="summary-card"><h3>Übergabe und Nachbereitung</h3>' +
       row("Stand der Übergabe", state.handover.status || "Noch nicht dokumentiert") + row("Zulassungsstand bei Übergabe", state.handover.registered) +
-      row("Übergabedatum (geplant / erfolgt)", formatDate(state.handover.date)) + row("Uhrzeit", state.handover.time) + row("Ort", state.handover.place) +
+      row(state.handover.status === "Erfolgt" ? "Datum der erfolgten Übergabe" : state.handover.status === "Geplant" ? "Geplantes Übergabedatum" : "Übergabedatum (geplant / erfolgt)", formatDate(state.handover.date), state.handover.status === "Erfolgt") + row("Uhrzeit", state.handover.time, state.handover.status === "Erfolgt") + row("Ort", state.handover.place) +
       row("Abgelesener Kilometerstand bei Übergabe", state.handover.mileage ? state.handover.mileage + " km" : "") + row("Übergebene Schlüssel (Anzahl)", state.handover.keyCount) +
       row("Als tatsächlich erledigt markiert", markedList(state.handover, handoverLabels) || "Keine Übergabepunkte als erledigt markiert") +
       row("Abweichungen / offene Punkte", state.handover.note) +
@@ -743,13 +867,17 @@
       const strong = document.createElement("strong");
       strong.textContent = label;
       box.appendChild(strong);
+      if (state.photoNotes[type]) {
+        const caption = document.createElement("p"); caption.className = "photo-caption";
+        caption.textContent = state.photoNotes[type]; box.appendChild(caption);
+      }
       const small = document.createElement("div");
       small.className = "hint";
       small.textContent = "dem Vorgang hinzugefügt: " + new Date(record.addedAt).toLocaleString("de-DE");
       box.appendChild(small);
       photos.appendChild(box);
     }
-    if (!photos.children.length) photos.innerHTML = '<p class="small">Noch keine Fotos oder Belege hinzugefügt.</p>';
+    if (!photos.children.length) photos.closest(".photo-summary-card").remove();
     // Ausschließlich die Druckdarstellung verwendet bei genau drei
     // Bildern drei gleich breite Spalten. Bildschirm-Layout unverändert.
     photos.classList.toggle("print-three-images",
@@ -820,7 +948,7 @@
       } catch (e) {}
       next = null;
     }
-    state = next || defaultState();
+    state = next ? migrateState(next) : defaultState();
     caseIndex.activeId = state.caseId;
     form.reset();
     hydrateForm();
@@ -830,13 +958,13 @@
   });
 
   CaseBackup.mount({
-    helper: "car-sale", defaultState, types: Object.keys(photoLabels),
+    helper: "car-sale", defaultState, migrateState, types: Object.keys(photoLabels),
     openDb, storeName: STORE_NAME, prefix: CASE_PREFIX,
     getState: () => state, isBusy: () => fileBusyCount > 0,
     begin: beginFileWork, end: endFileWork,
     onImported: async imported => {
       resetCaseImages();
-      state = imported;
+      state = migrateState(imported);
       form.reset();
       hydrateForm();
       saveState(false);

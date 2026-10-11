@@ -24,7 +24,7 @@ const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,
    await page.locator('#nextBtn').click();assert.equal((await read()).currentStep,1);assert.equal(await page.locator('#itemName').evaluate(e=>e===document.activeElement),true);
    await page.locator('#itemName').fill('Test '+helper+' – ÄÖÜ');await page.locator(helper==='car-sale'?'#seller':'#sender').fill('Testperson, Musterstraße 1');
    const original=await read();
-   await page.locator('#nextBtn').click();await page.locator('label[for="c2"]').click();await page.locator('#conditionNote').fill('Testnotiz\nZweite Zeile');
+   await page.locator('#nextBtn').click();if(helper==='car-sale')await page.locator('#driveability').selectOption('Fahrbereit nach eigener Einschätzung');else await page.locator('label[for="c2"]').click();await page.locator('#conditionNote').fill('Testnotiz\nZweite Zeile');
    await page.locator('#nextBtn').click();await page.locator('[data-check]').first().check();
    await page.locator('#nextBtn').click();await page.locator('[data-photo="overall"]').last().setInputFiles(path.join(out,'sample.png'));
    await page.waitForFunction(()=>document.querySelector('[data-task="overall"]').classList.contains('done'));

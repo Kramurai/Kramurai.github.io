@@ -84,14 +84,15 @@
     return archive;
   }
 
-  async function parse(archive, helper, template, types) {
+  async function parse(archive, helper, template, types, migrateState) {
     if (!text(archive, MAX_ARCHIVE) || new Blob([archive]).size > MAX_ARCHIVE) fail("Die Sicherungsdatei ist größer als 72 MB.");
     let data;
     try { data = JSON.parse(archive); } catch (_) { fail("Die Datei ist keine lesbare Vorgangssicherung."); }
     if (!object(data) || data.format !== FORMAT || data.version !== 1) fail("Dieses Sicherungsformat wird nicht unterstützt.");
     if (data.helper !== helper) fail("Diese Sicherung gehört zu einem anderen Helfer. Bitte dort importieren.");
     if (!date(data.exportedAt) || !Array.isArray(data.files) || data.files.length > types.length) fail("Die Sicherung ist unvollständig oder beschädigt.");
-    const state = copyState(data.state, template);
+    // Helper-specific migrations run before the same strict schema validation.
+    const state = copyState(migrateState ? migrateState(data.state) : data.state, template);
     const files = [], seen = new Set();
     let total = 0;
     for (const file of data.files) {
@@ -204,7 +205,7 @@
       run(async () => {
         status.textContent = "Sicherung wird geprüft …";
         if (file.size > MAX_ARCHIVE) fail("Die Sicherungsdatei ist größer als 72 MB.");
-        const parsed = await parse(await file.text(), options.helper, options.defaultState(), options.types);
+        const parsed = await parse(await file.text(), options.helper, options.defaultState(), options.types, options.migrateState);
         const state = await persist(parsed, await options.openDb(), options.storeName, localStorage, options.prefix);
         // From here the saved case can be recovered by the existing case scanner, even if rendering fails.
         try {
