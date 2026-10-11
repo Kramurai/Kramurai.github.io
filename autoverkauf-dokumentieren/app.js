@@ -739,9 +739,11 @@
     title.textContent = hints.length ? "Vor dem PDF noch kurz prüfen" : "PDF bereit";
     missingCheck.appendChild(title);
     const intro = document.createElement("p");
-    intro.textContent = hints.length
-      ? "Diese Angaben können die Dokumentation ergänzen. Unzutreffende oder noch unbekannte Punkte darfst du überspringen – das PDF bleibt speicherbar."
-      : "Keine zusätzlichen Hinweise zu den wichtigsten Angaben. Bitte prüfe die Zusammenfassung trotzdem.";
+    intro.textContent = important.length
+      ? "Einige Angaben brauchen noch eine Prüfung. Kläre die hervorgehobenen Hinweise, bevor du die PDF weitergibst. Fehlende Angaben kannst du später ergänzen – das PDF bleibt speicherbar."
+      : hints.length
+        ? "Diese Angaben können die Dokumentation ergänzen. Unzutreffende oder noch unbekannte Punkte darfst du überspringen – das PDF bleibt speicherbar."
+        : "Keine zusätzlichen Hinweise zu den wichtigsten Angaben. Bitte prüfe die Zusammenfassung trotzdem.";
     missingCheck.appendChild(intro);
     if (!hints.length) {
       intro.classList.add("missing-ok");
@@ -750,12 +752,14 @@
     const list = document.createElement("ul");
     for (const hint of hints) {
       const li = document.createElement("li");
-      const label = document.createElement("span");
+      const label = document.createElement(hint.important ? "strong" : "span");
       label.textContent = hint.message + " ";
       const button = document.createElement("button");
       button.type = "button";
       button.className = "btn btn-secondary";
+      const stepHeading = document.querySelector("#step-" + hint.step + " > h2");
       button.textContent = "Schritt " + hint.step + " öffnen";
+      button.setAttribute("aria-label", button.textContent + ": " + stepHeading.textContent.replace(/^\d+\.\s*/, ""));
       button.style.minHeight = "36px";
       button.style.padding = "4px 9px";
       button.style.margin = "4px 0";
