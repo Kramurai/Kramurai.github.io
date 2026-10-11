@@ -17,6 +17,11 @@
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/register-theme.css?v=20261010-claim-v1">
   <style id="kramurai-raven-home">
+  .tool-grid.car-sale-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .car-sale-grid .product-card:nth-child(4) .card-icon::before{content:"04";font-size:1.1rem}
+  @media(min-width:901px){.quick-links{grid-template-columns:repeat(5,minmax(0,1fr))}}
+  @media(max-width:900px){.quick-links a:last-child{grid-column:1/-1}}
+  @media(max-width:600px){.tool-grid.car-sale-grid{grid-template-columns:1fr}}
   .brand-logo-frame{width:54px;height:54px;flex:none;display:grid;place-items:center;overflow:hidden;border-radius:11px;background:#f6f8f3}
   .brand-logo{display:block;width:64px;height:auto;max-width:none;flex:none;transform:translate(-6px,-2px)}
   .brand-copy{padding-left:0}
@@ -116,11 +121,12 @@
           <a href="#retoure"><span aria-hidden="true">📦</span><span>Retoure</span><span class="quick-arrow" aria-hidden="true">↓</span></a>
           <a href="#router"><span aria-hidden="true">📡</span><span>Router / Mietgerät</span><span class="quick-arrow" aria-hidden="true">↓</span></a>
           <a href="#trade-in"><span aria-hidden="true">📱</span><span>Handyverkauf</span><span class="quick-arrow" aria-hidden="true">↓</span></a>
+          <a href="#autoverkauf"><span aria-hidden="true">🚗</span><span>Autoverkauf</span><span class="quick-arrow" aria-hidden="true">↓</span></a>
           <a href="#batterie"><span aria-hidden="true">🔋</span><span>Starterbatterie</span><span class="quick-arrow" aria-hidden="true">↓</span></a>
         </div>
       </nav>
 
-      <div class="tool-grid">
+      <div class="tool-grid car-sale-grid">
         <a id="retoure" class="product-card featured" href="/retoure-dokumentieren/">
           <div class="card-top">
             <span class="card-icon">📦</span>
@@ -150,6 +156,13 @@
           </div>
           <h3>Handyverkauf dokumentieren</h3>
           <p>Handy oder Elektronik an ein Ankaufportal verkaufen: Zustand, Angebot, Fotos und Versand festhalten.</p>
+          <div class="card-meta">Lokale Speicherung · PDF-Ausgabe</div>
+          <span class="card-link">Helfer starten →</span>
+        </a>
+        <a id="autoverkauf" class="product-card" href="/autoverkauf-dokumentieren/">
+          <div class="card-top"><span class="card-icon">🚗</span><span class="status-badge">Neu</span></div>
+          <h3>Autoverkauf dokumentieren</h3>
+          <p>Fahrzeugzustand, Mängel, Zubehör, Fotos, Zahlung und Übergabe ergänzend zum Kaufvertrag festhalten.</p>
           <div class="card-meta">Lokale Speicherung · PDF-Ausgabe</div>
           <span class="card-link">Helfer starten →</span>
         </a>

@@ -1,7 +1,7 @@
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert=require('node:assert/strict'),fs=require('fs'),http=require('http'),path=require('path'),os=require('os');
 const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir(),'kramurai-access-'));
-const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trade-in-dokumentieren/','/entsorgungsnachweis-starterbatterie/','/impressum/','/datenschutz/'];
+const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trade-in-dokumentieren/','/autoverkauf-dokumentieren/','/entsorgungsnachweis-starterbatterie/','/impressum/','/datenschutz/'];
 const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,'http://localhost').pathname);if(fs.existsSync(f)&&fs.statSync(f).isDirectory())f=path.join(f,'index.html');if(!fs.existsSync(f)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'})[path.extname(f)]||'application/octet-stream');fs.createReadStream(f).pipe(res);});
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin='http://127.0.0.1:'+server.address().port;const results=[];
@@ -18,7 +18,7 @@ const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,
   }catch(e){results.push({route,status:'failed',scenario:'labels-and-metadata',error:e.stack});}
   finally{await p.close();}
  }
- for(const width of [320,1280])for(const route of routes.slice(1,4)){
+ for(const width of [320,1280])for(const route of routes.slice(1,5)){
   const context=await b.newContext({viewport:{width,height:900},reducedMotion:'reduce'});const p=await context.newPage();p.setDefaultTimeout(10000);
   try{
    await p.goto(origin+route);await p.locator('#itemName').fill('Tastaturprüfung');

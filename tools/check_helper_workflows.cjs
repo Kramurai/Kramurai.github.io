@@ -1,7 +1,7 @@
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert=require('node:assert/strict'),fs=require('fs'),http=require('http'),path=require('path');
 const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(require('os').tmpdir(),'kramurai-workflows-'));
-const helpers=[['retoure-dokumentieren','kramurai-return-v1','retoure',6],['router-zurueckgeben','kramurai-router-return-v1','router',6],['handy-trade-in-dokumentieren','kramurai-tradein-v1','tradein',7]];
+const helpers=[['retoure-dokumentieren','kramurai-return-v1','retoure',6],['router-zurueckgeben','kramurai-router-return-v1','router',6],['handy-trade-in-dokumentieren','kramurai-tradein-v1','tradein',7],['autoverkauf-dokumentieren','kramurai-car-sale-v1','car-sale',6]];
 const reports=[];
 const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,'http://local').pathname);if(fs.existsSync(f)&&fs.statSync(f).isDirectory())f=path.join(f,'index.html');if(!fs.existsSync(f)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',({'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.pdf':'application/pdf'})[path.extname(f)]||'application/octet-stream');fs.createReadStream(f).pipe(res);});
 (async()=>{
@@ -22,7 +22,7 @@ const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,
    const toggle=page.locator('.case-manager summary');await toggle.focus();await page.keyboard.press('Enter');assert(await page.locator('.case-manager').evaluate(e=>e.open));assert(await page.locator('.case-manager-close-label').isVisible());
    await page.keyboard.press('Enter');assert(!(await page.locator('.case-manager').evaluate(e=>e.open)));
    await page.locator('#nextBtn').click();assert.equal((await read()).currentStep,1);assert.equal(await page.locator('#itemName').evaluate(e=>e===document.activeElement),true);
-   await page.locator('#itemName').fill('Test '+helper+' – ÄÖÜ');await page.locator('#sender').fill('Testperson, Musterstraße 1');
+   await page.locator('#itemName').fill('Test '+helper+' – ÄÖÜ');await page.locator(helper==='car-sale'?'#seller':'#sender').fill('Testperson, Musterstraße 1');
    const original=await read();
    await page.locator('#nextBtn').click();await page.locator('label[for="c2"]').click();await page.locator('#conditionNote').fill('Testnotiz\nZweite Zeile');
    await page.locator('#nextBtn').click();await page.locator('[data-check]').first().check();

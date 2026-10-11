@@ -13,6 +13,7 @@ Kostenlose Formulare und praktische Helfer für Alltagssituationen, direkt im Br
 | Retoure dokumentieren | [retoure-dokumentieren](retoure-dokumentieren/index.html) |
 | Router / Mietgerät zurückgeben | [router-zurueckgeben](router-zurueckgeben/index.html) |
 | Handy / Elektronik an Ankaufportal schicken | [handy-trade-in-dokumentieren](handy-trade-in-dokumentieren/index.html) |
+| Autoverkauf dokumentieren | [autoverkauf-dokumentieren](autoverkauf-dokumentieren/index.html) |
 | Entsorgungsnachweis für Starterbatterien | [entsorgungsnachweis-starterbatterie](entsorgungsnachweis-starterbatterie/index.html) |
 
 ## Lokal ansehen
@@ -27,17 +28,17 @@ Anschließend `http://127.0.0.1:8000/` öffnen. Es ist kein Build-Schritt erford
 
 ## Vorgänge, Fotos und Sicherungen
 
-Die drei interaktiven Helfer speichern Angaben im Local Storage und Fotos sowie Belege in IndexedDB. Die Vorgänge gehören zum jeweiligen Browser auf dem jeweiligen Gerät. Sie werden nicht automatisch an Kramurai übertragen. Browserdaten löschen kann auch diese Vorgänge und Dateien löschen.
+Die interaktiven Helfer speichern Angaben im Local Storage und Fotos sowie Belege in IndexedDB. Die Vorgänge gehören zum jeweiligen Browser auf dem jeweiligen Gerät. Sie werden nicht automatisch an Kramurai übertragen. Browserdaten löschen kann auch diese Vorgänge und Dateien löschen.
 
 „Vorgang sichern“ erstellt eine JSON-Datei mit Angaben und gespeicherten Dateien. „Sicherung öffnen“ legt daraus einen zusätzlichen Vorgang an; vorhandene Vorgänge bleiben erhalten. Die Sicherungsdatei ist unverschlüsselt. Sie sollte entsprechend ihrem Inhalt aufbewahrt werden.
 
-„PDF speichern“ öffnet den Druckdialog für die lesbare Dokumentation. Eine hochgeladene PDF als Einlieferungsbeleg muss separat gespeichert und beigefügt werden, wie im Helfer beschrieben. Für die spätere Weiterbearbeitung auf einem anderen Gerät die Vorgangssicherung verwenden. Fertige PDFs und Sicherungen außerhalb des Browsers aufbewahren.
+„PDF speichern“ öffnet den Druckdialog für die lesbare Dokumentation. Eine hochgeladene PDF als Beleg muss separat gespeichert und beigefügt werden, wie im Helfer beschrieben. Für die spätere Weiterbearbeitung auf einem anderen Gerät die Vorgangssicherung verwenden. Fertige PDFs und Sicherungen außerhalb des Browsers aufbewahren.
 
 ## Logo und Schriftzug
 
 Die eingebundenen Markenassets, ihre Einsatzregeln und die freigegebene Palette stehen in [assets/brand/README.md](assets/brand/README.md). Die SVGs enthalten ausgeformte Buchstaben; die zugehörigen Vektor-PDFs benötigen keine installierte Schrift. Das separate Markenpaket enthält weitere Einsatzvarianten und transparente PNGs.
 
-## Geprüfter Stand
+## Geprüfter Basisstand
 
 Stand der Anwendung: [f8f8009](https://github.com/Kramurai/Kramurai.github.io/commit/f8f80090b7f628b45978199b3cca3a469fcef245), dokumentiert am 11. Oktober 2026.
 
@@ -48,6 +49,12 @@ Stand der Anwendung: [f8f8009](https://github.com/Kramurai/Kramurai.github.io/co
 
 Diese Angaben beschreiben die durchgeführten digitalen Prüfungen. Die Skripte prüfen den Aufruf des Druckdialogs, nicht einen Betriebssystem-Druckdialog oder alle Anforderungen an Barrierefreiheit.
 
+## Autoverkauf-Erweiterung (11. Oktober 2026)
+
+Der vierte Helfer dokumentiert Fahrzeug und Beteiligte, bekannte Mängel und Reparaturen, Zubehör, Unterlagen, Fotos, Zahlung und Übergabe. Er ist eine ergänzende Dokumentation, kein Kaufvertrag und keine unabhängig bestätigte Zahlungsquittung. Die externe ADAC-Seite wird verlinkt; die ADAC-Vorlage wird nicht übernommen oder eingebettet.
+
+Die gemeinsamen Ablauftests erfassen nun vier Helfer mit insgesamt 88 Einzelprüfungen. Die ergänzende Beschriftungs- und Tastaturprüfung umfasst 16 Szenarien, 54 Foto-Beschriftungen und 42 Vorwärtsschritte. `check_car_sale.cjs` prüft außerdem die Verkaufsangaben, widersprüchliche Zahlungs- und Übergabestände, das Entfernen einzelner Dateien und separate PDF-Belege. Die synthetischen Muster-PDFs wurden auf Seitenumbrüche und Lesbarkeit geprüft.
+
 ## Prüfungen wiederholen
 
 Voraussetzung: Node.js, Playwright und Chromium. Einzelheiten und die Optionen für separat installierte Laufzeiten stehen in [tools/README.md](tools/README.md).
@@ -55,6 +62,7 @@ Voraussetzung: Node.js, Playwright und Chromium. Einzelheiten und die Optionen f
 ```bash
 node tools/check_helper_workflows.cjs
 node tools/check_page_accessibility.cjs
+node tools/check_car_sale.cjs
 ```
 
 Die Prüfungen verwenden isolierte Browserdaten und schreiben ihre Ergebnisse in einen neuen temporären Ordner.
