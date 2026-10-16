@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Retoure dokumentieren – Kramurai</title>
-  <meta name="description" content="Zustand, Inhalt, Verpackung und Versand einer Retoure strukturiert dokumentieren.">
+  <meta name="description" content="Fotos und Versanddaten deiner Retoure als PDF zusammenführen. Kostenlos, ohne Anmeldung; deine Daten bleiben lokal in deinem Browser.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://kramurai.github.io/retoure-dokumentieren/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Kramurai">
   <meta property="og:locale" content="de_DE">
   <meta property="og:title" content="Retoure dokumentieren – Kramurai">
-  <meta property="og:description" content="Zustand, Inhalt, Verpackung und Versand einer Retoure strukturiert dokumentieren.">
+  <meta property="og:description" content="Fotos und Versanddaten deiner Retoure als PDF zusammenführen. Kostenlos, ohne Anmeldung; deine Daten bleiben lokal in deinem Browser.">
   <meta property="og:url" content="https://kramurai.github.io/retoure-dokumentieren/">
   <link rel="stylesheet" href="/styles.css">
   <style>
@@ -428,7 +428,22 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261010-brand-v4" sizes="180x180">
   <meta name="application-name" content="Kramurai">
   <meta name="apple-mobile-web-app-title" content="Kramurai">
-</head>
+<style>
+.result-intro{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(260px,.9fr);gap:28px;align-items:center;margin-bottom:22px}
+.helper-page .wizard-head .result-intro h1{font-size:clamp(1.9rem,4vw,2.65rem);line-height:1.12;margin:10px 0 14px}
+.helper-page .wizard-head .result-promise{font-weight:800;font-size:clamp(1.2rem,2.3vw,1.5rem);line-height:1.3;color:#245D55;margin:0 0 13px}
+.result-intro .lead{font-size:1rem;line-height:1.55;margin:0 0 12px;max-width:56ch}
+.result-local,.result-effort{font-size:.87rem;line-height:1.5;color:#3b574d}
+.result-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:20px}
+.result-actions .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;line-height:1.25;padding:13px 17px}
+.result-example-link{font-size:.9rem;font-weight:700;color:#245d55;text-underline-offset:3px}
+.result-effort{margin-top:11px}.result-intro-example{margin:0;min-width:0;width:100%}.result-intro-example img{display:block;width:100%;height:auto;box-shadow:0 12px 24px #163b3414;border-radius:12px}
+.result-intro-example figcaption{font-size:.7rem;color:#4a6258;line-height:1.4;margin-top:8px}
+
+html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
+@media(max-width:720px){.result-intro{grid-template-columns:1fr;gap:18px}.result-intro-example{max-width:340px;justify-self:center}.helper-page .wizard-head .result-intro h1{font-size:1.9rem}.result-actions{gap:12px}.result-actions .btn{width:100%}.result-local,.result-effort{font-size:.83rem}.result-intro .lead{font-size:.95rem}}
+@media print{.preview-banner{display:none}}
+</style></head>
 <body class="helper-page">
 <header class="site-header helper-site-header">
     <div class="wrap header-inner">
@@ -445,9 +460,13 @@
 
   <main class="wrap wizard">
     <div class="wizard-head">
-      <div class="eyebrow">Lokal im Browser · Daten bleiben auf deinem Gerät</div>
-      <h1>Retoure dokumentieren</h1>
-      <p class="lead">Halte Gegenstand, Zustand, Zubehör, Fotos, Verpackung und Versand strukturiert fest.</p>
+      <div class="result-intro"><div class="result-intro-copy"><div class="eyebrow">KOSTENLOS · OHNE ANMELDUNG</div>
+<h1>Retoure dokumentieren</h1><p class="result-promise">Deine Fotos und Versanddaten als PDF.</p>
+<p class="lead">Halte fest, was du zurückschickst und wie du es verpackt hast. Ergänze Fotos und Versanddaten und speichere deine eigene Dokumentation als PDF.</p>
+<p class="result-local">Deine Angaben und Fotos bleiben lokal in deinem Browser.</p>
+<div class="result-actions"><a class="btn btn-primary" href="#step-1">Jetzt Retoure dokumentieren</a><a class="result-example-link" href="retoure-beispiel.pdf" download="Kramurai_Retoure_Beispiel.pdf">PDF-Beispiel ansehen</a></div>
+<p class="result-effort">Zum Start reicht die Bezeichnung. Weitere Angaben sind optional.</p></div>
+<figure class="result-intro-example"><img src="retoure-ergebnis.png" alt="Vergrößerte PDF-Beispielausschnitte: Foto, Zustand und Sendungsnummer"><figcaption>Ausgefülltes Muster mit Beispieldaten und illustrativem Foto</figcaption></figure></div>
       <details class="case-manager screen-only">
         <summary>
           <span class="case-manager-toggle-title">Meine Vorgänge <span id="caseCount"></span></span>
