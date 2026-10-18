@@ -1,5 +1,11 @@
 # Technische Prüfung der Helfer
 
+## Linkvorschauen erzeugen
+
+`python3 tools/build_link_previews.py` erzeugt die sechs JPEG-Linkvorschauen unter `assets/social/` aus den vorhandenen Marken-, Formular- und Beispielbildern. Benötigt Inkscape und Pillow. Die Bilder haben 1200 × 630 Pixel; jede Seite verweist mit Open-Graph- und Twitter-Card-Angaben auf ihr Motiv. Nach visueller Prüfung und vor einer Änderung der Dateinamen die Bildadressen in den sechs zugehörigen HTML-Seiten mit anpassen.
+
+## Helferabläufe prüfen
+
 `check_helper_workflows.cjs` prüft Retoure, Router-Rückgabe, Handyverkauf und Autoverkauf in einem isolierten Chromium-Browser: Pflichtfeld, Tastaturbedienung, lokale Speicherung, Fotos, Zusammenfassung, beide Druckknöpfe, Vorgangswechsel, gezieltes Löschen sowie Sicherung und Wiederherstellung. Zusätzlich prüft es langsame und fehlerhafte Fotoverarbeitung. Es verändert keine vorhandenen Browserdaten und sendet keine Daten an die öffentliche Website.
 
 Voraussetzung: Node.js, Playwright und Chromium. Vom Repository aus starten:
