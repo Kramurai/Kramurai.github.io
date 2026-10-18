@@ -403,7 +403,8 @@ p{margin:0}
   background:var(--blue-soft);
   font-size:1.9rem
 }
-.classic-card h3{margin-top:7px}
+.classic-card>div{min-width:0}
+.classic-card h3{margin-top:7px;overflow-wrap:anywhere}
 .classic-card p{color:var(--muted);margin-top:7px}
 .classic-arrow{font-size:1.8rem;color:var(--blue);font-weight:700}
 
