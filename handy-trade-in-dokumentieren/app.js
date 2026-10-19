@@ -151,6 +151,7 @@
     caseSelect.value = state.caseId;
     caseCount.textContent = "(" + entries.length + ")";
     const busy = fileBusyCount > 0;
+    document.querySelectorAll("[data-photo], [data-attachment], [data-remove-file]").forEach(control => { control.disabled = busy; });
     // Die Zusammenfassung darf erst nach dem Speichern aller Fotos entstehen.
     nextBtn.disabled = busy;
     caseSelect.disabled = busy;
@@ -442,6 +443,7 @@
     const task = document.querySelector('[data-task="' + type + '"]');
     if (!task || !record) return;
     task.classList.add("done");
+    task.querySelector("[data-remove-file]").hidden = false;
     const status = task.querySelector(".photo-status");
     status.textContent = record.mime === "application/pdf" ? "PDF gespeichert ✓" : "Foto gespeichert ✓";
     const img = document.querySelector('[data-preview="' + type + '"]');
@@ -466,6 +468,7 @@
           const task = document.querySelector('[data-task="' + type + '"]');
           if (!task) continue;
           task.classList.remove("done");
+          task.querySelector("[data-remove-file]").hidden = true;
           const status = task.querySelector(".photo-status");
           if (status) status.textContent = type === "receipt" ? "noch keine Datei" : "noch kein Foto";
           const img = task.querySelector("[data-preview]");
@@ -528,6 +531,36 @@
         endFileWork();
       }
     });
+  });
+
+  form.addEventListener("click", async event => {
+    const button = event.target.closest("[data-remove-file]");
+    if (!button || fileBusyCount) return;
+    const type = button.dataset.removeFile;
+    if (!Object.prototype.hasOwnProperty.call(photoLabels, type)) return;
+    if (!confirm("Diese Datei aus diesem Vorgang entfernen? Andere Fotos und Vorgänge bleiben erhalten.")) return;
+    const caseId = state.caseId;
+    beginFileWork();
+    try {
+      const db = await openDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        tx.objectStore(STORE_NAME).delete(caseId + ":" + type);
+        tx.oncomplete = resolve;
+        tx.onabort = () => reject(tx.error || new Error("Entfernen fehlgeschlagen"));
+        tx.onerror = () => {};
+      });
+      await restorePreviews();
+      saveState();
+      const status = button.closest("[data-task]").querySelector(".photo-status");
+      status.textContent = type === "receipt" ? "Beleg entfernt" : "Foto entfernt";
+    } catch (_) {
+      alert("Die Datei konnte nicht entfernt werden. Bitte erneut versuchen.");
+    } finally {
+      endFileWork();
+      const input = document.querySelector('[data-task="' + type + '"] input[type="file"]');
+      if (input) input.focus();
+    }
   });
 
   const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[ch]));
