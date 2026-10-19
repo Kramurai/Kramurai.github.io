@@ -65,6 +65,8 @@
     .file-label input{display:none}
     .preview{display:none;max-width:220px;max-height:180px;border-radius:10px;margin-top:12px;border:1px solid var(--line)}
     .preview.show{display:block}
+    .file-remove{margin-top:10px}
+    .file-remove[hidden]{display:none}
     .wizard-nav{display:flex;justify-content:space-between;gap:12px;margin-top:18px}
     .final-actions{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:10px;margin:0 0 18px}
     .final-actions .btn{width:100%}
@@ -584,52 +586,58 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
         <p class="intro">Die Fotos werden auf deinem Gerät verkleinert und lokal gespeichert. Sie werden nicht an Kramurai übertragen.</p>
         <div class="photo-list">
           <div class="photo-task" data-task="overall">
-            <div class="photo-top"><div><div class="photo-title">1. Gesamtansicht des Artikels</div><div class="hint">Gut erkennbar, bevor du ihn verpackst.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-top"><div><div class="photo-title">1. Gesamtansicht des Artikels</div><div class="hint">Gut erkennbar, bevor du ihn verpackst.</div></div><span class="photo-status" role="status">noch kein Foto</span></div>
             <div class="photo-actions">
               <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="overall" aria-label="Fotografieren: Gesamtansicht des Artikels"></label>
               <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="overall" aria-label="Aus Galerie wählen: Gesamtansicht des Artikels"></label>
             </div>
             <img class="preview" data-preview="overall" alt="Vorschau Gesamtansicht">
+            <button type="button" class="btn btn-danger file-remove" data-remove-file="overall" aria-label="Foto entfernen: Gesamtansicht" hidden>Foto entfernen</button>
           </div>
           <div class="photo-task" data-task="serial">
-            <div class="photo-top"><div><div class="photo-title">2. Seriennummer / Typenschild</div><div class="hint">Falls vorhanden und lesbar.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-top"><div><div class="photo-title">2. Seriennummer / Typenschild</div><div class="hint">Falls vorhanden und lesbar.</div></div><span class="photo-status" role="status">noch kein Foto</span></div>
             <div class="photo-actions">
               <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="serial" aria-label="Fotografieren: Seriennummer / Typenschild"></label>
               <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="serial" aria-label="Aus Galerie wählen: Seriennummer / Typenschild"></label>
             </div>
             <img class="preview" data-preview="serial" alt="Vorschau Seriennummer">
+            <button type="button" class="btn btn-danger file-remove" data-remove-file="serial" aria-label="Foto entfernen: Seriennummer" hidden>Foto entfernen</button>
           </div>
           <div class="photo-task" data-task="accessories">
-            <div class="photo-top"><div><div class="photo-title">3. Artikel mit komplettem Zubehör</div><div class="hint">Alles, was mitgesendet wird, zusammen fotografieren.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-top"><div><div class="photo-title">3. Artikel mit komplettem Zubehör</div><div class="hint">Alles, was mitgesendet wird, zusammen fotografieren.</div></div><span class="photo-status" role="status">noch kein Foto</span></div>
             <div class="photo-actions">
               <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="accessories" aria-label="Fotografieren: Artikel mit komplettem Zubehör"></label>
               <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="accessories" aria-label="Aus Galerie wählen: Artikel mit komplettem Zubehör"></label>
             </div>
             <img class="preview" data-preview="accessories" alt="Vorschau Zubehör">
+            <button type="button" class="btn btn-danger file-remove" data-remove-file="accessories" aria-label="Foto entfernen: Zubehör" hidden>Foto entfernen</button>
           </div>
           <div class="photo-task" data-task="openPackage">
-            <div class="photo-top"><div><div class="photo-title">4. Inhalt im offenen Paket</div><div class="hint">Vor dem endgültigen Verschließen.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-top"><div><div class="photo-title">4. Inhalt im offenen Paket</div><div class="hint">Vor dem endgültigen Verschließen.</div></div><span class="photo-status" role="status">noch kein Foto</span></div>
             <div class="photo-actions">
               <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="openPackage" aria-label="Fotografieren: Inhalt im offenen Paket"></label>
               <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="openPackage" aria-label="Aus Galerie wählen: Inhalt im offenen Paket"></label>
             </div>
             <img class="preview" data-preview="openPackage" alt="Vorschau offenes Paket">
+            <button type="button" class="btn btn-danger file-remove" data-remove-file="openPackage" aria-label="Foto entfernen: offenes Paket" hidden>Foto entfernen</button>
           </div>
           <div class="photo-task" data-task="protected">
-            <div class="photo-top"><div><div class="photo-title">5. Verpackung / Polsterung</div><div class="hint">Zeigt, wie der Artikel geschützt wurde.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-top"><div><div class="photo-title">5. Verpackung / Polsterung</div><div class="hint">Zeigt, wie der Artikel geschützt wurde.</div></div><span class="photo-status" role="status">noch kein Foto</span></div>
             <div class="photo-actions">
               <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="protected" aria-label="Fotografieren: Verpackung / Polsterung"></label>
               <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="protected" aria-label="Aus Galerie wählen: Verpackung / Polsterung"></label>
             </div>
             <img class="preview" data-preview="protected" alt="Vorschau Verpackung">
+            <button type="button" class="btn btn-danger file-remove" data-remove-file="protected" aria-label="Foto entfernen: Verpackung" hidden>Foto entfernen</button>
           </div>
           <div class="photo-task" data-task="closedPackage">
-            <div class="photo-top"><div><div class="photo-title">6. Geschlossenes Paket</div><div class="hint">Optional mit Versandetikett, sofern sensible Daten für dich in Ordnung sind.</div></div><span class="photo-status">noch kein Foto</span></div>
+            <div class="photo-top"><div><div class="photo-title">6. Geschlossenes Paket</div><div class="hint">Optional mit Versandetikett, sofern sensible Daten für dich in Ordnung sind.</div></div><span class="photo-status" role="status">noch kein Foto</span></div>
             <div class="photo-actions">
               <label class="file-label">📷 Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="closedPackage" aria-label="Fotografieren: Geschlossenes Paket"></label>
               <label class="file-label file-gallery">▧ Galerie wählen<input type="file" accept="image/*" data-photo="closedPackage" aria-label="Aus Galerie wählen: Geschlossenes Paket"></label>
             </div>
             <img class="preview" data-preview="closedPackage" alt="Vorschau geschlossenes Paket">
+            <button type="button" class="btn btn-danger file-remove" data-remove-file="closedPackage" aria-label="Foto entfernen: geschlossenes Paket" hidden>Foto entfernen</button>
           </div>
         </div>
       </section>
@@ -659,9 +667,10 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
           </div>
         </div>
         <div class="photo-task" data-task="receipt">
-          <div class="photo-top"><div><div class="photo-title">Einlieferungsbeleg</div><div class="hint">Optional: Ein Foto wird in die Dokumentation eingefügt. Eine hochgeladene PDF-Datei muss separat mitgespeichert und beigefügt werden.</div></div><span class="photo-status">noch keine Datei</span></div>
+          <div class="photo-top"><div><div class="photo-title">Einlieferungsbeleg</div><div class="hint">Optional: Ein Foto wird in die Dokumentation eingefügt. Eine hochgeladene PDF-Datei muss separat mitgespeichert und beigefügt werden.</div></div><span class="photo-status" role="status">noch keine Datei</span></div>
           <label class="file-label">Beleg auswählen<input type="file" accept="image/*,application/pdf" data-attachment="receipt"></label>
           <img class="preview" data-preview="receipt" alt="Vorschau Einlieferungsbeleg">
+          <button type="button" class="btn btn-danger file-remove" data-remove-file="receipt" aria-label="Beleg entfernen: Einlieferungsbeleg" hidden>Beleg entfernen</button>
         </div>
       </section>
 
@@ -725,6 +734,6 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
   </main>
 
   <script src="/assets/case-backup.js"></script>
-  <script src="/retoure-dokumentieren/app.js?v=20261010-access-v1"></script>
+  <script src="/retoure-dokumentieren/app.js?v=20261019-remove-files-v1"></script>
 </body>
 </html>

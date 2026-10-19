@@ -9,6 +9,7 @@ const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE || undefined,args:['--no-sandbox','--disable-dev-shm-usage','--disable-gpu']});
  try{
  const context=await browser.newContext({viewport:{width:390,height:850},acceptDownloads:true,reducedMotion:'reduce'});
+ await context.addInitScript(()=>localStorage.setItem('kramurai-statistics-v1',JSON.stringify({version:1,choice:'deny',updatedAt:Date.now()})));
  const fixturePage=await context.newPage();
  const fixture=await fixturePage.evaluate(()=>{const c=document.createElement('canvas');c.width=800;c.height=600;const g=c.getContext('2d');g.fillStyle='#e0ebe5';g.fillRect(0,0,800,600);g.fillStyle='#18554d';g.fillText('Technisches Testfoto',100,100);return c.toDataURL('image/png').split(',')[1]});
  fs.writeFileSync(path.join(out,'sample.png'),Buffer.from(fixture,'base64'));await fixturePage.close();
@@ -53,7 +54,7 @@ const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,
  }
  await context.close();
  for(const [route,key,helper,total] of helpers){
-  const slowContext=await browser.newContext({viewport:{width:390,height:850},reducedMotion:'reduce'});const page=await slowContext.newPage();page.setDefaultTimeout(10000);
+  const slowContext=await browser.newContext({viewport:{width:390,height:850},reducedMotion:'reduce'});await slowContext.addInitScript(()=>localStorage.setItem('kramurai-statistics-v1',JSON.stringify({version:1,choice:'deny',updatedAt:Date.now()})));const page=await slowContext.newPage();page.setDefaultTimeout(10000);
   try{
    await page.addInitScript(()=>{const native=FileReader.prototype.readAsDataURL;FileReader.prototype.readAsDataURL=function(...args){setTimeout(()=>native.apply(this,args),1500)}});
    await page.goto(origin+'/'+route+'/');await page.locator('#itemName').fill('Foto wird noch gespeichert');for(let i=0;i<3;i++)await page.locator('#nextBtn').click();
