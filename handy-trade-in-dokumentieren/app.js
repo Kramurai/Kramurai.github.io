@@ -215,13 +215,17 @@
       renderCaseList();
       return;
     }
-    resetCaseImages();
-    state = saved;
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(state.currentStep || 1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      resetCaseImages();
+      state = saved;
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(state.currentStep || 1);
+    } finally { endFileWork(); }
   }
 
   async function createNewCase() {
@@ -229,14 +233,18 @@
       alert("Bitte warten, bis das Foto gespeichert wurde.");
       return;
     }
-    saveState(false);
-    resetCaseImages();
-    state = defaultState();
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      saveState(false);
+      resetCaseImages();
+      state = defaultState();
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(1);
+    } finally { endFileWork(); }
   }
 
   function beginFileWork() {
@@ -584,7 +592,7 @@
   });
 
   const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[ch]));
-  const display = value => value && String(value).trim() ? esc(value) : "–";
+  const display = value => value && String(value).trim() ? esc(value) : "Nicht dokumentiert";
 
   function accessoryList() {
     const items = [];
@@ -596,8 +604,9 @@
     return items;
   }
 
-  function row(key, value) {
+  function row(key, value, required = false) {
     const text = String(value ?? "");
+    if (!text.trim() && !required) return "";
     const isLong = text.length > 420 || text.split("\n").length > 8;
     return '<div class="summary-row' + (isLong ? ' summary-row-long' : '') +
       '"><div class="summary-key">' + esc(key).replaceAll('/', '/<wbr>') + '</div><div>' + display(value) + '</div></div>';
@@ -700,7 +709,7 @@
     if (updated) updated.textContent = new Date(state.updatedAt).toLocaleString("de-DE");
     const accessories = accessoryList();
     let html = '<div class="summary-card"><h3>Gegenstand</h3>' +
-      row("Bezeichnung", state.item.name) +
+      row("Bezeichnung", state.item.name, true) +
       row("Hersteller", state.item.manufacturer) +
       row("Modell", state.item.model) +
       row("Seriennummer / Kennung", state.item.serial) +
@@ -711,15 +720,15 @@
       '</div>';
 
     html += '<div class="summary-card"><h3>Zustand, Angebot und Zubehör</h3>' +
-      row("Zustand", state.condition.rating) +
+      row("Zustand", state.condition.rating, true) +
       row("Beschreibung", state.condition.note) +
       row("Ursprüngliches Angebot", euro(state.offer.originalAmount)) +
       row("Angegebene Zustandsklasse", state.offer.originalClass) +
-      row("Mitgesendet", accessories.length ? accessories.join(", ") : "") +
+      row("Mitgesendet", accessories.length ? accessories.join(", ") : "", true) +
       row("Account-/Daten-Check", privacyList().length ? privacyList().join(", ") : "") +
       '</div>';
 
-    html += '<div class="summary-card"><h3>Versand</h3>' +
+    html += '<div class="summary-card"><h3>Versandangaben</h3>' +
       row("Paketdienst", state.shipment.carrier) +
       row("Sendungsnummer", state.shipment.tracking) +
       row("Versanddatum", formatDate(state.shipment.date)) +
@@ -736,7 +745,12 @@
         '</div>';
     }
 
+    if (!state.offer.revisedAmount && !state.offer.revisedDate && !state.offer.revisedReason) {
+      html += '<div class="summary-card"><h3>Rückmeldung nach der Prüfung</h3><p class="quality-status quality-open">Noch kein neues Angebot oder Prüfergebnis des Ankaufportals dokumentiert.</p></div>';
+    }
+
     html += '<div class="summary-card photo-summary-card"><h3>Fotodokumentation und Belege</h3><div class="summary-photos" id="summaryPhotos"></div></div>';
+    if (state.shipment.date && state.offer.revisedDate && state.offer.revisedDate < state.shipment.date) html += '<div class="summary-card"><h3>Prüfhinweis</h3><p class="quality-status quality-problem">Das neue Angebot nach Prüfung ist vor dem Versand datiert. Bitte die Datumsangaben prüfen.</p></div>';
     summary.innerHTML = html;
     summary.querySelectorAll(".summary-card").forEach(card => {
       if (card.querySelector(".summary-row-long")) {

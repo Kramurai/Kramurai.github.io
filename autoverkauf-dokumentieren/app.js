@@ -249,13 +249,17 @@
       renderCaseList();
       return;
     }
-    resetCaseImages();
-    state = migrateState(saved);
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(state.currentStep || 1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      resetCaseImages();
+      state = migrateState(saved);
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(state.currentStep || 1);
+    } finally { endFileWork(); }
   }
 
   async function createNewCase() {
@@ -263,14 +267,18 @@
       alert("Bitte warten, bis das Foto gespeichert wurde.");
       return;
     }
-    saveState(false);
-    resetCaseImages();
-    state = defaultState();
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      saveState(false);
+      resetCaseImages();
+      state = defaultState();
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(1);
+    } finally { endFileWork(); }
   }
 
   function beginFileWork() {
@@ -727,6 +735,12 @@
     }
     if (state.handover.status !== "Erfolgt" && Object.keys(handoverLabels).some(key => key !== "remote" && state.handover[key]))
       suggest("Erledigte Übergabepunkte sind markiert, die Übergabe aber nicht als erfolgt. Bitte die Angaben prüfen.", 5, true);
+    const now = new Date();
+    const today = [now.getFullYear(), String(now.getMonth()+1).padStart(2,"0"), String(now.getDate()).padStart(2,"0")].join("-");
+    if (state.handover.status === "Erfolgt" && state.handover.date > today)
+      suggest("Die als erfolgt erfasste Übergabe ist in der Zukunft datiert. Stand oder Datum prüfen.", 5, true);
+    if (["Vollständig erhalten","Anzahlung erhalten"].includes(state.payment.status) && state.payment.date > today)
+      suggest("Ein bereits erhaltener Zahlungseingang ist in der Zukunft datiert. Stand oder Datum prüfen.", 5, true);
     const price = moneyNumber(state.payment.price), amount = moneyNumber(state.payment.amount);
     if (state.payment.status === "Vollständig erhalten" && price !== null && amount !== null && amount < price)
       suggest("Als vollständig bezahlt erfasst, der erhaltene Betrag ist aber kleiner als der notierte Kaufpreis. Bitte prüfen.", 5, true);
@@ -772,6 +786,7 @@
     const list = document.createElement("ul");
     for (const hint of hints) {
       const li = document.createElement("li");
+      li.classList.toggle("quality-important", hint.important);
       const label = document.createElement(hint.important ? "strong" : "span");
       label.textContent = hint.message + " ";
       const button = document.createElement("button");
