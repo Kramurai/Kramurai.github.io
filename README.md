@@ -6,6 +6,10 @@
 
 Kostenlose Formulare und praktische Helfer für Alltagssituationen, direkt im Browser und ohne Anmeldung. Die Website besteht aus HTML, CSS und JavaScript und wird über GitHub Pages veröffentlicht.
 
+## Standard für neue Helfer und PDF-Ausgaben
+
+Der [PDF-Helfer-Standard](docs/PDF_HELFER_STANDARD.md) hält die freigegebene Arbeitsweise für Gestaltung, Feldlogik, lokale Speicherung, PDF-Erzeugung, Rechtehinweis und Qualitätsprüfung fest. Neue und überarbeitete Helfer orientieren sich daran. Die Projektregeln in [AGENTS.md](AGENTS.md) verweisen für künftige Entwicklungsarbeit darauf.
+
 ## Anwendungen
 
 | Anwendung | Dateien |
