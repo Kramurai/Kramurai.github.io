@@ -21,6 +21,14 @@ Der [PDF-Helfer-Standard](docs/PDF_HELFER_STANDARD.md) hält die freigegebene Ar
 | Reparatur dokumentieren | [reparatur-dokumentieren](reparatur-dokumentieren/index.html) |
 | Entsorgungsnachweis für Starterbatterien | [entsorgungsnachweis-starterbatterie](entsorgungsnachweis-starterbatterie/index.html) |
 
+## Starterbatterie: Helfer und PDF 1.5 (Entwurf, 19. Oktober 2026)
+
+Die bestehende Batterie-Seite erhält einen Helfer mit drei Schritten: Batterie und eigene Angaben, Rückgabe und Nachweis, Prüfen und PDF. Vorbereitung, tatsächliche Abgabe, Rücknahme ohne Pfanderstattung und ein bereits vorhandener Originalnachweis werden getrennt. Angaben bleiben lokal; ein optionales Foto und ein Bild-/PDF-Nachweis können mit der gemeinsamen Sicherungsroutine gespeichert werden. Ein PDF-Beleg bleibt ein separater Download.
+
+`assets/entsorgungsnachweis-starterbatterie-v1.5.pdf` enthält zwei Seiten und dieselben zehn ausfüllbaren Feldnamen wie Version 1.4. Inhaltliche Änderungen: tatsächliche Rücknahme ohne Pfanderstattung statt vorweggenommener abgeschlossener Verwertung; aktuelle Hinweise nach §§ 6, 18 und 19 BattDG; schriftlicher oder elektronischer Nachweis und Altersgrenze von zwei Wochen bei Vorlage beim Fernabsatzhändler. Die Vorlage allein ist noch kein bestätigter Nachweis. Die Weitergabeerlaubnis bleibt erhalten. Ältere Versionsdateien werden nicht überschrieben.
+
+`python3 tools/build_battery_template.py` erzeugt die neue Vorlage reproduzierbar. `node tools/check_battery.cjs` prüft den neuen Helfer isoliert. Neue und geänderte sichtbare Inhalte bleiben bis zur Freigabe im Entwurf. Ergänzend liegt ein noch nicht geltender Vorschlag für [Nutzungshinweise](docs/NUTZUNGSHINWEISE_ENTWURF.md) vor.
+
 ## Lokal ansehen
 
 Im Repository einen lokalen Webserver starten:
