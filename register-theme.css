@@ -824,4 +824,4 @@ body.helper-page .helper-site-header .helper-home-link{
 .helper-page .quality-problem,.helper-page #documentChecks,.helper-page .quality-important{background:#fff0ee;border-color:#dba69d;border-left:4px solid #a83d30;color:#7d281f;padding:12px}
 .helper-page .quality-recorded{background:#eff4ee;color:#173f39}
 @media print{.quality-optional{display:none!important}.quality-status{break-inside:avoid}.helper-page #documentChecks{background:#fff0ee!important;color:#7d281f!important;border-color:#dba69d!important}}
-@page kramurai-helper{@bottom-left{content:"Kramurai · kramurai.github.io · Vorlage 19.10.2026";font-family:Arial,sans-serif;font-size:8pt;color:#38564c}}
+@page kramurai-helper{@bottom-left{content:"© 2026 Kramurai · Vorlagengestaltung · kramurai.github.io · Stand 19.10.2026";font-family:Arial,sans-serif;font-size:8pt;color:#38564c}}
