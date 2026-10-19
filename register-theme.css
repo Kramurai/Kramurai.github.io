@@ -815,3 +815,13 @@ body.helper-page .helper-site-header .helper-home-link{
     color:#38564c;
   }
 }
+
+/* Helper quality review, 19 October 2026: optional identifiers and readable status semantics. */
+.quality-optional{padding:13px 15px;border:1px solid #a5b9ac;border-radius:12px;background:#f5f8f2;margin:16px 0}
+.quality-optional>summary{font-weight:750;cursor:pointer;line-height:1.4}.quality-optional[open]>summary{margin-bottom:16px}
+.quality-status{padding:11px 14px;border:1px solid #b6c7bb;border-left:4px solid #245d55;border-radius:6px;font-weight:650;line-height:1.45}
+.helper-page .quality-open{background:#fff4dc;border-color:#ddbd7a;border-left-color:#a36b13;color:#67470e}
+.helper-page .quality-problem,.helper-page #documentChecks,.helper-page .quality-important{background:#fff0ee;border-color:#dba69d;border-left:4px solid #a83d30;color:#7d281f;padding:12px}
+.helper-page .quality-recorded{background:#eff4ee;color:#173f39}
+@media print{.quality-optional{display:none!important}.quality-status{break-inside:avoid}.helper-page #documentChecks{background:#fff0ee!important;color:#7d281f!important;border-color:#dba69d!important}}
+@page kramurai-helper{@bottom-left{content:"Kramurai · kramurai.github.io · Vorlage 19.10.2026";font-family:Arial,sans-serif;font-size:8pt;color:#38564c}}

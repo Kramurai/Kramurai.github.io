@@ -79,3 +79,7 @@ git switch --detach origin/checkpoint/2026-10-11-geprueft
 ```
 
 Damit wird der festgehaltene Stand lokal geöffnet. Für eine erneute Veröffentlichung die gewünschten Dateien kontrolliert in `main` übernehmen. Eine Git-Sicherung enthält den Website-Code und die Markenassets; die lokal gespeicherten Vorgänge der Nutzer liegen in ihren Browsern.
+
+## Qualitätsüberarbeitung der vorhandenen Helfer (Entwurf, 19. Oktober 2026)
+
+Gerätekennungen der drei Versandhelfer sind optional aufklappbar; Felder, Speicherkennungen und Sicherungsformate bleiben erhalten. Nicht erfasste Angaben werden ausdrücklich als nicht dokumentiert bezeichnet. Beim Router sind Vertragspartner und Rücksendeempfänger getrennt beschriftet, Hinweise auf ein Ankaufportal sind korrigiert, offene oder abgelehnte Anbieter-Rückmeldungen werden mit Text und Farbe erkennbar. Im Handy-Helfer wird eine noch nicht dokumentierte Rückmeldung ausdrücklich als offen bezeichnet. Die bereits vorhandenen wichtigen Widerspruchshinweise beim Autoverkauf erhalten eine rötliche Hervorhebung. Die Druckseiten tragen Herkunft, Website und Vorlagenstand, ohne pauschalen Copyright- oder Lizenzvermerk.

@@ -580,7 +580,7 @@
   });
 
   const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[ch]));
-  const display = value => value && String(value).trim() ? esc(value) : "–";
+  const display = value => value && String(value).trim() ? esc(value) : "Nicht dokumentiert";
 
   function accessoryList() {
     const items = [];
@@ -592,8 +592,9 @@
     return items;
   }
 
-  function row(key, value) {
+  function row(key, value, required = false) {
     const text = String(value ?? "");
+    if (!text.trim() && !required) return "";
     const isLong = text.length > 420 || text.split("\n").length > 8;
     return '<div class="summary-row' + (isLong ? ' summary-row-long' : '') +
       '"><div class="summary-key">' + esc(key).replaceAll('/', '/<wbr>') + '</div><div>' + display(value) + '</div></div>';
@@ -673,7 +674,7 @@
     if (updated) updated.textContent = new Date(state.updatedAt).toLocaleString("de-DE");
     const accessories = accessoryList();
     let html = '<div class="summary-card"><h3>Gegenstand</h3>' +
-      row("Bezeichnung", state.item.name) +
+      row("Bezeichnung", state.item.name, true) +
       row("Hersteller", state.item.manufacturer) +
       row("Modell", state.item.model) +
       row("Seriennummer / Kennung", state.item.serial) +
@@ -683,12 +684,12 @@
       '</div>';
 
     html += '<div class="summary-card"><h3>Zustand und Zubehör</h3>' +
-      row("Zustand", state.condition.rating) +
+      row("Zustand", state.condition.rating, true) +
       row("Beschreibung", state.condition.note) +
-      row("Mitgesendet", accessories.length ? accessories.join(", ") : "") +
+      row("Mitgesendet", accessories.length ? accessories.join(", ") : "", true) +
       '</div>';
 
-    html += '<div class="summary-card"><h3>Versand</h3>' +
+    html += '<div class="summary-card"><h3>Versandangaben</h3>' +
       row("Paketdienst", state.shipment.carrier) +
       row("Sendungsnummer", state.shipment.tracking) +
       row("Versanddatum", formatDate(state.shipment.date)) +

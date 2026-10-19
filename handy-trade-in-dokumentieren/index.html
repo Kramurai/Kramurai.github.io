@@ -398,7 +398,7 @@
       a{color:inherit;text-decoration:none}
     }
   </style>
-  <link rel="stylesheet" href="/register-theme.css?v=20261010-claim-v1">
+  <link rel="stylesheet" href="/register-theme.css?v=20261019-quality1">
   <link rel="icon" href="/assets/brand/favicon.svg?v=20261010-brand-v4" type="image/svg+xml" sizes="any">
   <link rel="icon" href="/favicon.ico?v=20261010-brand-v4" sizes="16x16 32x32 48x48 64x64">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261010-brand-v4" sizes="180x180">
@@ -479,18 +479,9 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
             <label for="itemName">Gerät *</label>
             <input id="itemName" data-field="item.name" required placeholder="z. B. iPhone 15, Galaxy S24, MacBook Air">
           </div>
-          <div class="field">
-            <label for="manufacturer">Hersteller</label>
-            <input id="manufacturer" data-field="item.manufacturer" placeholder="optional">
-          </div>
-          <div class="field">
-            <label for="model">Modell</label>
-            <input id="model" data-field="item.model" placeholder="optional">
-          </div>
-          <div class="field">
-            <label for="imei">IMEI / Gerätekennung</label>
-            <input id="imei" data-field="item.imei" placeholder="optional">
-          </div>
+
+
+
           <div class="field">
             <label for="offerAmount">Ursprüngliches Angebot (€)</label>
             <input id="offerAmount" inputmode="decimal" data-field="offer.originalAmount" placeholder="z. B. 325">
@@ -499,11 +490,7 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
             <label for="offerClass">Angegebene Zustandsklasse</label>
             <input id="offerClass" data-field="offer.originalClass" placeholder="z. B. Sehr gut">
           </div>
-          <div class="field">
-            <label for="serial">Seriennummer / Kennung</label>
-            <input id="serial" data-field="item.serial" placeholder="optional">
-            <span class="hint">Bei Geräten besonders hilfreich.</span>
-          </div>
+
           <div class="field">
             <label for="sender">Absender / Name</label>
             <input id="sender" data-field="party.sender" placeholder="optional">
@@ -517,7 +504,22 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
             <textarea id="reason" data-field="item.reason" placeholder="z. B. Verkauf über Ankaufportal"></textarea>
           </div>
         </div>
-      </section>
+
+<details class="quality-optional" data-quality-details><summary>Gerät genauer zuordnen (optional)</summary><div class="field-grid"><div class="field">
+            <label for="manufacturer">Hersteller</label>
+            <input id="manufacturer" data-field="item.manufacturer" placeholder="optional">
+          </div><div class="field">
+            <label for="model">Modell</label>
+            <input id="model" data-field="item.model" placeholder="optional">
+          </div><div class="field">
+            <label for="serial">Seriennummer / Kennung</label>
+            <input id="serial" data-field="item.serial" placeholder="optional">
+            <span class="hint">Bei Geräten besonders hilfreich.</span>
+          </div><div class="field">
+            <label for="imei">IMEI / Gerätekennung</label>
+            <input id="imei" data-field="item.imei" placeholder="optional">
+          </div></div></details>
+</section>
 
       <section class="step" id="step-2" data-step="2">
         <h2>2. Zustand</h2>
@@ -758,6 +760,6 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
   </main>
 
   <script src="/assets/case-backup.js"></script>
-  <script src="/handy-trade-in-dokumentieren/app.js?v=20261019-resume-entry-v1"></script>
+  <script src="/handy-trade-in-dokumentieren/app.js?v=20261019-quality1"></script>
 </body>
 </html>
