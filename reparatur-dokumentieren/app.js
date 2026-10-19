@@ -11,13 +11,20 @@
   const photoLabels = {beforeOverall: "Vorher: Gesamtansicht und Zubehör", beforeDetail: "Vorher: auffällige Stelle / Kennung", afterOverall: "Nachher: Gesamtansicht und Zubehör", afterDetail: "Nachher: auffällige Stelle / Vergleich", receipt: "Abgabebeleg / Reparaturbeleg"};
   const defaultState = () => ({version:1, caseId:crypto.randomUUID(), createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), currentStep:1,
     item:{name:"",manufacturer:"",model:"",serial:""},party:{sender:"",recipient:""},
-    intake:{status:"vorbereitung",date:"",reference:"",fault:"",occurrence:"",condition:"",accessories:"",costNotes:""},
-    returned:{status:"offen",date:"",result:"",functionCheck:"offen",accessories:"offen",condition:"",openIssues:""}
+    intake:{status:"vorbereitung",accessoryStatus:"unbekannt",date:"",reference:"",fault:"",occurrence:"",condition:"",accessories:"",costNotes:""},
+    returned:{status:"offen",testNote:"",date:"",result:"",functionCheck:"offen",accessories:"offen",condition:"",openIssues:""}
   });
 
+  function migrateRepairState(saved) {
+    if(!saved || typeof saved !== "object" || !saved.intake || !saved.returned) return saved;
+    const intake={...saved.intake},returned={...saved.returned};
+    if(!Object.prototype.hasOwnProperty.call(intake,"accessoryStatus")) intake.accessoryStatus=String(intake.accessories || "").trim() ? "liste" : "unbekannt";
+    if(!Object.prototype.hasOwnProperty.call(returned,"testNote")) returned.testNote="";
+    return {...saved,intake,returned};
+  }
   let caseIndex = { ids: [], activeId: "" };
   let fileBusyCount = 0;
-  let state = loadState();
+  let state = migrateRepairState(loadState());
   let summaryObjectUrls = [];
   let dbPromise;
   const objectUrls = new Map();
@@ -199,7 +206,7 @@
     setPrintButtons(true, "Vorgang wird geöffnet …");
     try {
       resetCaseImages();
-      state = saved;
+      state = migrateRepairState(saved);
       form.reset();
       hydrateForm();
       saveState(false);
@@ -247,10 +254,18 @@
   }
 
   function updateReturnFields() {
-    document.querySelector('[for="intakeDate"]').textContent = state.intake.status === "abgegeben" ? "Datum der Abgabe / des Versands" : "Geplantes Datum der Abgabe / des Versands";
-    const returned = state.returned.status === "zurueck";
-    document.getElementById("returnFields").hidden = !returned;
-    document.getElementById("returnPending").hidden = returned;
+    const given=state.intake.status === "abgegeben",returned=state.returned.status === "zurueck";
+    document.querySelector('[for="intakeDate"]').textContent = given ? "Datum der Abgabe / des Versands" : "Geplantes Datum der Abgabe / des Versands";
+    document.querySelector('[for="accessories"]').textContent = given ? "Abgegebenes Zubehör – ein Teil pro Zeile" : "Vorgesehenes Zubehör – ein Teil pro Zeile";
+    const list=state.intake.accessoryStatus === "liste";
+    document.getElementById("accessoryListFields").hidden=!list;
+    document.getElementById("returnFields").hidden=!returned;
+    document.getElementById("returnPending").hidden=returned;
+    document.getElementById("returnedAccessoriesFields").hidden=!list;
+    const hint=document.getElementById("returnAccessoriesHint");hint.hidden=list;
+    hint.textContent=state.intake.accessoryStatus === "keines" ? "Bei der Abgabe wurde ausdrücklich kein Zubehör angegeben." : "Für einen Zubehörvergleich zuerst in Schritt 2 erfassen, was du abgegeben hast.";
+    document.getElementById("testNoteFields").hidden=state.returned.functionCheck === "offen";
+    document.getElementById("openIssues").closest(".field").classList.toggle("field-issue",returned && (state.returned.functionCheck === "weiterhin" || state.returned.functionCheck === "teilweise" || (list && state.returned.accessories === "fehlt")));
   }
   function hydrateForm() {
     updateReturnFields();
@@ -270,7 +285,7 @@
     document.querySelectorAll("[data-field]").forEach(el => {
       el.addEventListener("input", () => {
         setPath(state, el.dataset.field, el.value);
-        if(["returnStatus","intakeStatus"].includes(el.id)) updateReturnFields();
+        if(["returnStatus","intakeStatus","accessoryStatus","functionCheck","returnedAccessories"].includes(el.id)) updateReturnFields();
         saveStatus.textContent = "speichert …";
         saveState();
       });
@@ -590,41 +605,62 @@
   }
   function card(title, content) {return '<section class="summary-card"><h3>'+esc(title)+'</h3>'+content+'</section>';}
   function checks(types) {
-    const notes=[];
-    if(!state.intake.fault.trim()) notes.push(['Die Fehlerbeschreibung ist noch leer.',1]);
-    if(!state.party.recipient.trim()) notes.push(['Werkstatt oder Servicebetrieb sind noch nicht angegeben.',2]);
-    if(state.intake.status === 'abgegeben' && !state.intake.date) notes.push(['Das Datum der Abgabe fehlt.',2]);
-    if(!types.has('beforeOverall')) notes.push(['Es ist noch keine Gesamtansicht vor der Abgabe enthalten.',2]);
-    const warnings=[];
-    if(state.returned.status==='zurueck') {
-      if(state.intake.status!=='abgegeben') warnings.push('Rücknahme eingetragen, Abgabe steht noch auf Vorbereitung. Bitte den Stand prüfen.');
-      if(state.returned.date && state.intake.date && state.returned.date < state.intake.date) warnings.push('Das Rücknahmedatum liegt vor dem Abgabedatum. Bitte die Datumsangaben prüfen.');
-      if(!state.returned.date) notes.push(['Das Datum der Rücknahme fehlt.',3]);
-      if(state.returned.functionCheck === 'offen') notes.push(['Die eigene Funktionsprüfung steht noch aus.',3]);
-      if(state.returned.accessories === 'fehlt' && !state.returned.openIssues.trim()) notes.push(['Bitte beschreiben, welches Zubehör fehlt oder abweicht.',3]);
+    const notes=[],warnings=[];
+    const today=new Date(),todayKey=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
+    if(!state.intake.fault.trim()) notes.push(["Die Fehlerbeschreibung ist noch leer.",1]);
+    if(!state.party.recipient.trim()) notes.push(["Werkstatt oder Servicebetrieb sind noch nicht angegeben.",2]);
+    if(state.intake.status === "abgegeben" && !state.intake.date) notes.push(["Das Datum der Abgabe fehlt.",2]);
+    if(state.intake.status === "abgegeben" && state.intake.date > todayKey) warnings.push(["Die bereits erfolgte Abgabe ist in der Zukunft datiert. Bitte Stand oder Datum prüfen.",2]);
+    if(state.intake.accessoryStatus === "unbekannt") notes.push(["Noch offen: Wurde Zubehör abgegeben? Bitte in Schritt 2 ausdrücklich kein Zubehör oder eine Zubehörliste erfassen.",2]);
+    if(state.intake.accessoryStatus === "liste" && !state.intake.accessories.trim()) notes.push(["Zubehör auflisten ist ausgewählt, die Liste ist aber noch leer.",2]);
+    if(!types.has("beforeOverall")) notes.push(["Es ist noch keine Gesamtansicht vor der Abgabe enthalten.",2]);
+    if(state.returned.status === "zurueck") {
+      if(state.intake.status !== "abgegeben") warnings.push(["Rücknahme eingetragen, Abgabe steht noch auf Vorbereitung. Bitte den Stand prüfen.",2]);
+      if(state.returned.date && state.intake.date && state.returned.date < state.intake.date) warnings.push(["Das Rücknahmedatum liegt vor dem Abgabedatum. Bitte die Datumsangaben prüfen.",3]);
+      if(state.returned.date > todayKey) warnings.push(["Die bereits erfolgte Rücknahme ist in der Zukunft datiert. Bitte Stand oder Datum prüfen.",3]);
+      if(!state.returned.date) notes.push(["Das Datum der Rücknahme fehlt.",3]);
+      if(state.returned.functionCheck === "offen") notes.push(["Die eigene Funktionsprüfung steht noch aus.",3]);
+      if(state.returned.functionCheck !== "offen" && !state.intake.fault.trim()) warnings.push(["Ein Prüfergebnis ist eingetragen, aber die ursprüngliche Fehlerbeschreibung fehlt. Bitte den Bezug ergänzen.",1]);
+      if(state.returned.functionCheck !== "offen" && !state.returned.testNote.trim()) notes.push(["Optional: Beschreibe kurz, was du wie lange geprüft hast.",3]);
+      if(state.intake.accessoryStatus === "liste" && !state.intake.accessories.trim() && state.returned.accessories === "vollstaendig") warnings.push(["Zubehör ist als vollständig markiert, aber die Abgabeliste fehlt. Der Vergleich ist so noch nicht nachvollziehbar.",2]);
+      if((state.returned.functionCheck === "weiterhin" || state.returned.functionCheck === "teilweise" || (state.intake.accessoryStatus === "liste" && state.returned.accessories === "fehlt")) && !state.returned.openIssues.trim()) notes.push(["Bitte die festgestellten Probleme oder fehlenden Teile bei den offenen Punkten beschreiben.",3]);
     }
-    missingCheck.replaceChildren(); missingCheck.hidden=false;
-    const title=document.createElement('strong');title.textContent=notes.length || warnings.length ? 'Vor dem PDF noch kurz prüfen' : 'PDF bereit';missingCheck.append(title);
-    const help=document.createElement('p');help.textContent='Unbekannte oder unzutreffende Angaben dürfen offen bleiben. Hinweise auf widersprüchliche Angaben erscheinen auch im PDF.';missingCheck.append(help);
-    for(const [text,step] of [...warnings.map(w=>[w,3]),...notes]) {
-      const p=document.createElement('p');p.textContent=text+' ';
-      const b=document.createElement('button');b.type='button';b.className='btn btn-secondary';b.textContent='Schritt '+step+' öffnen';b.addEventListener('click',()=>showStep(step));p.append(b);missingCheck.append(p);
+    missingCheck.replaceChildren();missingCheck.hidden=false;
+    const title=document.createElement("strong");title.textContent=notes.length || warnings.length ? "Vor dem PDF noch kurz prüfen" : "PDF bereit";missingCheck.append(title);
+    const help=document.createElement("p");help.textContent="Unbekannte oder unzutreffende Angaben dürfen offen bleiben. Widersprüche werden zusätzlich im PDF hervorgehoben.";missingCheck.append(help);
+    for(const [text,step] of [...warnings,...notes]) {
+      const line=document.createElement("p");line.textContent=text+" ";
+      const button=document.createElement("button");button.type="button";button.className="btn btn-secondary";button.textContent="Schritt "+step+" öffnen";button.addEventListener("click",()=>showStep(step));line.append(button);missingCheck.append(line);
     }
-    return warnings;
+    return warnings.map(([text])=>text);
   }
   async function renderSummary() {
     summaryObjectUrls.forEach(url=>URL.revokeObjectURL(url));summaryObjectUrls=[];
-    document.getElementById('docUpdatedDate').textContent=new Date(state.updatedAt).toLocaleString('de-DE');
-    const summary=document.getElementById('summary'),returned=state.returned.status==='zurueck';
+    document.getElementById("docUpdatedDate").textContent=new Date(state.updatedAt).toLocaleString("de-DE");
+    const summary=document.getElementById("summary"),returned=state.returned.status === "zurueck",given=state.intake.status === "abgegeben";
     const records=await Promise.all(Object.keys(photoLabels).map(async type=>({type,record:await getFile(type)})));
-    const visible=records.filter(({type,record})=>record && (returned || !type.startsWith('after')));
+    const visible=records.filter(({type,record})=>record && (returned || !type.startsWith("after")));
     const warnings=checks(new Set(visible.map(f=>f.type)));
-    let html=warnings.map(w=>'<p class="warning">Prüfhinweis: '+esc(w)+'</p>').join('');
-    html+=card('Gerät und Fehler',row('Gerät / Gegenstand',state.item.name,true)+row('Hersteller',state.item.manufacturer)+row('Modell',state.item.model)+row('Seriennummer / Kennung',state.item.serial)+row('Fehlerbeschreibung',state.intake.fault,true)+row('Auftreten des Fehlers',state.intake.occurrence));
-    html+=card('Abgabe',row('Stand',state.intake.status==='abgegeben'?'Abgegeben / versendet (eigene Angabe)':'Abgabe wird vorbereitet')+row('Name',state.party.sender)+row('Werkstatt / Servicebetrieb',state.party.recipient)+row(state.intake.status==='abgegeben'?'Abgabe / Versand am':'Abgabe geplant für',formatDate(state.intake.date))+row('Auftrags-/Sendungsnummer',state.intake.reference)+row('Sichtbarer Zustand vorher',state.intake.condition,true)+row('Abgegebenes Zubehör',state.intake.accessories,true)+row('Bereits getroffene Absprachen',state.intake.costNotes));
-    const functionLabels={offen:'Noch nicht geprüft',behoben:'Beschriebener Fehler beim eigenen Test nicht mehr aufgetreten',weiterhin:'Beschriebener Fehler tritt beim eigenen Test weiterhin auf',teilweise:'Teilweise behoben / anderes Problem festgestellt'};
-    const accessoryLabels={offen:'Noch nicht geprüft',vollstaendig:'Nach eigener Prüfung vollständig',fehlt:'Es fehlt Zubehör / Abweichung festgestellt'};
-    html+=card('Rücknahme und eigener Vergleich',returned ? row('Stand','Gerät zurückerhalten (eigene Angabe)')+row('Rücknahme am',formatDate(state.returned.date))+row('Arbeiten laut Betrieb',state.returned.result)+row('Eigene Funktionsprüfung',functionLabels[state.returned.functionCheck] || 'Nicht angegeben')+row('Zubehör bei Rücknahme',accessoryLabels[state.returned.accessories] || 'Nicht angegeben')+row('Sichtbarer Zustand nachher',state.returned.condition)+row('Offene Punkte / Abweichungen',state.returned.openIssues) : '<p class="phase-flag">Rücknahme noch offen. Es liegt noch keine eigene Prüfung des Reparaturergebnisses vor.</p>');
+    let html=warnings.map(w=>'<p class="warning">Prüfhinweis: '+esc(w)+'</p>').join("");
+    html+=card("Gerät und Fehler",row("Gerät / Gegenstand",state.item.name,true)+row("Hersteller",state.item.manufacturer)+row("Modell",state.item.model)+row("Seriennummer / Kennung",state.item.serial)+row("Fehlerbeschreibung",state.intake.fault,true)+row("Auftreten des Fehlers",state.intake.occurrence));
+    const list=state.intake.accessoryStatus === "liste",listed=list && Boolean(state.intake.accessories.trim());
+    const accessoryIntake=state.intake.accessoryStatus === "keines" ? "Ausdrücklich kein Zubehör angegeben" : list ? state.intake.accessories || "Zubehörliste noch leer" : "Noch nicht erfasst";
+    html+=card("Abgabe",row("Stand",given ? "Abgegeben / versendet (eigene Angabe)" : "Abgabe wird vorbereitet")+row("Werkstatt / Servicebetrieb",state.party.recipient)+row(given ? "Abgabe / Versand am" : "Abgabe geplant für",formatDate(state.intake.date))+row("Name",state.party.sender)+row("Kennung / Referenz",state.intake.reference)+row("Sichtbarer Zustand vorher",state.intake.condition,true)+row(given ? "Abgegebenes Zubehör" : "Vorgesehenes Zubehör",accessoryIntake)+row("Bereits getroffene Absprachen",state.intake.costNotes));
+    const functionLabels={offen:"Noch nicht geprüft",behoben:"Beschriebener Fehler beim eigenen Test nicht mehr aufgetreten",weiterhin:"Beschriebener Fehler tritt beim eigenen Test weiterhin auf",teilweise:"Teilweise behoben / anderes Problem festgestellt"};
+    let accessoryReturn="Abgabeliste fehlt – Vollständigkeit noch nicht beurteilt";
+    if(state.intake.accessoryStatus === "keines") accessoryReturn="Bei der Abgabe ausdrücklich kein Zubehör angegeben";
+    else if(listed) accessoryReturn=({offen:"Noch nicht geprüft",vollstaendig:"Mit der Abgabeliste verglichen: nach eigener Prüfung vollständig",fehlt:"Es fehlt Zubehör / Abweichung festgestellt"})[state.returned.accessories] || "Nicht angegeben";
+    else if(list && state.returned.accessories === "fehlt") accessoryReturn="Fehlendes Zubehör angegeben; die Abgabeliste ist noch leer";
+    const problem=state.returned.functionCheck === "weiterhin" || state.returned.functionCheck === "teilweise" || (list && state.returned.accessories === "fehlt");
+    const pending=state.returned.functionCheck === "offen" || state.intake.accessoryStatus === "unbekannt" || (list && (!listed || state.returned.accessories === "offen"));
+    const statusClass=problem ? "status-problem" : pending ? "status-open" : "";
+    const reasons=[];
+    if(state.returned.functionCheck === "weiterhin") reasons.push("Fehler tritt weiterhin auf");
+    if(state.returned.functionCheck === "teilweise") reasons.push("Teilweise behoben / anderes Problem");
+    if(list && state.returned.accessories === "fehlt") reasons.push("Zubehör fehlt oder weicht ab");
+    const statusText=problem ? "Zurückerhalten – "+reasons.join(" · ") : pending ? "Zurückerhalten – eigene Prüfung noch offen" : "Rücknahme und eigene Prüfung dokumentiert";
+    const returnContent=returned ? '<p class="phase-status '+statusClass+'">'+statusText+'</p>'+row("Rücknahme am",formatDate(state.returned.date))+row("Arbeiten laut Betrieb",state.returned.result)+row("Eigene Funktionsprüfung",functionLabels[state.returned.functionCheck] || "Nicht angegeben")+row("Umfang der eigenen Prüfung",state.returned.functionCheck !== "offen" ? state.returned.testNote : "")+row("Zubehör bei Rücknahme",accessoryReturn)+row("Sichtbarer Zustand nachher",state.returned.condition)+row("Offene Punkte / Abweichungen",state.returned.openIssues) : '<p class="phase-status status-open">Rücknahme noch offen. Das Gerät wurde noch nicht zurückerhalten; eine eigene Prüfung des Reparaturergebnisses steht aus.</p>';
+    html+=card("Rücknahme und eigener Vergleich",returnContent);
     html+='<section class="summary-card photo-summary-card"><h3>Fotos und Beleg</h3><div class="summary-photos" id="summaryPhotos"></div><div id="summaryReceipt"></div></section>';
     summary.innerHTML=html;
     summary.querySelectorAll('.summary-card').forEach(c=>{if(c.querySelector('.summary-row-long'))c.classList.add('summary-card-long')});
@@ -674,7 +710,7 @@
       } catch (e) {}
       next = null;
     }
-    state = next || defaultState();
+    state = next ? migrateRepairState(next) : defaultState();
     caseIndex.activeId = state.caseId;
     form.reset();
     hydrateForm();
@@ -684,7 +720,7 @@
   });
 
   CaseBackup.mount({
-    helper: "repair", defaultState, types: Object.keys(photoLabels),
+    helper: "repair", defaultState, migrateState: migrateRepairState, types: Object.keys(photoLabels),
     openDb, storeName: STORE_NAME, prefix: CASE_PREFIX,
     getState: () => state, isBusy: () => fileBusyCount > 0,
     begin: beginFileWork, end: endFileWork,
