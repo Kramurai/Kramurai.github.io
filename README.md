@@ -14,6 +14,7 @@ Kostenlose Formulare und praktische Helfer für Alltagssituationen, direkt im Br
 | Router / Mietgerät zurückgeben | [router-zurueckgeben](router-zurueckgeben/index.html) |
 | Handy / Elektronik an Ankaufportal schicken | [handy-trade-in-dokumentieren](handy-trade-in-dokumentieren/index.html) |
 | Autoverkauf dokumentieren | [autoverkauf-dokumentieren](autoverkauf-dokumentieren/index.html) |
+| Reparatur dokumentieren | [reparatur-dokumentieren](reparatur-dokumentieren/index.html) |
 | Entsorgungsnachweis für Starterbatterien | [entsorgungsnachweis-starterbatterie](entsorgungsnachweis-starterbatterie/index.html) |
 
 ## Lokal ansehen
@@ -79,6 +80,14 @@ git switch --detach origin/checkpoint/2026-10-11-geprueft
 ```
 
 Damit wird der festgehaltene Stand lokal geöffnet. Für eine erneute Veröffentlichung die gewünschten Dateien kontrolliert in `main` übernehmen. Eine Git-Sicherung enthält den Website-Code und die Markenassets; die lokal gespeicherten Vorgänge der Nutzer liegen in ihren Browsern.
+
+## Reparatur dokumentieren (Entwurf, 19. Oktober 2026)
+
+Der zusätzliche Helfer erfasst Fehlerbild und Gerät, die vorbereitete oder erfolgte Abgabe und die spätere Rücknahme. Er dokumentiert eigene Angaben und Beobachtungen; er erteilt keinen Reparaturauftrag, keine Kostenfreigabe und keine Erklärung zur Abnahme. Vier Fotoplätze und ein Bild-/PDF-Beleg, mehrere lokale Vorgänge sowie die vorhandene versionierte Sicherung stehen bereit. Ein PDF-Beleg bleibt ein separater Download.
+
+`node tools/check_repair.cjs` prüft den Ablauf isoliert, einschließlich offener Rücknahme, Datumshinweisen im PDF, Sicherungsrundlauf mit vier Fotos, Neuladen, gezieltem Entfernen, fehlerhaften Bildern, separatem PDF-Beleg und Vorgangswechsel. Die Beispiele enthalten erfundene Angaben und schematische Abbildungen.
+
+Die Überarbeitung vom 19. Oktober unterscheidet nicht erfasstes Zubehör, ausdrücklich kein Zubehör und eine vorhandene Liste. Ein Zubehörvergleich ohne Abgabeliste bestätigt keine Vollständigkeit. Optionale Kennungen und Absprachen sind eingeklappt; ein eigener Prüfumfang lässt sich nach der Rücknahme ergänzen. Offene Abläufe erscheinen warm-gelb, konkrete Probleme und Widersprüche rötlich. Die 28 Prüfszenarien umfassen auch die Migration früherer Entwurfsvorgänge und -sicherungen.
 
 ## Qualitätsüberarbeitung der vorhandenen Helfer (Entwurf, 19. Oktober 2026)
 

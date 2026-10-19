@@ -1,0 +1,423 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reparatur dokumentieren – Kramurai</title><meta name="description" content="Fehler, Zustand und Zubehör bei Reparatur-Abgabe und Rücknahme festhalten – kostenlos als eigene PDF-Dokumentation."><meta name="robots" content="index,follow"><link rel="canonical" href="https://kramurai.github.io/reparatur-dokumentieren/"><meta property="og:type" content="website"><meta property="og:site_name" content="Kramurai"><meta property="og:locale" content="de_DE"><meta property="og:title" content="Reparatur dokumentieren – Kramurai"><meta property="og:description" content="Fehler, Zustand und Zubehör bei Reparatur-Abgabe und Rücknahme festhalten – kostenlos als eigene PDF-Dokumentation."><meta property="og:url" content="https://kramurai.github.io/reparatur-dokumentieren/"><meta property="og:image" content="https://kramurai.github.io/assets/social/reparatur-20261019.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:alt" content="Reparatur dokumentieren: Abgabe festhalten und Rücknahme vergleichen, mit einem ausgefüllten PDF-Beispiel."><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Reparatur dokumentieren – Kramurai"><meta name="twitter:description" content="Fehler, Zustand und Zubehör bei Reparatur-Abgabe und Rücknahme festhalten – kostenlos als eigene PDF-Dokumentation."><meta name="twitter:image" content="https://kramurai.github.io/assets/social/reparatur-20261019.jpg"><link rel="stylesheet" href="/assets/statistics.css?v=20261018-1"><script defer src="/assets/statistics.js?v=20261019-pinterest-v1"></script><link rel="stylesheet" href="/styles.css"><style>
+    .wizard{padding:30px 0 56px}
+    .wizard-head{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
+    .wizard-head h1{font-size:clamp(1.9rem,7vw,3rem)}
+    .progress{height:8px;background:#e9edf2;border-radius:999px;overflow:hidden;margin-top:18px}
+    .progress>span{display:block;height:100%;background:var(--brand);width:16.66%;transition:width .2s ease}
+    .progress-label{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:var(--muted);font-size:.9rem}
+    .step{display:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(20px,5vw,32px);box-shadow:0 6px 20px rgba(23,32,51,.05)}
+    .step.active{display:block}
+    .step h2{font-size:1.55rem}
+    .intro{color:var(--muted);margin-bottom:22px}
+    .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+    .field.full{grid-column:1/-1}
+    label,.label{font-weight:750}
+    .hint{color:var(--muted);font-size:.88rem}
+    input,textarea,select{
+      width:100%;font:inherit;color:var(--text);background:#fff;border:1px solid #cfd7e3;border-radius:12px;
+      padding:12px 13px;min-height:48px
+    }
+    textarea{min-height:110px;resize:vertical}
+    input:focus,textarea:focus,select:focus{outline:3px solid rgba(23,105,170,.14);border-color:var(--brand)}
+    .choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .choice{position:relative}
+    .choice input{position:absolute;opacity:0;pointer-events:none}
+    .choice label{display:block;border:1px solid var(--line);border-radius:12px;padding:13px;cursor:pointer;background:#fbfcfe}
+    .choice input:checked+label{border-color:var(--brand);background:var(--soft);color:var(--brand-dark)}
+    .check-list{display:grid;gap:10px}
+    .check{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfcfe}
+    .check input{width:20px;min-height:20px;margin-top:2px}
+    .photo-list{display:grid;gap:14px}
+    .photo-task{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fbfcfe}
+    .photo-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .photo-title{font-weight:800}
+    .photo-status{font-size:.82rem;font-weight:750;color:var(--muted)}
+    .photo-task.done .photo-status{color:#167444}
+    .photo-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .file-label{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 13px;border-radius:10px;background:var(--soft);color:var(--brand-dark);font-weight:750;cursor:pointer}
+    .file-label input{display:none}
+    .preview{display:none;max-width:220px;max-height:180px;border-radius:10px;margin-top:12px;border:1px solid var(--line)}
+    .preview.show{display:block}
+    .file-remove{margin-top:10px}
+    .file-remove[hidden]{display:none}
+    .wizard-nav{display:flex;justify-content:space-between;gap:12px;margin-top:18px}
+    button{font:inherit;border:0;cursor:pointer}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;border-radius:12px;font-weight:800}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--line)}
+    .btn-danger{background:#fff;color:#9b2525;border:1px solid #e8caca}
+    .privacy-note{margin-top:18px;padding:16px;border:1px solid #cfe3f5;border-radius:14px;background:var(--soft);font-size:.92rem}
+    .summary{display:grid;gap:16px}
+    .summary-card{border:1px solid var(--line);border-radius:14px;padding:18px}
+    .summary-card h3{margin-bottom:10px}
+    .summary-row{display:grid;grid-template-columns:180px 1fr;gap:12px;padding:7px 0;border-bottom:1px solid #edf0f4}
+    .summary-row:last-child{border-bottom:0}
+    .summary-row>div{min-width:0;overflow-wrap:anywhere}
+    .summary-row>div:last-child{white-space:pre-wrap}
+    .summary-photo strong,.summary-photo .hint{overflow-wrap:anywhere}
+    .summary-key{color:var(--muted)}
+    .summary-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .summary-photo{break-inside:avoid}
+    .summary-photo img{width:100%;max-height:360px;object-fit:contain;border:1px solid var(--line);border-radius:10px;background:#fafafa}
+    .summary-photo strong{display:block;margin-top:6px}
+    .warning{background:var(--note);border:1px solid var(--note-line);border-radius:12px;padding:14px;margin-bottom:16px}
+    .btn-tertiary{background:transparent;color:var(--muted);border:1px solid transparent}
+    .final-actions{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:10px;margin:0 0 18px}
+    .final-actions .btn{width:100%}
+    .document-head{
+      position:relative;overflow:hidden;margin:0 0 18px;color:#172033;border:1px solid #d7e3ef;
+      border-radius:16px;background:#fff;box-shadow:0 4px 14px rgba(13,55,94,.08)
+    }
+    .document-banner{
+      position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;
+      padding:16px 18px;background:linear-gradient(105deg,#0a2c57 0%,#0d4f86 58%,#1386c9 100%);color:#fff
+    }
+    .document-banner::after{
+      content:"";position:absolute;left:0;bottom:0;width:100%;height:4px;
+      background:linear-gradient(90deg,#ff7a00 0 86px,#1597e5 86px 100%)
+    }
+    .document-logo{
+      width:70px;height:70px;display:grid;place-items:center;border:2px solid rgba(255,255,255,.92);
+      border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 5px 16px rgba(0,0,0,.18)
+    }
+    .document-logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .document-identity{display:flex;align-items:center;gap:14px;min-width:0}
+    .document-brand{font-size:20pt;font-weight:850;line-height:1.05;letter-spacing:-.025em;color:#fff}
+    .brand-formular{color:#fff}.brand-fuchs{color:#4bc3ff}
+    .document-tagline{font-size:8.2pt;color:rgba(255,255,255,.78);margin-top:5px;letter-spacing:.12em;text-transform:uppercase}
+    .document-meta{text-align:right;font-size:8.4pt;line-height:1.5;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.28);border-radius:11px;padding:9px 11px}
+    .document-title-area{position:relative;padding:19px 20px 18px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)}
+    .document-title{margin:0;font-size:22pt;line-height:1.08;letter-spacing:-.025em;color:#172033}
+    .document-subtitle{margin:6px 0 0;font-size:9.5pt;color:#5b6577}
+    .document-watermark{position:absolute;right:18px;bottom:-13px;font-size:58px;line-height:1;font-weight:900;color:#1597e5;opacity:.035;pointer-events:none;letter-spacing:-.08em}
+    .print-only{display:none}
+    @media(max-width:720px){
+      .field-grid,.choice-grid,.summary-photos{grid-template-columns:1fr}
+      .summary-row{grid-template-columns:1fr;gap:2px}
+      .wizard-nav{position:sticky;bottom:0;background:rgba(245,247,250,.96);padding:10px 0}
+      .wizard-nav .btn{flex:1}
+      .final-actions{grid-template-columns:1fr}
+      .final-actions .btn{width:100%}
+    }
+
+    /* Kramurai – gut erkennbare mobile Eingaben und Aktionen */
+    @media screen{
+      .helper-page{
+        --brand:#09558f;
+        --brand-dark:#07365f;
+        --muted:#46576a;
+        --line:#c5d4e2;
+        --soft:#e5f1fa;
+        --text:#172538;
+        background:#eaf1f7;
+      }
+      .helper-page header{
+        background:linear-gradient(110deg,#081f3e 0%,#103e6c 100%);
+        border-bottom:3px solid #1597e5;
+      }
+.helper-brand-mark{
+        display:block;
+        width:54px;
+        height:54px;
+        flex:none;
+        object-fit:contain;
+        border:2px solid #fff;
+        border-radius:13px;
+        background:#fff;
+        box-shadow:0 4px 14px rgba(0,0,0,.23);
+      }
+      .helper-brand-name{color:#fff;letter-spacing:-.025em}
+      .helper-brand-name span{color:#78d8ff}
+      .helper-page .wizard-head,.helper-page .step{
+        border-color:#c3d2df;
+        box-shadow:0 7px 22px rgba(12,49,88,.08);
+      }
+      .helper-page .intro,.helper-page .hint,
+      .helper-page .progress-label,.helper-page .summary-key{
+        color:#44566a;
+      }
+      .helper-page input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+      .helper-page textarea,.helper-page select{
+        border:2px solid #9bb2c8;
+        background:#fff;
+        color:#172538;
+      }
+      .helper-page input::placeholder,.helper-page textarea::placeholder{color:#5a6a7b;opacity:1}
+      .helper-page input:focus-visible,.helper-page textarea:focus-visible,
+      .helper-page select:focus-visible{
+        outline:3px solid #80caff;
+        outline-offset:2px;
+        border-color:#09558f;
+      }
+      .helper-page .choice label{
+        display:flex;
+        align-items:center;
+        min-height:49px;
+        border:2px solid #a9bfd2;
+        background:#f0f6fb;
+        color:#193b5d;
+        font-weight:800;
+      }
+      .helper-page .choice input:checked+label{
+        border-color:#07365f;
+        background:#09558f;
+        color:#fff;
+        box-shadow:0 3px 10px rgba(9,85,143,.20);
+      }
+      .helper-page .choice input:checked+label::before{
+        content:"✓";
+        margin-right:9px;
+        font-weight:900;
+      }
+      .helper-page .choice input:focus-visible+label{
+        outline:3px solid #80caff;
+        outline-offset:3px;
+      }
+      .helper-page .check{
+        background:#f0f6fb;
+        border:2px solid #c0cfdd;
+        color:#193b5d;
+      }
+      .helper-page .check input{accent-color:#09558f}
+      .helper-page .check:has(input:checked){
+        background:#e0f0fb;
+        border-color:#09558f;
+      }
+      .helper-page .photo-task{
+        border:2px solid #c2d3e1;
+        background:#f0f6fb;
+      }
+      .helper-page .photo-task.done{
+        border-color:#78a78c;
+        background:#edf8f1;
+      }
+      .helper-page .photo-task.done .photo-status{color:#165d37}
+      .helper-page .photo-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        margin-top:12px;
+      }
+      .helper-page .file-label{
+        min-height:48px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:10px 15px;
+        border:2px solid #07365f;
+        border-radius:11px;
+        background:#09558f;
+        color:#fff;
+        font-weight:800;
+        cursor:pointer;
+      }
+      .helper-page .file-label.file-gallery{
+        border-color:#5184ab;
+        background:#e0effa;
+        color:#07365f;
+      }
+      .helper-page .file-label:hover,
+      .helper-page .file-label:focus-within{filter:brightness(.96)}
+      .helper-page .file-label:focus-within{outline:3px solid #80caff;outline-offset:2px}
+      .helper-page .file-label input{
+        display:block;
+        position:absolute;
+        width:1px;
+        height:1px;
+        min-height:0;
+        padding:0;
+        margin:0;
+        opacity:0;
+        overflow:hidden;
+        clip-path:inset(50%);
+      }
+      .helper-page .btn{
+        border-radius:11px;
+        font-weight:850;
+        transition:filter .15s ease,transform .15s ease;
+      }
+      .helper-page .btn:hover{filter:brightness(.95)}
+      .helper-page .btn:focus-visible{outline:3px solid #80caff;outline-offset:3px}
+      .helper-page .btn-primary{background:#09558f;color:#fff;border:2px solid #07365f}
+      .helper-page .btn-secondary{
+        background:#e6f0f9;
+        color:#07365f;
+        border:2px solid #648fb2;
+      }
+      .helper-page .btn-tertiary{
+        background:#dfeef9;
+        color:#07365f;
+        border:2px solid #648fb2;
+      }
+      .helper-page .btn-danger{
+        background:#fff0ef;
+        color:#832123;
+        border:2px solid #b96a6c;
+      }
+      .helper-page .btn:disabled{opacity:.75;cursor:default}
+      @media(max-width:720px){
+        .helper-page .photo-actions .file-label{flex:1 1 130px}
+        .helper-page .wizard-nav{background:rgba(234,241,247,.97)}
+      }
+    }
+    @media screen{
+      .helper-page .wizard-head .eyebrow{
+        background:#e2f0fa;
+        color:#07365f;
+        border:2px solid #91b7d6;
+        font-weight:900;
+        letter-spacing:.005em;
+      }
+      .helper-page .local-case-note{
+        margin-top:20px;
+        padding:16px;
+        border:2px solid #bad0e1;
+        border-radius:13px;
+        background:#edf5fb;
+        color:#193b5d;
+      }
+      .helper-page .local-case-note strong{color:#07365f}
+      .helper-page .local-case-note p{margin:6px 0 14px;color:#344c61}
+      .helper-page .final-actions{
+        grid-template-columns:1fr 1.35fr;
+        gap:10px;
+      }
+      @media(max-width:720px){
+        .helper-page .final-actions{grid-template-columns:1fr}
+      }
+    }
+    @media screen{
+      .helper-page .receipt-download{display:inline-flex;margin-top:10px;text-decoration:none}
+      .helper-page .receipt-help{margin-top:5px;line-height:1.4}
+      .helper-page .receipt-print-note{font-weight:750;color:#07365f}
+    }
+
+    /* Mehrere Vorgänge – kompakt auf Mobilgeräten, nur im Browser sichtbar */
+    .helper-page .case-manager{
+      margin:17px 0 6px;
+      padding:15px;
+      border:2px solid #b6ccde;
+      border-radius:14px;
+      background:#eef5fb;
+      color:#163b5b;
+    }
+    .helper-page .case-manager-heading{font-weight:850;color:#07365f}
+    .helper-page .case-manager-hint{font-size:.85rem;color:#40596e;margin:3px 0 12px}
+    .helper-page .case-manager-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+    .helper-page .case-manager-actions label{display:grid;gap:5px;font-size:.87rem}
+    .helper-page .case-manager-actions select{width:100%;min-width:0}
+    .helper-page .case-manager-actions .btn{white-space:normal;text-align:center}
+    .helper-page .missing-check{
+      margin:0 0 18px;padding:15px;border:2px solid #bed6e6;
+      border-radius:13px;background:#edf6fd;color:#193b5d
+    }
+    .helper-page .missing-check strong{color:#07365f}
+    .helper-page .missing-check p{margin:5px 0 8px}
+    .helper-page .missing-check ul{margin:8px 0 8px;padding-left:22px}
+    .helper-page .missing-check li{margin:4px 0}
+    .helper-page .missing-check .missing-ok{color:#17613f}
+    @media(max-width:720px){
+      .helper-page .case-manager-actions{grid-template-columns:1fr}
+      .helper-page .case-manager-actions .btn{width:100%}
+    }
+    @media print{
+      header,.wizard-head,.wizard-nav,.privacy-note,.screen-only{display:none!important}
+      body{background:#fff;font-size:11pt;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .wrap{width:100%;max-width:none}
+      .wizard{padding:0}
+      .step{display:none!important;box-shadow:none;border:0;padding:0}
+      #step-4{display:block!important}
+      #step-4>h2,#step-4>.intro{display:none!important}
+      .summary-card{border:0;border-bottom:1px solid #dfe6ee;border-radius:0;padding:9px 0;break-inside:avoid;page-break-inside:avoid}
+      .summary-card.photo-summary-card{break-inside:auto;page-break-inside:auto}
+      /* Nur ausnahmsweise lange Textkarten über Seiten umbrechen;
+         Standardfälle behalten die getestete kompakte Aufteilung. */
+      .summary-card.summary-card-long{break-inside:auto;page-break-inside:auto}
+      .summary-card.summary-card-long .summary-row-long{
+        display:block;
+        break-inside:auto;
+        page-break-inside:auto;
+      }
+      .summary-card.summary-card-long .summary-row-long .summary-key{
+        margin-bottom:4px;
+      }
+      .summary-card.photo-summary-card h3{break-after:avoid;page-break-after:avoid}
+      .summary-photo{break-inside:avoid;page-break-inside:avoid}
+      /* Foto und Bildunterschrift bleiben immer zusammen. */
+      .summary-photo{break-inside:avoid;page-break-inside:avoid}
+      .summary-photo img{max-height:250px;object-fit:contain}
+      .summary-photos{gap:10px}
+      /* Bei genau drei Beweisfotos verhindert eine Zeile mit zwei
+         Bildern plus einem verwaisten Einzelbild die leere Folgeseite. */
+      .summary-photos.print-three-images{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        column-gap:9px;
+      }
+      .summary-photos.print-three-images .summary-photo img{
+        height:160px;
+        max-height:160px;
+        width:100%;
+        object-fit:contain;
+      }
+      .summary-photos.print-three-images .summary-photo strong{font-size:9pt}
+      .summary-photos.print-three-images .summary-photo .hint{font-size:8pt}
+      .receipt-print-note{font-weight:650;color:#233d54}
+      .summary-card h3{break-after:avoid;page-break-after:avoid;color:#1769aa;border-left:3px solid #d9822b;padding-left:8px}
+      .summary-row{break-inside:avoid;page-break-inside:avoid}
+      .warning{break-inside:avoid;page-break-inside:avoid;margin:10px 0 14px;background:#fff8e8;border-color:#f0d899;color:#3b3528}
+      .summary-photos{grid-template-columns:1fr 1fr}
+      .print-only{display:block!important}
+      .document-head{break-inside:avoid;page-break-inside:avoid}
+      a{color:inherit;text-decoration:none}
+    }
+  
+.helper-page #wizardNav{position:static}.repair-intro{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(230px,.8fr);gap:30px;align-items:center}.repair-intro h1{font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;margin:10px 0 16px}.repair-promise{font-size:1.25rem;font-weight:800;color:#245d55}.repair-stages{display:grid;gap:10px;background:#f1f5ee;padding:20px;border:1px solid #a8beaf;border-radius:14px}.repair-stages div{padding:12px;background:white;border-left:4px solid #b4432d}.repair-stages span{display:block;color:#465b51;font-size:.9rem}.result-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.result-effort{font-size:.88rem;color:#3b574d;margin-top:10px;overflow-wrap:anywhere}.repair-note{padding:12px 15px;border-left:4px solid #b4432d;background:#faf5eb;margin:18px 0;font-size:.94rem}.step h2{scroll-margin-top:110px}.photo-task{min-width:0}.photo-top{display:block}.summary-row-long{display:block}.summary-row-long .summary-key{margin-bottom:5px}.summary-card-long{break-inside:auto}.summary-row-long{break-inside:auto}.phase-flag{font-weight:800;background:#edf4ed;padding:10px 14px;border-left:4px solid #245d55}.compare-caption{font-weight:750;color:#245d55}.repair-status{font-weight:700}.repair-status:empty{display:none}.return-fields[hidden]{display:none!important}.photo-list{grid-template-columns:1fr 1fr}.photo-task .file-label{font-size:.9rem}button:disabled{opacity:.6;cursor:wait}[hidden]{display:none!important}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.btn:focus-visible,summary:focus-visible{outline:3px solid #b4432d;outline-offset:4px}.preview-banner{padding:14px 18px;background:#fff5d9;border-bottom:2px solid #c38835;color:#45351d}.preview-banner p{margin:5px 0}.preview-banner .btn{min-height:42px}
+@media(max-width:720px){.repair-intro,.photo-list{grid-template-columns:1fr}.repair-stages{padding:14px}.result-actions .btn{width:100%}.wizard-head{padding:20px}.repair-intro h1{font-size:1.9rem}}
+@media print{.preview-banner,.repair-note,.repair-intro{display:none!important}.summary-card-long,.summary-row-long{break-inside:auto}.summary-card h3{break-after:avoid}.summary-card{margin-bottom:10px}.summary-photos{grid-template-columns:1fr 1fr}.summary-photo img{max-height:62mm;height:62mm;object-fit:contain}.phase-flag{margin:8px 0}.print-only{display:block!important}}
+</style><link rel="stylesheet" href="/register-theme.css?v=20261010-claim-v1"><link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"><style>
+/* Repair helper: one unchanged vector brand, progressive optional details and semantic statuses. */
+body.helper-page a.repair-brand{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-decoration:none;min-width:0}
+body.helper-page .repair-brand-img{display:block;width:238px;max-width:56vw;height:auto;object-fit:contain}
+body.helper-page .repair-brand-tagline{color:#f4f1e8;font-size:11px;font-weight:650;line-height:1.25;margin-left:59px;white-space:nowrap}
+.optional-details{border:1px solid #a5b9ac;border-radius:12px;padding:13px 15px;margin:14px 0 20px;background:#f5f8f2}
+.optional-details>summary{font-weight:750;cursor:pointer;line-height:1.4}.optional-details[open]>summary{margin-bottom:16px}
+.optional-details .field:last-child{margin-bottom:0}
+.helper-page .phase-flag{background:#fff4dc;border:1px solid #ddbd7a;border-left:4px solid #a36b13;color:#67470e;border-radius:6px;font-weight:650;line-height:1.5}
+.phase-status{padding:10px 13px;border:1px solid #b6c7bb;border-left:4px solid #245d55;background:#eff4ee;color:#173f39;font-weight:700;border-radius:6px;margin:6px 0 12px;line-height:1.45}
+.helper-page .phase-status.status-open{background:#fff4dc;border-color:#ddbd7a;border-left-color:#a36b13;color:#67470e}
+.helper-page .phase-status.status-problem,.helper-page .warning{background:#fff0ee;border-color:#dba69d;border-left:4px solid #a83d30;color:#7d281f}
+.helper-page .field-issue{border-left:4px solid #a83d30;padding-left:12px}
+@media(max-width:520px){body.helper-page .repair-brand-tagline{margin-left:44px;font-size:9px}body.helper-page .repair-brand-img{width:210px}}
+@media print{.phase-status{break-inside:avoid;font-size:10pt}.helper-page .phase-flag{font-size:10pt}.optional-details{display:none!important}}
+</style><style>@media print{.helper-page .summary-photo img{height:56mm;max-height:56mm}.document-scope{font-size:9pt;line-height:1.35;margin:8px 0 0;break-inside:avoid}}</style></head><body class="helper-page"><header class="site-header helper-site-header">
+    <div class="wrap header-inner">
+      <a class="brand repair-brand" href="/" aria-label="Kramurai Startseite"><img class="repair-brand-img" src="/assets/brand/kramurai-logo-header.svg?v=20261010-brand-v4" alt="Kramurai"><span class="repair-brand-tagline">Einfach. Nützlich. Kostenlos.</span></a>
+      <a class="helper-home-link" href="/" aria-label="Zur Kramurai Startseite">← Startseite</a>
+    </div>
+  </header><main class="wrap wizard"><div class="wizard-head"><div class="repair-intro"><div><div class="eyebrow">KOSTENLOS · OHNE ANMELDUNG</div><h1>Gerät zur Reparatur geben?</h1><p class="repair-promise">Abgabe festhalten. Rücknahme vergleichen.</p><p>Fehler, Zustand und Zubehör vor der Reparatur dokumentieren. Später Rücknahme und eigene Funktionsprüfung ergänzen – alles als übersichtliche PDF.</p><p class="result-local">Angaben und Fotos bleiben lokal in diesem Browser.</p><div class="result-actions"><button class="btn btn-primary" type="button" id="entryResumeBtn">Reparatur dokumentieren</button><button class="btn btn-secondary" type="button" id="entryNewCaseBtn" hidden>Neuer Vorgang</button><a class="btn btn-secondary" href="beispiel.pdf">PDF-Beispiel ansehen</a></div><p class="result-effort">Zum Start reicht die Bezeichnung. Weitere Angaben sind optional.</p></div><div class="repair-stages"><div><strong>01 · Vor der Abgabe</strong><span>Fehler, Zustand, Zubehör</span></div><div><strong>02 · Bei der Abgabe</strong><span>Betrieb, Datum, Beleg, Absprachen</span></div><div><strong>03 · Nach der Reparatur</strong><span>Rücknahme, Vergleich, offene Punkte</span></div></div></div><details class="case-manager screen-only">
+        <summary>
+          <span class="case-manager-toggle-title">Meine Vorgänge <span id="caseCount"></span></span>
+          <span class="case-manager-toggle-action">
+            <span class="case-manager-open-label">Öffnen</span>
+            <span class="case-manager-close-label">Schließen</span>
+            <svg class="case-manager-toggle-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </span>
+        </summary>
+        <div class="case-manager-body">
+          <p class="case-manager-hint">Lokal in diesem Browser gespeichert. Mit einer Sicherungsdatei kannst du einen Vorgang samt gespeicherten Fotos und Belegen später wieder öffnen – auch auf einem anderen Gerät.</p>
+          <div class="case-manager-actions">
+            <label for="caseSelect">Gespeicherten Vorgang öffnen
+              <select id="caseSelect" aria-label="Gespeicherten Vorgang öffnen"></select>
+            </label>
+            <button class="btn btn-secondary" type="button" id="createCaseTopBtn">+ Neuer Vorgang</button>
+          </div>
+          <div class="backup-actions">
+            <button class="btn btn-secondary" type="button" id="backupExportBtn">Vorgang sichern</button>
+            <button class="btn btn-secondary" type="button" id="backupImportBtn">Sicherung öffnen</button>
+            <input type="file" id="backupFile" accept=".json,application/json" hidden aria-label="Vorgangssicherung auswählen">
+          </div>
+          <p class="case-manager-hint">Die Sicherungsdatei enthält deine Angaben und gespeicherten Dateien unverschlüsselt. Bewahre sie sicher auf. Beim Öffnen wird ein zusätzlicher Vorgang angelegt. Das PDF bleibt die lesbare Dokumentation.</p>
+          <p id="backupStatus" class="case-manager-hint" role="status" aria-live="polite"></p>
+        </div>
+      </details><div class="progress" aria-hidden="true"><span id="progressBar"></span></div><div class="progress-label"><span id="progressText">Schritt 1 von 4</span><span id="saveStatus" role="status">wird vorbereitet …</span></div></div><form id="returnForm" novalidate><section class="step active" id="step-1" data-step="1"><h2>1. Gerät und Fehler</h2><p class="intro">Zum Start reicht die Bezeichnung. Beschreibe danach möglichst konkret, was du beobachtest.</p><div class="field-grid"><div class="field"><label for="itemName">Gerät / Gegenstand *</label><input id="itemName" type="text" data-field="item.name" placeholder="z. B. Kaffeemaschine, Kamera, Akkuschrauber" maxlength="500" required></div></div><details id="deviceDetails" class="optional-details"><summary>Hersteller, Modell und Seriennummer ergänzen (optional)</summary><div class="field-grid"><div class="field"><label for="manufacturer">Hersteller</label><input id="manufacturer" type="text" data-field="item.manufacturer" placeholder="optional" maxlength="500"></div><div class="field"><label for="model">Modell</label><input id="model" type="text" data-field="item.model" placeholder="optional" maxlength="500"></div><div class="field"><label for="serial">Seriennummer / Kennung</label><input id="serial" type="text" data-field="item.serial" placeholder="optional" maxlength="500"></div></div></details><div class="field"><label for="fault">Was funktioniert nicht?</label><textarea id="fault" data-field="intake.fault" placeholder="z. B. Gerät schaltet sich nach zwei Minuten aus." maxlength="12000"></textarea></div><div class="field"><label for="occurrence">Wann tritt der Fehler auf?</label><textarea id="occurrence" data-field="intake.occurrence" placeholder="z. B. nur im Akkubetrieb, seit letzter Woche." maxlength="12000"></textarea></div></section><section class="step" id="step-2" data-step="2"><h2>2. Abgabe festhalten</h2><p class="intro">Trage ein, was du tatsächlich übergeben hast. Wenn die Abgabe noch bevorsteht, bleibt sie als Vorbereitung erkennbar.</p><div class="field"><label for="intakeStatus">Stand der Abgabe</label><select id="intakeStatus" data-field="intake.status"><option value="vorbereitung">Abgabe wird vorbereitet</option><option value="abgegeben">Gerät wurde abgegeben / versendet</option></select></div><div class="field-grid"><div class="field"><label for="recipient">Werkstatt / Servicebetrieb</label><input id="recipient" type="text" data-field="party.recipient" placeholder="optional" maxlength="500"></div><div class="field"><label for="intakeDate">Datum der Abgabe / des Versands</label><input id="intakeDate" type="date" data-field="intake.date" placeholder="" maxlength="500"></div></div><div class="field"><label for="condition">Sichtbarer Zustand vor der Abgabe</label><textarea id="condition" data-field="intake.condition" placeholder="z. B. kleiner Kratzer links, Gehäuse sonst unbeschädigt." maxlength="12000"></textarea></div><div class="field"><label for="accessoryStatus">Welches Zubehör gehört zur Abgabe?</label><select id="accessoryStatus" data-field="intake.accessoryStatus"><option value="unbekannt">Noch nicht erfasst</option><option value="keines">Kein Zubehör</option><option value="liste">Zubehör auflisten</option></select></div><div id="accessoryListFields" hidden><div class="field"><label for="accessories">Zubehörliste – ein Teil pro Zeile</label><textarea id="accessories" data-field="intake.accessories" placeholder="z. B. Netzteil, Akku, Koffer – jeweils mit Anzahl oder Kennung." maxlength="12000"></textarea></div></div><details id="intakeMoreDetails" class="optional-details"><summary>Name, Referenz und getroffene Absprachen ergänzen (optional)</summary><div class="field"><label for="sender">Dein Name</label><input id="sender" type="text" data-field="party.sender" placeholder="optional" maxlength="500"></div><div class="field"><label for="reference">Kennung / Referenz</label><input id="reference" type="text" data-field="intake.reference" placeholder="z. B. Auftragsnummer; bei Versand: Sendungsnummer mit Bezeichnung" maxlength="500"></div><div class="field"><label for="costNotes">Bereits getroffene Absprachen zu Arbeiten und Kosten</label><textarea id="costNotes" data-field="intake.costNotes" placeholder="Nur tatsächlich getroffene Absprachen notieren, z. B. Diagnose vereinbart, Rückruf vor weiteren Arbeiten." maxlength="12000"></textarea></div></details><p class="repair-note">Lass dir die Abgabe und wichtige Absprachen vom Betrieb bestätigen. Diese eigene Dokumentation erteilt keinen Reparaturauftrag und keine Kostenfreigabe.</p><div class="photo-list"><div class="photo-task" data-task="beforeOverall"><div class="photo-top"><div class="photo-title">Vorher: Gesamtansicht und Zubehör</div><span class="photo-status" role="status">Noch keine Datei</span></div><div class="photo-actions"><label class="file-label">Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="beforeOverall" aria-label="Fotografieren: Vorher: Gesamtansicht und Zubehör"></label><label class="file-label file-gallery">Galerie wählen<input type="file" accept="image/*" data-photo="beforeOverall" aria-label="Aus Galerie wählen: Vorher: Gesamtansicht und Zubehör"></label></div><img class="preview" data-preview="beforeOverall" alt="Vorschau: Vorher: Gesamtansicht und Zubehör"><button class="btn btn-secondary file-remove" type="button" data-remove-file="beforeOverall" hidden>Datei entfernen</button></div><div class="photo-task" data-task="beforeDetail"><div class="photo-top"><div class="photo-title">Vorher: auffällige Stelle / Kennung</div><span class="photo-status" role="status">Noch keine Datei</span></div><div class="photo-actions"><label class="file-label">Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="beforeDetail" aria-label="Fotografieren: Vorher: auffällige Stelle / Kennung"></label><label class="file-label file-gallery">Galerie wählen<input type="file" accept="image/*" data-photo="beforeDetail" aria-label="Aus Galerie wählen: Vorher: auffällige Stelle / Kennung"></label></div><img class="preview" data-preview="beforeDetail" alt="Vorschau: Vorher: auffällige Stelle / Kennung"><button class="btn btn-secondary file-remove" type="button" data-remove-file="beforeDetail" hidden>Datei entfernen</button></div><div class="photo-task" data-task="receipt"><div class="photo-top"><div class="photo-title">Abgabebeleg / Reparaturbeleg</div><span class="photo-status" role="status">Noch keine Datei</span></div><div class="photo-actions"><label class="file-label">Beleg auswählen<input type="file" accept="image/*,application/pdf" data-attachment="receipt" aria-label="Beleg auswählen: Abgabebeleg / Reparaturbeleg"></label></div><img class="preview" data-preview="receipt" alt="Vorschau: Abgabebeleg / Reparaturbeleg"><button class="btn btn-secondary file-remove" type="button" data-remove-file="receipt" hidden>Datei entfernen</button></div></div><p class="hint">Fotos erscheinen in der Dokumentation. Einen hochgeladenen PDF-Beleg bitte separat beifügen.</p></section><section class="step" id="step-3" data-step="3"><h2>3. Rücknahme und Vergleich</h2><p class="intro">Du kannst die Dokumentation schon vor der Rücknahme als PDF speichern und später ergänzen.</p><div class="field"><label for="returnStatus">Stand der Rücknahme</label><select id="returnStatus" data-field="returned.status"><option value="offen">Noch nicht zurückerhalten</option><option value="zurueck">Gerät zurückerhalten</option></select></div><div id="returnFields" class="return-fields" hidden><div class="field"><label for="returnDate">Datum der Rücknahme</label><input id="returnDate" type="date" data-field="returned.date" placeholder="" maxlength="500"></div><div class="field"><label for="result">Laut Betrieb durchgeführte Arbeiten</label><textarea id="result" data-field="returned.result" placeholder="z. B. Anschlussbuchse erneuert, laut Reparaturbericht." maxlength="12000"></textarea></div><div class="field"><label for="functionCheck">Eigene Funktionsprüfung</label><select id="functionCheck" data-field="returned.functionCheck"><option value="offen">Noch nicht geprüft</option><option value="behoben">Beschriebener Fehler beim Test nicht mehr aufgetreten</option><option value="weiterhin">Beschriebener Fehler tritt weiterhin auf</option><option value="teilweise">Teilweise behoben / anderes Problem festgestellt</option></select></div><div id="testNoteFields" hidden><div class="field"><label for="testNote">Was hast du wie lange geprüft? (optional)</label><textarea id="testNote" data-field="returned.testNote" maxlength="12000" placeholder="z. B. zehn Minuten im Akkubetrieb getestet; ursprünglichen Fehler dabei nicht beobachtet."></textarea></div></div><div id="returnedAccessoriesFields"><div class="field"><label for="returnedAccessories">Zubehör bei Rücknahme</label><select id="returnedAccessories" data-field="returned.accessories"><option value="offen">Noch nicht geprüft</option><option value="vollstaendig">Nach eigener Prüfung vollständig</option><option value="fehlt">Es fehlt Zubehör / Abweichung festgestellt</option></select></div></div><p id="returnAccessoriesHint" class="hint" hidden></p><div class="field"><label for="returnedCondition">Sichtbarer Zustand bei Rücknahme</label><textarea id="returnedCondition" data-field="returned.condition" placeholder="z. B. Gehäuse mit dem Zustand vor Abgabe verglichen." maxlength="12000"></textarea></div><div class="field"><label for="openIssues">Offene Punkte / festgestellte Abweichungen</label><textarea id="openIssues" data-field="returned.openIssues" placeholder="Fehlendes Zubehör, weiterhin auftretende Fehler oder andere Auffälligkeiten beschreiben." maxlength="12000"></textarea></div><div class="photo-list"><div class="photo-task" data-task="afterOverall"><div class="photo-top"><div class="photo-title">Nachher: Gesamtansicht und Zubehör</div><span class="photo-status" role="status">Noch keine Datei</span></div><div class="photo-actions"><label class="file-label">Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="afterOverall" aria-label="Fotografieren: Nachher: Gesamtansicht und Zubehör"></label><label class="file-label file-gallery">Galerie wählen<input type="file" accept="image/*" data-photo="afterOverall" aria-label="Aus Galerie wählen: Nachher: Gesamtansicht und Zubehör"></label></div><img class="preview" data-preview="afterOverall" alt="Vorschau: Nachher: Gesamtansicht und Zubehör"><button class="btn btn-secondary file-remove" type="button" data-remove-file="afterOverall" hidden>Datei entfernen</button></div><div class="photo-task" data-task="afterDetail"><div class="photo-top"><div class="photo-title">Nachher: auffällige Stelle / Vergleich</div><span class="photo-status" role="status">Noch keine Datei</span></div><div class="photo-actions"><label class="file-label">Fotografieren<input type="file" accept="image/*" capture="environment" data-photo="afterDetail" aria-label="Fotografieren: Nachher: auffällige Stelle / Vergleich"></label><label class="file-label file-gallery">Galerie wählen<input type="file" accept="image/*" data-photo="afterDetail" aria-label="Aus Galerie wählen: Nachher: auffällige Stelle / Vergleich"></label></div><img class="preview" data-preview="afterDetail" alt="Vorschau: Nachher: auffällige Stelle / Vergleich"><button class="btn btn-secondary file-remove" type="button" data-remove-file="afterDetail" hidden>Datei entfernen</button></div></div></div><p id="returnPending" class="phase-flag">Noch nicht zurückerhalten. Du kannst die Abgabe jetzt als PDF speichern und die Rücknahme später ergänzen.</p></section><section class="step" id="step-4" data-step="4"><h2 class="screen-only">4. Prüfen und PDF speichern</h2><div class="final-actions screen-only"><button class="btn btn-secondary" type="button" id="finalBackBtn">Zurück zur Rücknahme</button><button class="btn btn-primary" type="button" id="finalPrintBtn">PDF speichern</button><button class="btn btn-secondary" type="button" id="newCaseBtn">Neuer Vorgang</button></div><div id="missingCheck" class="missing-check screen-only" aria-live="polite" hidden></div><div class="document-head"><div class="document-banner"><div class="document-identity"><div class="document-logo"><img src="/assets/brand/kramurai-raven-light-background.svg?v=20261010-brand-v4" alt=""></div><div class="document-brand-lockup"><img class="document-wordmark" src="/assets/brand/kramurai-wordmark-header.svg?v=20261010-brand-v4" alt="Kramurai"><div class="document-tagline">Einfach. Nützlich. Kostenlos.</div></div></div><div class="document-meta">Eigene Dokumentation<br>Stand: <span id="docUpdatedDate"></span></div></div><div class="document-title-area"><h2 class="document-title">Reparatur dokumentieren</h2><p class="document-subtitle">Fehlerbeschreibung, Abgabe und Rücknahme</p></div></div><div id="summary" class="summary"></div><p class="document-scope">Eigene Angaben und Beobachtungen. Keine Bestätigung des Betriebs, kein Reparaturauftrag und keine Erklärung zur Abnahme einer Leistung.</p><div class="screen-only" style="margin-top:18px"><button class="btn btn-primary" type="button" id="finalPrintBtnBottom">PDF speichern</button><p class="hint">Im Druckdialog „Als PDF speichern“ wählen. Für Fotos die Druckvorschau prüfen.</p><button class="btn btn-danger" type="button" id="deleteBtn">Diesen Vorgang löschen</button></div></section><nav class="wizard-nav screen-only" id="wizardNav" aria-label="Formularschritte"><button class="btn btn-secondary" id="backBtn" type="button">Zurück</button><button class="btn btn-primary" id="nextBtn" type="button">Weiter</button></nav></form><aside class="privacy-note screen-only">Deine Vorgänge werden lokal gespeichert. Browserdaten löschen kann diese Angaben und Fotos entfernen. Nutze „Vorgang sichern“ für eine weiterbearbeitbare Sicherung; fertige PDFs außerhalb des Browsers aufbewahren.</aside></main><footer class="wrap screen-only"><nav class="footer-links" aria-label="Weitere Links"><a href="/">Startseite</a><a href="/datenschutz/">Datenschutz</a><a href="/impressum/">Impressum</a></nav><p>© Kramurai · Einfach. Nützlich. Kostenlos.</p></footer><script src="/assets/case-backup.js"></script><script src="app.js"></script></body></html>
