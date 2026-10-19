@@ -57,6 +57,12 @@
   const createCaseTopBtn = document.getElementById("createCaseTopBtn");
   const missingCheck = document.getElementById("missingCheck");
   const wizardNav = document.getElementById("wizardNav");
+  const entryResumeBtn = document.getElementById("entryResumeBtn");
+  const entryNewCaseBtn = document.getElementById("entryNewCaseBtn");
+  const entryHint = document.querySelector(".result-effort");
+  const entryStartLabel = entryResumeBtn.textContent;
+  const entryStartHint = entryHint.textContent;
+
 
   function setPrintButtons(disabled, text) {
     [finalPrintBtn, finalPrintBtnBottom].filter(Boolean).forEach(btn => {
@@ -151,6 +157,15 @@
     caseSelect.value = state.caseId;
     caseCount.textContent = "(" + entries.length + ")";
     const busy = fileBusyCount > 0;
+    const hasDraft = Boolean(state.item.name.trim()) || state.currentStep > 1;
+    entryResumeBtn.textContent = hasDraft ? "Vorgang fortsetzen" : entryStartLabel;
+    entryResumeBtn.disabled = busy;
+    entryNewCaseBtn.hidden = !hasDraft;
+    entryNewCaseBtn.disabled = busy;
+    entryHint.textContent = hasDraft
+      ? "Aktueller Vorgang: " + (state.item.name.trim() || "Ohne Bezeichnung") + " · Schritt " + state.currentStep + " von " + TOTAL_STEPS
+      : entryStartHint;
+
     document.querySelectorAll("[data-photo], [data-attachment], [data-remove-file]").forEach(control => { control.disabled = busy; });
     // Die Zusammenfassung darf erst nach dem Speichern aller Fotos entstehen.
     nextBtn.disabled = busy;
@@ -337,6 +352,11 @@
     }
     return true;
   }
+
+  entryResumeBtn.addEventListener("click", () => {
+    if (!fileBusyCount) showStep(state.currentStep || 1);
+  });
+  entryNewCaseBtn.addEventListener("click", createNewCase);
 
   backBtn.addEventListener("click", () => showStep(state.currentStep - 1));
   nextBtn.addEventListener("click", () => {
