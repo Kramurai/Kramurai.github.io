@@ -15,21 +15,33 @@
     || navigator.doNotTrack === '1' || window.doNotTrack === '1';
   let sent = false, loading = false, trackerScript;
 
-  function track() {
-    if (choice !== 'allow' || privacySignal || sent || loading
-      || location.hostname !== 'kramurai.github.io' || location.protocol !== 'https:') return;
-    // The vendor transmits the full page/referrer URL. Skip possibly personal URL values.
-    if (location.search) return;
-    if (location.hash && !document.getElementById(location.hash.slice(1))) return;
+  function safeUrlContext() {
+    // Pinterest appends exactly these two fixed values to public outbound links.
+    // No arbitrary campaign names or other query values may reach the vendor.
+    if (location.search) {
+      const pairs = [...new URLSearchParams(location.search)];
+      if (pairs.length !== 2
+        || pairs.filter(([key, value]) => key === 'utm_source' && value === 'Pinterest').length !== 1
+        || pairs.filter(([key, value]) => key === 'utm_medium' && value === 'organic').length !== 1) return false;
+    }
+    if (location.hash && !document.getElementById(location.hash.slice(1))) return false;
     if (document.referrer) {
       try {
         const ref = new URL(document.referrer);
-        if (ref.search || ref.hash) return;
-      } catch (_) { return; }
+        if (ref.search || ref.hash) return false;
+      } catch (_) { return false; }
     }
+    return true;
+  }
+
+  function track() {
+    if (choice !== 'allow' || privacySignal || sent || loading
+      || location.hostname !== 'kramurai.github.io' || location.protocol !== 'https:') return;
+    // The vendor transmits the full URL. Check before loading and again before sending.
+    if (!safeUrlContext()) return;
     const send = () => {
       loading = false;
-      if (choice !== 'allow' || privacySignal || sent || !window.beTracker) return;
+      if (choice !== 'allow' || privacySignal || sent || !window.beTracker || !safeUrlContext()) return;
       sent = true;
       window.beTracker.t({hash: '3f7b01db1a0d12bb36bbbba02f0f3ca2'});
     };

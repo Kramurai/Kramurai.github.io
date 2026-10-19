@@ -12,11 +12,12 @@ const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trad
   const context=await browser.newContext({viewport:{width:options.width||390,height:850},reducedMotion:'reduce',serviceWorkers:'block'});
   const requests=[],external=[],errors=[];let release;
   const gate=options.slow?new Promise(r=>release=r):null;
-  await context.addInitScript(({choice,signal,blocked,expired})=>{
+  await context.addInitScript(({choice,signal,blocked,expired,referrer})=>{
    if(choice)localStorage.setItem('kramurai-statistics-v1',JSON.stringify({version:1,choice,updatedAt:expired?0:Date.now()}));
    if(signal)Object.defineProperty(navigator,signal==='gpc'?'globalPrivacyControl':'doNotTrack',{get:()=>signal==='gpc'?true:'1'});
    if(blocked)Object.defineProperty(window,'localStorage',{get:()=>{throw new Error('Storage blocked')}});
-  },{choice:options.choice,signal:options.signal,blocked:options.blocked,expired:options.expired});
+   if(referrer)Object.defineProperty(document,'referrer',{get:()=>referrer});
+  },{choice:options.choice,signal:options.signal,blocked:options.blocked,expired:options.expired,referrer:options.referrer});
   await context.route('**/*',async route=>{
    const u=new URL(route.request().url());
    if(u.hostname==='tracker.metricool.com'){
@@ -77,6 +78,38 @@ const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trad
  });
  await check('withdrawal while tracker script is loading',async()=>{
   const s=await session({slow:true});try{await s.p.goto(origin);await s.p.getByRole('button',{name:'Statistik erlauben',exact:true}).click();await s.p.locator('.statistics-settings').click();await s.p.getByRole('button',{name:'Ohne Statistik',exact:true}).click();s.release();await s.p.waitForTimeout(200);assert.equal(s.pixels().length,0);}finally{s.release();await s.context.close();}
+ });
+ const pinterestQuery='?utm_source=Pinterest&utm_medium=organic';
+ await check('observed Pinterest link counts only after consent and excludes form values',async()=>{
+  const s=await session({referrer:'https://www.pinterest.com/'});try{
+   const url=origin+'/handy-trade-in-dokumentieren/'+pinterestQuery;
+   await s.p.goto(url);await s.p.locator('#itemName').fill('PRIVATE_TEST_DEVICE_8921');await s.p.locator('#sender').fill('PRIVATE_TEST_PERSON_4381');assert.equal(s.requests.length,0);
+   await s.p.getByRole('button',{name:'Statistik erlauben',exact:true}).click();await s.p.waitForFunction(()=>window.beTracker);await s.p.waitForTimeout(100);
+   assert.equal(s.pixels().length,1);assert.equal(s.pixels()[0].searchParams.get('u'),url);assert.equal(s.pixels()[0].searchParams.get('ref'),'https://www.pinterest.com/');assert(!s.pixels()[0].href.includes('PRIVATE_TEST_'));assert.deepEqual(s.errors,[]);
+  }finally{await s.context.close()}
+ });
+ await check('fixed Pinterest parameters accepted in either order with persisted consent',async()=>{
+  const s=await session({choice:'allow'});try{await s.p.goto(origin+'/?utm_medium=organic&utm_source=Pinterest');await s.p.waitForFunction(()=>window.beTracker);await s.p.waitForTimeout(100);assert.equal(s.pixels().length,1)}finally{await s.context.close()}
+ });
+ for(const options of [{choice:'deny'},{choice:'allow',signal:'gpc'},{choice:'allow',signal:'dnt'}])await check('Pinterest link respects refusal/privacy '+JSON.stringify(options),async()=>{
+  const s=await session(options);try{await s.p.goto(origin+'/'+pinterestQuery);await s.p.waitForTimeout(100);assert.equal(s.requests.length,0)}finally{await s.context.close()}
+ });
+ for(const query of [
+  pinterestQuery+'&email=PRIVATE_TEST_VALUE',pinterestQuery+'&utm_campaign=PRIVATE_TEST_VALUE',
+  pinterestQuery+'&utm_source=PRIVATE_TEST_VALUE',pinterestQuery+'&utm_medium=PRIVATE_TEST_VALUE',
+  '?utm_source=PRIVATE_TEST_VALUE&utm_medium=organic','?utm_source=Pinterest&utm_medium=PRIVATE_TEST_VALUE',
+  '?utm_source=Pinterest',pinterestQuery+'#PRIVATE_TEST_VALUE'
+ ])await check('other or duplicate Pinterest URL values excluded '+query,async()=>{
+  const s=await session({choice:'allow'});try{await s.p.goto(origin+'/'+query);await s.p.waitForTimeout(100);assert.equal(s.requests.length,0)}finally{await s.context.close()}
+ });
+ for(const referrer of ['https://www.pinterest.com/?email=PRIVATE_TEST_VALUE','https://www.pinterest.com/#PRIVATE_TEST_VALUE'])await check('Pinterest destination still rejects private referrer '+referrer,async()=>{
+  const s=await session({choice:'allow',referrer});try{await s.p.goto(origin+'/'+pinterestQuery);await s.p.waitForTimeout(100);assert.equal(s.requests.length,0)}finally{await s.context.close()}
+ });
+ for(const next of ['/?email=PRIVATE_TEST_VALUE','/#PRIVATE_TEST_VALUE'])await check('URL revalidated when pending tracker completes '+next,async()=>{
+  const s=await session({slow:true});try{
+   await s.p.goto(origin+'/'+pinterestQuery);await s.p.getByRole('button',{name:'Statistik erlauben',exact:true}).click();
+   await s.p.evaluate(url=>history.replaceState(null,'',url),next);s.release();await s.p.waitForTimeout(200);assert.equal(s.pixels().length,0);
+  }finally{s.release();await s.context.close()}
  });
  await check('unavailable browser storage fails closed until explicit choice',async()=>{
   const s=await session({blocked:true});try{await s.p.goto(origin);assert.equal(s.requests.length,0);await s.p.getByRole('button',{name:'Ohne Statistik',exact:true}).click();assert(await s.p.locator('.statistics-panel').isHidden());assert.deepEqual(s.errors,[]);}finally{await s.context.close();}
