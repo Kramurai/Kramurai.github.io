@@ -83,3 +83,5 @@ Damit wird der festgehaltene Stand lokal geöffnet. Für eine erneute Veröffent
 ## Qualitätsüberarbeitung der vorhandenen Helfer (Entwurf, 19. Oktober 2026)
 
 Gerätekennungen der drei Versandhelfer sind optional aufklappbar; Felder, Speicherkennungen und Sicherungsformate bleiben erhalten. Nicht erfasste Angaben werden ausdrücklich als nicht dokumentiert bezeichnet. Beim Router sind Vertragspartner und Rücksendeempfänger getrennt beschriftet, Hinweise auf ein Ankaufportal sind korrigiert, offene oder abgelehnte Anbieter-Rückmeldungen werden mit Text und Farbe erkennbar. Im Handy-Helfer wird eine noch nicht dokumentierte Rückmeldung ausdrücklich als offen bezeichnet. Die bereits vorhandenen wichtigen Widerspruchshinweise beim Autoverkauf erhalten eine rötliche Hervorhebung. Die Druckseiten tragen Herkunft, Website und Vorlagenstand, ohne pauschalen Copyright- oder Lizenzvermerk.
+
+Beim Öffnen oder Anlegen eines Vorgangs bleiben die PDF-Schaltflächen gesperrt, bis dessen Daten und Vorschauen bereitstehen. `node tools/check_case_loading.cjs` prüft dies mit absichtlich verzögerten Dateizugriffen in allen vier Helfern.

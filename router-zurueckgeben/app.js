@@ -212,13 +212,17 @@
       renderCaseList();
       return;
     }
-    resetCaseImages();
-    state = saved;
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(state.currentStep || 1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      resetCaseImages();
+      state = saved;
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(state.currentStep || 1);
+    } finally { endFileWork(); }
   }
 
   async function createNewCase() {
@@ -226,14 +230,18 @@
       alert("Bitte warten, bis das Foto gespeichert wurde.");
       return;
     }
-    saveState(false);
-    resetCaseImages();
-    state = defaultState();
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      saveState(false);
+      resetCaseImages();
+      state = defaultState();
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(1);
+    } finally { endFileWork(); }
   }
 
   function beginFileWork() {
