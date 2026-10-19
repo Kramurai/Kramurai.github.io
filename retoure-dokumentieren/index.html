@@ -449,7 +449,7 @@
 .result-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:20px}
 .result-actions .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;line-height:1.25;padding:13px 17px}
 .result-example-link{font-size:.9rem;font-weight:700;color:#245d55;text-underline-offset:3px}
-.result-effort{margin-top:11px}.result-intro-example{margin:0;min-width:0;width:100%}.result-intro-example img{display:block;width:100%;height:auto;box-shadow:0 12px 24px #163b3414;border-radius:12px}
+.result-effort{margin-top:11px;overflow-wrap:anywhere}.result-actions [hidden]{display:none!important}.result-intro-example{margin:0;min-width:0;width:100%}.result-intro-example img{display:block;width:100%;height:auto;box-shadow:0 12px 24px #163b3414;border-radius:12px}
 .result-intro-example figcaption{font-size:.7rem;color:#4a6258;line-height:1.4;margin-top:8px}
 
 html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
@@ -479,7 +479,7 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
 <h1>Retoure dokumentieren</h1><p class="result-promise">Deine Fotos und Versanddaten als PDF.</p>
 <p class="lead">Halte fest, was du zurückschickst und wie du es verpackt hast. Ergänze Fotos und Versanddaten und speichere deine eigene Dokumentation als PDF.</p>
 <p class="result-local">Deine Angaben und Fotos bleiben lokal in deinem Browser.</p>
-<div class="result-actions"><a class="btn btn-primary" href="#step-1">Jetzt Retoure dokumentieren</a><a class="result-example-link" href="retoure-beispiel.pdf" download="Kramurai_Retoure_Beispiel.pdf">PDF-Beispiel ansehen</a></div>
+<div class="result-actions"><button class="btn btn-primary" type="button" id="entryResumeBtn">Jetzt Retoure dokumentieren</button><button class="btn btn-secondary" type="button" id="entryNewCaseBtn" hidden>Neuer Vorgang</button><a class="result-example-link" href="retoure-beispiel.pdf" download="Kramurai_Retoure_Beispiel.pdf">PDF-Beispiel ansehen</a></div>
 <p class="result-effort">Zum Start reicht die Bezeichnung. Weitere Angaben sind optional.</p></div>
 <figure class="result-intro-example"><img src="retoure-ergebnis.png" alt="Vergrößerte PDF-Beispielausschnitte: Foto, Zustand und Sendungsnummer"><figcaption>Ausgefülltes Muster mit Beispieldaten und illustrativem Foto</figcaption></figure></div>
       <details class="case-manager screen-only">
@@ -734,6 +734,6 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
   </main>
 
   <script src="/assets/case-backup.js"></script>
-  <script src="/retoure-dokumentieren/app.js?v=20261019-remove-files-v1"></script>
+  <script src="/retoure-dokumentieren/app.js?v=20261019-resume-entry-v1"></script>
 </body>
 </html>

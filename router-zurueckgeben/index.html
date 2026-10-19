@@ -423,7 +423,7 @@
 .result-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:20px}
 .result-actions .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;line-height:1.25;padding:13px 17px}
 .result-example-link{font-size:.9rem;font-weight:700;color:#245d55;text-underline-offset:3px}
-.result-effort{margin-top:11px}.result-intro-example{margin:0;min-width:0;width:100%}.result-intro-example img{display:block;width:100%;height:auto;box-shadow:0 12px 24px #163b3414;border-radius:12px}
+.result-effort{margin-top:11px;overflow-wrap:anywhere}.result-actions [hidden]{display:none!important}.result-intro-example{margin:0;min-width:0;width:100%}.result-intro-example img{display:block;width:100%;height:auto;box-shadow:0 12px 24px #163b3414;border-radius:12px}
 .result-intro-example figcaption{font-size:.7rem;color:#4a6258;line-height:1.4;margin-top:8px}
 
 html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
@@ -449,7 +449,7 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
 
   <main class="wrap wizard">
     <div class="wizard-head">
-      <div class="result-intro"><div class="result-intro-copy"><div class="eyebrow">KOSTENLOS · OHNE ANMELDUNG</div><h1>Router zurückgeben</h1><p class="result-promise">Gerät, Zubehör und Versand als PDF.</p><p class="lead">Halte fest, welches Gerät und Zubehör du zurückschickst. Ergänze Fotos und Versanddaten und speichere deine eigene Rückgabe-Dokumentation.</p><p class="result-local">Deine Angaben und Fotos bleiben lokal in deinem Browser.</p><div class="result-actions"><a class="btn btn-primary" href="#step-1">Rückgabe dokumentieren</a><a class="result-example-link" href="beispiel.pdf" download="Kramurai_Router_Beispiel.pdf">PDF-Beispiel ansehen</a></div><p class="result-effort">Zum Start reicht die Bezeichnung. Weitere Angaben sind optional.</p></div><figure class="result-intro-example"><img src="ergebnis.png" alt="Ausgefülltes Router-PDF-Beispiel: Foto und dokumentierte Angaben"><figcaption>Vergrößerte PDF-Ausschnitte · Beispieldaten und illustratives Foto</figcaption></figure></div>
+      <div class="result-intro"><div class="result-intro-copy"><div class="eyebrow">KOSTENLOS · OHNE ANMELDUNG</div><h1>Router zurückgeben</h1><p class="result-promise">Gerät, Zubehör und Versand als PDF.</p><p class="lead">Halte fest, welches Gerät und Zubehör du zurückschickst. Ergänze Fotos und Versanddaten und speichere deine eigene Rückgabe-Dokumentation.</p><p class="result-local">Deine Angaben und Fotos bleiben lokal in deinem Browser.</p><div class="result-actions"><button class="btn btn-primary" type="button" id="entryResumeBtn">Rückgabe dokumentieren</button><button class="btn btn-secondary" type="button" id="entryNewCaseBtn" hidden>Neuer Vorgang</button><a class="result-example-link" href="beispiel.pdf" download="Kramurai_Router_Beispiel.pdf">PDF-Beispiel ansehen</a></div><p class="result-effort">Zum Start reicht die Bezeichnung. Weitere Angaben sind optional.</p></div><figure class="result-intro-example"><img src="ergebnis.png" alt="Ausgefülltes Router-PDF-Beispiel: Foto und dokumentierte Angaben"><figcaption>Vergrößerte PDF-Ausschnitte · Beispieldaten und illustratives Foto</figcaption></figure></div>
       <details class="case-manager screen-only">
         <summary>
           <span class="case-manager-toggle-title">Meine Vorgänge <span id="caseCount"></span></span>
@@ -736,6 +736,6 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
   </main>
 
   <script src="/assets/case-backup.js"></script>
-  <script src="/router-zurueckgeben/app.js?v=20261019-remove-files-v1"></script>
+  <script src="/router-zurueckgeben/app.js?v=20261019-resume-entry-v1"></script>
 </body>
 </html>
