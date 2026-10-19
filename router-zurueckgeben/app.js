@@ -212,13 +212,17 @@
       renderCaseList();
       return;
     }
-    resetCaseImages();
-    state = saved;
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(state.currentStep || 1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      resetCaseImages();
+      state = saved;
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(state.currentStep || 1);
+    } finally { endFileWork(); }
   }
 
   async function createNewCase() {
@@ -226,14 +230,18 @@
       alert("Bitte warten, bis das Foto gespeichert wurde.");
       return;
     }
-    saveState(false);
-    resetCaseImages();
-    state = defaultState();
-    form.reset();
-    hydrateForm();
-    saveState(false);
-    await restorePreviews();
-    showStep(1);
+    beginFileWork();
+    setPrintButtons(true, "Vorgang wird geöffnet …");
+    try {
+      saveState(false);
+      resetCaseImages();
+      state = defaultState();
+      form.reset();
+      hydrateForm();
+      saveState(false);
+      await restorePreviews();
+      showStep(1);
+    } finally { endFileWork(); }
   }
 
   function beginFileWork() {
@@ -581,7 +589,7 @@
   });
 
   const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[ch]));
-  const display = value => value && String(value).trim() ? esc(value) : "–";
+  const display = value => value && String(value).trim() ? esc(value) : "Nicht dokumentiert";
 
   function accessoryList() {
     const items = [];
@@ -593,8 +601,9 @@
     return items;
   }
 
-  function row(key, value) {
+  function row(key, value, required = false) {
     const text = String(value ?? "");
+    if (!text.trim() && !required) return "";
     const isLong = text.length > 420 || text.split("\n").length > 8;
     return '<div class="summary-row' + (isLong ? ' summary-row-long' : '') +
       '"><div class="summary-key">' + esc(key).replaceAll('/', '/<wbr>') + '</div><div>' + display(value) + '</div></div>';
@@ -618,7 +627,7 @@
     const hints = [];
     const suggest = (message, step) => hints.push({ message, step });
     if (!String(state.party.recipient || "").trim())
-      suggest("Empfänger / Ankaufportal ergänzen, falls bekannt.", 1);
+      suggest("Rücksendeempfänger laut Rücksendeanweisung ergänzen, falls bekannt.", 1);
     if (!state.condition.rating)
       suggest("Zustand unmittelbar vor dem Verpacken auswählen.", 2);
     if (!String(state.item.serial || "").trim() && !String(state.item.mac || "").trim())
@@ -677,25 +686,25 @@
     if (updated) updated.textContent = new Date(state.updatedAt).toLocaleString("de-DE");
     const accessories = accessoryList();
     let html = '<div class="summary-card"><h3>Gegenstand</h3>' +
-      row("Bezeichnung", state.item.name) +
+      row("Bezeichnung", state.item.name, true) +
       row("Hersteller", state.item.manufacturer) +
       row("Modell", state.item.model) +
-      row("Anbieter", state.party.provider) +
+      row("Vertragspartner / Anbieter", state.party.provider) +
       row("Kunden-/Vertragsnummer", state.party.customerNo) +
       row("Seriennummer", state.item.serial) +
       row("MAC-Adresse / Gerätekennung", state.item.mac) +
       row("Absender", state.party.sender) +
-      row("Empfänger", state.party.recipient) +
+      row("Rücksendeempfänger", state.party.recipient) +
       row("Rücksendegrund", state.item.reason) +
       '</div>';
 
     html += '<div class="summary-card"><h3>Zustand und Zubehör</h3>' +
-      row("Zustand", state.condition.rating) +
+      row("Zustand", state.condition.rating, true) +
       row("Beschreibung", state.condition.note) +
-      row("Mitgesendet", accessories.length ? accessories.join(", ") : "") +
+      row("Mitgesendet", accessories.length ? accessories.join(", ") : "", true) +
       '</div>';
 
-    html += '<div class="summary-card"><h3>Versand</h3>' +
+    html += '<div class="summary-card"><h3>Versandangaben</h3>' +
       row("Paketdienst", state.shipment.carrier) +
       row("Sendungsnummer", state.shipment.tracking) +
       row("Versanddatum", formatDate(state.shipment.date)) +
@@ -704,8 +713,11 @@
       row("Zuletzt geändert", new Date(state.updatedAt).toLocaleString("de-DE")) +
       '</div>';
 
-    if (state.return.confirmed || state.return.confirmationDate || state.return.confirmationRef) {
-      html += '<div class="summary-card"><h3>Rückmeldung des Anbieters (nach Versand)</h3>' +
+    {
+      const confirmed=state.return.confirmed;
+      const statusText=confirmed === "Nicht anerkannt" ? "Rückgabe laut eigener Angabe nicht anerkannt" : confirmed === "Bestätigt" ? "Rückgabe laut eigener Angabe bestätigt" : "Noch keine eindeutige Rückmeldung des Anbieters dokumentiert";
+      const statusClass=confirmed === "Nicht anerkannt" ? "quality-problem" : confirmed === "Bestätigt" ? "quality-recorded" : "quality-open";
+      html += '<div class="summary-card"><h3>Rückmeldung des Anbieters (nach Versand)</h3><p class="quality-status '+statusClass+'">'+statusText+'</p>' +
         row("Ergebnis", state.return.confirmed) +
         row("Datum der Rückmeldung", formatDate(state.return.confirmationDate)) +
         row("Referenz / Ticket", state.return.confirmationRef) +
@@ -713,6 +725,7 @@
     }
 
     html += '<div class="summary-card photo-summary-card"><h3>Fotodokumentation und Belege</h3><div class="summary-photos" id="summaryPhotos"></div></div>';
+    if (state.shipment.date && state.return.confirmationDate && state.return.confirmationDate < state.shipment.date) html += '<div class="summary-card"><h3>Prüfhinweis</h3><p class="quality-status quality-problem">Die Rückmeldung des Anbieters ist vor dem Versand datiert. Bitte die Datumsangaben prüfen.</p></div>';
     summary.innerHTML = html;
     summary.querySelectorAll(".summary-card").forEach(card => {
       if (card.querySelector(".summary-row-long")) {
