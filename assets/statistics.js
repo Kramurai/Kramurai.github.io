@@ -16,13 +16,23 @@
   let sent = false, loading = false, trackerScript;
 
   function safeUrlContext() {
-    // Pinterest appends exactly these two fixed values to public outbound links.
-    // No arbitrary campaign names or other query values may reach the vendor.
+    // Allow only the fixed Pinterest link values documented in the privacy notice.
     if (location.search) {
-      const pairs = [...new URLSearchParams(location.search)];
-      if (pairs.length !== 2
-        || pairs.filter(([key, value]) => key === 'utm_source' && value === 'Pinterest').length !== 1
-        || pairs.filter(([key, value]) => key === 'utm_medium' && value === 'organic').length !== 1) return false;
+      const pairs = new URLSearchParams(location.search);
+      const pairCount = [...pairs].length;
+      const hasExactPair = (key, value) => {
+        const values = pairs.getAll(key);
+        return values.length === 1 && values[0] === value;
+      };
+      const standardPinterest = pairCount === 2
+        && hasExactPair('utm_source', 'Pinterest')
+        && hasExactPair('utm_medium', 'organic');
+      const handyVideoPin = location.pathname === '/handy-trade-in-dokumentieren/'
+        && pairCount === 3
+        && hasExactPair('utm_source', 'pinterest')
+        && hasExactPair('utm_medium', 'organic')
+        && hasExactPair('utm_campaign', 'handy_reel');
+      if (!standardPinterest && !handyVideoPin) return false;
     }
     if (location.hash && !document.getElementById(location.hash.slice(1))) return false;
     if (document.referrer) {
