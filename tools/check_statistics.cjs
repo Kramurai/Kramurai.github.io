@@ -88,6 +88,33 @@ const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trad
    assert.equal(s.pixels().length,1);assert.equal(s.pixels()[0].searchParams.get('u'),url);assert.equal(s.pixels()[0].searchParams.get('ref'),'https://www.pinterest.com/');assert(!s.pixels()[0].href.includes('PRIVATE_TEST_'));assert.deepEqual(s.errors,[]);
   }finally{await s.context.close()}
  });
+ const handyPath='/handy-trade-in-dokumentieren/';
+ const videoPinQuery='?utm_source=pinterest&utm_medium=organic&utm_campaign=handy_reel';
+ await check('Handy video Pin counts only after consent',async()=>{
+  const s=await session();try{
+   const url=origin+handyPath+videoPinQuery;
+   await s.p.goto(url);
+   assert.equal(s.requests.length,0);
+   await s.p.getByRole('button',{name:'Statistik erlauben',exact:true}).click();
+   await s.p.waitForFunction(()=>window.beTracker);await s.p.waitForTimeout(100);
+   assert.equal(s.pixels().length,1);
+   assert.equal(s.pixels()[0].searchParams.get('u'),url);
+  }finally{await s.context.close()}
+ });
+ await check('Handy video Pin rejects other paths, campaigns and additional parameters',async()=>{
+  const s=await session({choice:'allow'});try{
+   for(const suffix of [
+    '/router-zurueckgeben/'+videoPinQuery,
+    handyPath+videoPinQuery+'&email=PRIVATE_TEST_VALUE',
+    handyPath+videoPinQuery+'&utm_campaign=handy_reel',
+    handyPath+videoPinQuery.replace('handy_reel','PRIVATE_TEST_VALUE')
+   ]){
+    await s.p.goto(origin+suffix);
+    await s.p.waitForTimeout(100);
+    assert.equal(s.requests.length,0,suffix);
+   }
+  }finally{await s.context.close()}
+ });
  await check('fixed Pinterest parameters accepted in either order with persisted consent',async()=>{
   const s=await session({choice:'allow'});try{await s.p.goto(origin+'/?utm_medium=organic&utm_source=Pinterest');await s.p.waitForFunction(()=>window.beTracker);await s.p.waitForTimeout(100);assert.equal(s.pixels().length,1)}finally{await s.context.close()}
  });
