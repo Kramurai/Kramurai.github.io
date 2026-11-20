@@ -93,6 +93,7 @@ const files = page => page.evaluate(() => new Promise((resolve, reject) => {
     await c.close();
 
     for (const [route, key] of helpers) {
+      console.log('CASE_SESSION_START ' + route);
       const c = await context();
       const errors = [];
       c.on('page', page => page.on('pageerror', error => errors.push(error.message)));
@@ -104,9 +105,16 @@ const files = page => page.evaluate(() => new Promise((resolve, reject) => {
       await a.locator('[data-attachment="receipt"]').setInputFiles({name:'TEST-original.pdf',mimeType:'application/pdf',buffer:pdf});
       await a.waitForFunction(() => document.querySelector('[data-task="receipt"]').classList.contains('done') && !document.querySelector('#nextBtn').disabled);
       await a.locator('details.case-manager').evaluate(element => { element.open = true; });
-      const pending = a.waitForEvent('download');
-      await a.locator('#backupExportBtn').click();
-      const download = await pending;
+      let download;
+      try {
+        [download] = await Promise.all([
+          a.waitForEvent('download', {timeout:10000}),
+          a.locator('#backupExportBtn').click({timeout:10000})
+        ]);
+      } catch (error) {
+        throw new Error(route + ': backup did not download; status=' + await a.locator('#backupStatus').innerText()
+          + '; pageErrors=' + JSON.stringify(errors) + '; ' + error.message);
+      }
       const archive = fs.readFileSync(await download.path());
       const before = await storedCases(a, key), originalFiles = await files(a);
       await b.goto(url); await blocked(b);
@@ -207,6 +215,7 @@ const files = page => page.evaluate(() => new Promise((resolve, reject) => {
       results.push({name:route,status:'passed',checks:['blocked-before-loading','no-stale-writes','file-isolation',
         'slow-photo-keeps-lock','latest-state-after-close','backup-import-adds-case','switch-case','reload',
         'independent-helper','back-navigation-loads-latest','simultaneous-start','320/390/1280','retry-keyboard']});
+      console.log('CASE_SESSION_PASS ' + route);
       await c.close();
     }
     for (const mode of ['missing','rejected']) {

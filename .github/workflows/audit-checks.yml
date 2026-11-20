@@ -25,10 +25,13 @@ jobs:
           BROWSER_PATH="$(node -p 'require("playwright").chromium.executablePath()')"
           echo "CHROMIUM_EXECUTABLE=$BROWSER_PATH" >> "$GITHUB_ENV"
           ln -s "$BROWSER_PATH" /tmp/chromium
+      - name: Check simultaneous helper tabs
+        run: timeout 180 node tools/check_case_sessions.cjs
       - name: Run existing checks and regression cases
         run: |
           failed=0
           for test in tools/check_*.cjs; do
+            if [ "$test" = "tools/check_case_sessions.cjs" ]; then continue; fi
             echo "::group::$test"
             if timeout 180 node "$test"; then
               echo "PASS $test"
