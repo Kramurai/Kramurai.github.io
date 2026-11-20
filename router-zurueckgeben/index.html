@@ -408,7 +408,7 @@
       a{color:inherit;text-decoration:none}
     }
   </style>
-  <link rel="stylesheet" href="/register-theme.css?v=20261019-notice1">
+  <link rel="stylesheet" href="/register-theme.css?v=20261120-tabs-v1">
   <link rel="icon" href="/assets/brand/favicon.svg?v=20261010-brand-v4" type="image/svg+xml" sizes="any">
   <link rel="icon" href="/favicon.ico?v=20261010-brand-v4" sizes="16x16 32x32 48x48 64x64">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20261010-brand-v4" sizes="180x180">
@@ -431,7 +431,7 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
 @media print{.preview-banner{display:none}}
 </style>
   <link rel="stylesheet" href="/assets/statistics.css?v=20261018-1">
-  <script defer src="/assets/statistics.js?v=20261019-pinterest-v1"></script>
+  <script defer src="/assets/statistics.js?v=20261120-battery-pin-v1"></script>
 </head>
 <body class="helper-page">
 <header class="site-header helper-site-header">
@@ -448,7 +448,12 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
   </header>
 
   <main class="wrap wizard">
-    <div class="wizard-head">
+    <section class="case-session-notice screen-only" data-case-session-notice role="status" aria-live="polite">
+      <p data-case-session-message>Helfer wird vorbereitet …</p>
+      <button class="btn btn-secondary" type="button" hidden>Erneut prüfen</button>
+      <noscript>Bitte JavaScript aktivieren, um diesen Helfer zu bearbeiten.</noscript>
+    </section>
+    <div class="wizard-head" data-case-session-root inert>
       <div class="result-intro"><div class="result-intro-copy"><div class="eyebrow">KOSTENLOS · OHNE ANMELDUNG</div><h1>Router zurückgeben</h1><p class="result-promise">Gerät, Zubehör und Versand als PDF.</p><p class="lead">Halte fest, welches Gerät und Zubehör du zurückschickst. Ergänze Fotos und Versanddaten und speichere deine eigene Rückgabe-Dokumentation.</p><p class="result-local">Deine Angaben und Fotos bleiben lokal in deinem Browser.</p><div class="result-actions"><button class="btn btn-primary" type="button" id="entryResumeBtn">Rückgabe dokumentieren</button><button class="btn btn-secondary" type="button" id="entryNewCaseBtn" hidden>Neuer Vorgang</button><a class="result-example-link" href="beispiel.pdf" download="Kramurai_Router_Beispiel.pdf">PDF-Beispiel ansehen</a></div><p class="result-effort">Zum Start reicht die Bezeichnung. Weitere Angaben sind optional.</p></div><figure class="result-intro-example"><img src="ergebnis.png" alt="Ausgefülltes Router-PDF-Beispiel: Foto und dokumentierte Angaben"><figcaption>Vergrößerte PDF-Ausschnitte · Beispieldaten und illustratives Foto</figcaption></figure></div>
       <details class="case-manager screen-only">
         <summary>
@@ -480,7 +485,7 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
       <div class="progress-label"><span id="progressText">Schritt 1 von 6</span><span id="saveStatus">lokal gespeichert</span></div>
     </div>
 
-    <form id="returnForm" novalidate>
+    <form id="returnForm" data-case-session-root inert novalidate>
       <section class="step active" id="step-1" data-step="1">
         <h2>1. Gegenstand</h2>
         <p class="intro">Welches Mietgerät gibst du zurück? Nur die Gerätebezeichnung ist erforderlich.</p>
@@ -737,7 +742,7 @@ html{scroll-behavior:smooth}#step-1{scroll-margin-top:105px}
     <nav class="legal-links screen-only" aria-label="Rechtliche Informationen"><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a></nav>
   </main>
 
-  <script src="/assets/case-backup.js"></script>
-  <script src="/router-zurueckgeben/app.js?v=20261019-quality1"></script>
+  <script src="/assets/case-session.js?v=20261120-tabs-v1"></script><script src="/assets/case-backup.js?v=20261120-attachment-v1"></script>
+  <script src="/router-zurueckgeben/app.js?v=20261120-tabs-v1"></script>
 </body>
 </html>

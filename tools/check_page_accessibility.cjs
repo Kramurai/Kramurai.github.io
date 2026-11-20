@@ -21,7 +21,11 @@ const server=http.createServer((req,res)=>{let f=path.join(root,new URL(req.url,
  for(const width of [320,1280])for(const route of routes.slice(1,5)){
   const context=await b.newContext({viewport:{width,height:900},reducedMotion:'reduce'});const p=await context.newPage();p.setDefaultTimeout(10000);
   try{
-   await p.goto(origin+route);await p.locator('#itemName').fill('Tastaturprüfung');
+   await p.goto(origin+route);
+   if(await p.getByRole('button',{name:'Ohne Statistik',exact:true}).isVisible()){
+    await p.getByRole('button',{name:'Ohne Statistik',exact:true}).focus();await p.keyboard.press('Enter');
+   }
+   await p.locator('#itemName').fill('Tastaturprüfung');
    const total=await p.locator('.step').count();let forward=0;
    for(let step=2;step<=total;step++){
     await p.locator('#nextBtn').focus();await p.keyboard.press('Enter');

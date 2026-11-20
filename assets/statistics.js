@@ -32,7 +32,12 @@
         && hasExactPair('utm_source', 'pinterest')
         && hasExactPair('utm_medium', 'organic')
         && hasExactPair('utm_campaign', 'handy_reel');
-      if (!standardPinterest && !handyVideoPin) return false;
+      const batteryVideoPin = location.pathname === '/entsorgungsnachweis-starterbatterie/'
+        && pairCount === 3
+        && hasExactPair('utm_source', 'pinterest')
+        && hasExactPair('utm_medium', 'organic')
+        && hasExactPair('utm_campaign', 'batterie_garage_reel');
+      if (!standardPinterest && !handyVideoPin && !batteryVideoPin) return false;
     }
     if (location.hash && !document.getElementById(location.hash.slice(1))) return false;
     if (document.referrer) {

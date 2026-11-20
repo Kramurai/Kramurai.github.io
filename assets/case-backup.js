@@ -61,6 +61,17 @@
     if (!valid) fail("Die Sicherung enthält eine nicht unterstützte oder beschädigte Bild-/PDF-Datei.");
   }
 
+  async function validateAttachment(file) {
+    if (!file || !file.size) fail("Bitte eine nicht leere Bild- oder PDF-Datei wählen.");
+    if (file.size > MAX_FILE) fail("Die Datei ist größer als 20 MB.");
+    if (file.type.startsWith("image/")) return;
+    if (file.type === "application/pdf") {
+      const header = new Uint8Array(await file.slice(0, 5).arrayBuffer());
+      if (String.fromCharCode(...header) === "%PDF-") return;
+    }
+    fail("Bitte eine gültige Bild- oder PDF-Datei wählen.");
+  }
+
   async function create(helper, state, records, template, types) {
     const clean = copyState(state, template);
     const files = [];
@@ -215,7 +226,7 @@
       });
     });
   }
-  const api = {create, parse, readFiles, persist, mount, MAX_ARCHIVE};
+  const api = {create, parse, readFiles, persist, mount, validateAttachment, MAX_FILE, MAX_ARCHIVE};
   root.CaseBackup = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof window !== "undefined" ? window : globalThis);

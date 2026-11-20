@@ -1,4 +1,4 @@
-(() => {
+CaseSession.run("kramurai-tradein-v1", () => {
   "use strict";
 
   const STORAGE_KEY = "kramurai-tradein-v1";
@@ -450,6 +450,7 @@
   }
 
   async function compressImage(file) {
+    if (file.size > CaseBackup.MAX_FILE) throw new Error("Das Foto ist größer als 20 MB.");
     const img = await fileToImage(file);
     const max = 1600;
     let w = img.naturalWidth || img.width;
@@ -529,7 +530,7 @@
         setPreview(type, record);
         saveState();
       } catch (e) {
-        status.textContent = "Fehler – bitte erneut versuchen";
+        status.textContent = "Fehler – die bisherige Datei bleibt erhalten. " + (e.message || "Bitte erneut versuchen.");
       } finally {
         input.value = "";
         endFileWork();
@@ -547,13 +548,14 @@
       status.textContent = "wird gespeichert …";
       beginFileWork();
       try {
+        await CaseBackup.validateAttachment(file);
         const blob = file.type.startsWith("image/") ? await compressImage(file) : file;
         await putFile(type, blob, { name: file.name, mime: file.type });
         const record = await getFile(type);
         setPreview(type, record);
         saveState();
       } catch (e) {
-        status.textContent = "Fehler – bitte erneut versuchen";
+        status.textContent = "Fehler – die bisherige Datei bleibt erhalten. " + (e.message || "Bitte erneut versuchen.");
       } finally {
         input.value = "";
         endFileWork();
@@ -922,4 +924,4 @@
   bindAutosave();
   restorePreviews();
   showStep(state.currentStep || 1, false);
-})();
+});
