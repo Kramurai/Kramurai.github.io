@@ -21,6 +21,7 @@ jobs:
         run: |
           npm install --no-save --no-package-lock playwright@1.62.1
           npx playwright install --with-deps chromium
+          sudo apt-get install --yes poppler-utils
           BROWSER_PATH="$(node -p 'require("playwright").chromium.executablePath()')"
           echo "CHROMIUM_EXECUTABLE=$BROWSER_PATH" >> "$GITHUB_ENV"
           ln -s "$BROWSER_PATH" /tmp/chromium
@@ -38,3 +39,4 @@ jobs:
             echo "::endgroup::"
           done
           exit "$failed"
+
