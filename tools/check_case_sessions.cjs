@@ -71,6 +71,8 @@ const files = page => page.evaluate(() => new Promise((resolve, reject) => {
       return route.continue();
     });
     await c.addInitScript(() => {
+      // Playwright also initializes fresh about:blank documents without storage.
+      if (!/^https?:$/.test(location.protocol)) return;
       localStorage.setItem('kramurai-statistics-v1', JSON.stringify({version:1,choice:'deny',updatedAt:Date.now()}));
       window.__printCalls = 0; window.print = () => window.__printCalls++;
     });
@@ -104,14 +106,20 @@ const files = page => page.evaluate(() => new Promise((resolve, reject) => {
       const first = await read(a, key);
       await a.locator('[data-attachment="receipt"]').setInputFiles({name:'TEST-original.pdf',mimeType:'application/pdf',buffer:pdf});
       await a.waitForFunction(() => document.querySelector('[data-task="receipt"]').classList.contains('done') && !document.querySelector('#nextBtn').disabled);
-      await a.locator('details.case-manager').evaluate(element => { element.open = true; });
+      await a.bringToFront();
+      await a.locator('details.case-manager > summary').click();
       let download;
       try {
-        [download] = await Promise.all([
-          a.waitForEvent('download', {timeout:10000}),
+        const actions = await Promise.allSettled([
+          a.waitForEvent('download', {timeout:15000}),
           a.locator('#backupExportBtn').click({timeout:10000})
         ]);
+        if (actions.some(action => action.status === 'rejected')) {
+          throw new Error(actions.filter(action => action.status === 'rejected').map(action => action.reason.message).join('\n'));
+        }
+        download = actions[0].value;
       } catch (error) {
+        console.log('KRAMURAI_SCREENSHOT:backup-interaction-failure.png:'+(await a.screenshot()).toString('base64'));
         throw new Error(route + ': backup did not download; status=' + await a.locator('#backupStatus').innerText()
           + '; pageErrors=' + JSON.stringify(errors) + '; ' + error.message);
       }
