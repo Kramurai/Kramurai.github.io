@@ -43,4 +43,10 @@ Prüft zusätzlich unbekannte Angaben, Hinweise auf widersprüchliche Zahlungs- 
 
 Die vollständigen Browserprüfungen müssen vor Freigabe dieser Änderungen in einer geeigneten Umgebung erneut bestehen. Bei der Prüfung am 20.11.2026 verhinderte die Ausführungsumgebung den Chromium-Start (`socket() failed: Operation not permitted`). Dies ist kein bestandener Test und kein festgestellter Fehler der Website.
 
-Offener wichtiger Befund: Gleichzeitige Änderungen desselben Vorgangs in mehreren Tabs können sich unbemerkt überschreiben. Die Arbeitsfassung für Beleggrenzen und Statistik behebt diesen separaten Konflikt nicht.
+## Gleichzeitige Tabs prüfen
+
+`node tools/check_case_sessions.cjs` reproduziert zuerst den Datenverlust im festgelegten Originalstand und prüft anschließend alle sechs Helfer in echten, isolierten Browser-Tabs. Pro Helfer werden blockierte Initialisierung und Eingaben, Dateien, langsame Fotoverarbeitung, Übergabe nach Tab-Schließung, Sicherungsimport als zusätzlicher Vorgang, Vorgangswechsel, Neuladen, Zurück-Navigation und ein gleichzeitiger Doppelstart geprüft. Verschiedene Helfer müssen gleichzeitig bearbeitbar bleiben. Der Hinweis wird bei 320, 390 und 1280 Pixeln sowie auf Tastaturfokus geprüft. Fehlende oder verweigerte Web Locks müssen vor der ersten Vorgangsspeicherung stoppen. Zwei synthetische Screenshots des Hinweises werden als gekennzeichnete Base64-Zeilen für die visuelle Prüfung ausgegeben.
+
+Der gemeinsame Schutz in `assets/case-session.js` erlaubt eine Bearbeitung pro Helfer und Browserprofil. Er reserviert den Helfer vor Initialisierung, Migration oder Registrierung von Datei-/Sicherungsaktionen. Es gibt kein erzwungenes Übernehmen und kein zeitabhängiges Ablaufen während einer laufenden Dateioperation. Nach dem Schließen des ersten Tabs lädt „Erneut prüfen“ den aktuellen gespeicherten Stand. Speicherkennungen und Sicherungsformat ändern sich nicht.
+
+Voraussetzung ist ein aktueller Browser mit Web Locks über HTTPS (lokale Tests über localhost). Ohne diese Unterstützung bleibt die Bearbeitung mit einer verständlichen Meldung gesperrt. Bereits vor einer Veröffentlichung geöffnete alte Helferversionen kennen diese Sperre noch nicht: alte Tabs schließen und die aktualisierte Seite neu öffnen. Der Schutz gilt innerhalb desselben Browserprofils und ersetzt keine Sicherung außerhalb des Browsers.

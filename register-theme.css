@@ -825,3 +825,9 @@ body.helper-page .helper-site-header .helper-home-link{
 .helper-page .quality-recorded{background:#eff4ee;color:#173f39}
 @media print{.quality-optional{display:none!important}.quality-status{break-inside:avoid}.helper-page #documentChecks{background:#fff0ee!important;color:#7d281f!important;border-color:#dba69d!important}}
 @page kramurai-helper{@bottom-left{content:"© 2026 Kramurai · Vorlagengestaltung · kramurai.github.io · Stand 19.10.2026";font-family:Arial,sans-serif;font-size:8pt;color:#38564c}}
+
+/* The helper stays inert until its exclusive editing session is ready. */
+.case-session-notice{padding:18px;margin:0 0 18px;border:1px solid #a8beaf;border-left:4px solid #b4432d;border-radius:12px;background:#faf5eb;color:#172538;overflow-wrap:anywhere}
+.case-session-notice[hidden]{display:none!important}
+.case-session-notice p{margin:0 0 12px}
+.case-session-notice .btn{max-width:100%;white-space:normal}

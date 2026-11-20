@@ -1,4 +1,4 @@
-(() => {
+CaseSession.run("kramurai-tradein-v1", () => {
   "use strict";
 
   const STORAGE_KEY = "kramurai-tradein-v1";
@@ -924,4 +924,4 @@
   bindAutosave();
   restorePreviews();
   showStep(state.currentStep || 1, false);
-})();
+});

@@ -1,4 +1,4 @@
-(() => {
+CaseSession.run("kramurai-battery-v1", () => {
   "use strict";
 
   const STORAGE_KEY = "kramurai-battery-v1";
@@ -706,4 +706,4 @@
   bindAutosave();
   restorePreviews();
   showStep(state.currentStep || 1, false);
-})();
+});

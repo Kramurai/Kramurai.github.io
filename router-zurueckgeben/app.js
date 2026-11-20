@@ -1,4 +1,4 @@
-(() => {
+CaseSession.run("kramurai-router-return-v1", () => {
   "use strict";
 
   const STORAGE_KEY = "kramurai-router-return-v1";
@@ -899,4 +899,4 @@
   bindAutosave();
   restorePreviews();
   showStep(state.currentStep || 1, false);
-})();
+});
