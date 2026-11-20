@@ -35,3 +35,12 @@ node tools/check_car_sale.cjs
 ```
 
 Prüft zusätzlich unbekannte Angaben, Hinweise auf widersprüchliche Zahlungs- und Übergabestände, den separaten ADAC-Vertragslink, das Entfernen einzelner Fotos, Text-Escaping und den bytegleichen Download eines PDF-Belegs. Prüft außerdem getrennte Zustandsangaben, frühe Vertragshinweise, zusätzliche Fotos mit Beschreibungen samt Sicherungs-Rundlauf, Migration älterer Sicherungen und lokal gespeicherter Vorgänge sowie gedruckte Prüfhinweise. Erstellt vier synthetische Dokumentations-PDFs (mit sieben Fotos, mit langem Mängeltext, als kompakte Vorbereitung und mit offenen Prüfhinweisen) sowie Screenshots bei sechs Ansichtsbreiten. Die PDFs lassen sich für die visuelle Prüfung rendern. Alle Daten sind isolierte Testdaten.
+
+
+## Ergänzende Kernprüfung (20. November 2026, Arbeitsfassung)
+
+`node tools/check_core_guards.cjs` benötigt keinen Browser und kein Netzwerk. Die Prüfung führt die tatsächlichen Beleg-Callbacks der vier Versand-/Verkaufshelfer mit isolierten Testobjekten aus, vergleicht den ursprünglichen Fehlerstand, prüft Datei-Grenzen und einen Sicherungsrundlauf sowie die eng begrenzte URL-Freigabe für veröffentlichte Pinterest-Links. Sie ersetzt die vorhandenen Browserprüfungen nicht. Der Basisvergleich erwartet den ursprünglichen Quellstand im Git-Commit `1f28beb60856de03ec626d88e10b7135e7d27724`.
+
+Die vollständigen Browserprüfungen müssen vor Freigabe dieser Änderungen in einer geeigneten Umgebung erneut bestehen. Bei der Prüfung am 20.11.2026 verhinderte die Ausführungsumgebung den Chromium-Start (`socket() failed: Operation not permitted`). Dies ist kein bestandener Test und kein festgestellter Fehler der Website.
+
+Offener wichtiger Befund: Gleichzeitige Änderungen desselben Vorgangs in mehreren Tabs können sich unbemerkt überschreiben. Die Arbeitsfassung für Beleggrenzen und Statistik behebt diesen separaten Konflikt nicht.

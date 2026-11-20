@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),fs=require('fs'),path=require('path')
 const root=path.resolve(__dirname,'..'),out=fs.mkdtempSync(path.join(os.tmpdir(),'kramurai-statistics-'));
 const origin='https://kramurai.github.io',key='kramurai-statistics-v1';
 const vendor='beTracker={t:function(a){a.u=document.location.href;a.bw=window.innerWidth;a.bh=window.innerHeight;if(document.referrer)a.ref=document.referrer;var q=[];for(var k in a)q.push(encodeURIComponent(k)+"="+encodeURIComponent(a[k]));(new Image).src="https://tracker.metricool.com/c3po.jpg?"+q.join("&")}};';
-const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trade-in-dokumentieren/','/autoverkauf-dokumentieren/','/entsorgungsnachweis-starterbatterie/','/impressum/','/datenschutz/'];
+const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trade-in-dokumentieren/','/autoverkauf-dokumentieren/','/reparatur-dokumentieren/','/entsorgungsnachweis-starterbatterie/','/impressum/','/datenschutz/'];
 (async()=>{
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE||undefined,args:['--no-sandbox','--disable-dev-shm-usage']});
  const results=[];
@@ -112,6 +112,23 @@ const routes=['/','/retoure-dokumentieren/','/router-zurueckgeben/','/handy-trad
     await s.p.goto(origin+suffix);
     await s.p.waitForTimeout(100);
     assert.equal(s.requests.length,0,suffix);
+   }
+  }finally{await s.context.close()}
+ });
+ const batteryPath='/entsorgungsnachweis-starterbatterie/';
+ const batteryQuery='?utm_source=pinterest&utm_medium=organic&utm_campaign=batterie_garage_reel';
+ await check('Battery video Pin counts only after consent',async()=>{
+  const s=await session();try{
+   const url=origin+batteryPath+batteryQuery;await s.p.goto(url);assert.equal(s.requests.length,0);
+   await s.p.getByRole('button',{name:'Statistik erlauben',exact:true}).click();
+   await s.p.waitForFunction(()=>window.beTracker);await s.p.waitForTimeout(100);
+   assert.equal(s.pixels().length,1);assert.equal(s.pixels()[0].searchParams.get('u'),url);
+  }finally{await s.context.close()}
+ });
+ await check('Battery video Pin rejects other paths and extra parameters',async()=>{
+  const s=await session({choice:'allow'});try{
+   for(const suffix of ['/router-zurueckgeben/'+batteryQuery,batteryPath+batteryQuery+'&email=PRIVATE_TEST_VALUE',batteryPath+batteryQuery+'&utm_campaign=batterie_garage_reel',batteryPath+batteryQuery.replace('batterie_garage_reel','PRIVATE_TEST_VALUE')]){
+    await s.p.goto(origin+suffix);await s.p.waitForTimeout(100);assert.equal(s.requests.length,0,suffix);
    }
   }finally{await s.context.close()}
  });
