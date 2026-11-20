@@ -8,7 +8,7 @@ permissions:
 jobs:
   audit:
     if: github.head_ref == 'audit/2026-11-20-core-guards'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,7 @@ jobs:
           node-version: '22'
       - name: Install isolated test browser
         run: |
-          npm install --no-save --no-package-lock playwright@1.56.1
+          npm install --no-save --no-package-lock playwright@1.62.1
           npx playwright install --with-deps chromium
           BROWSER_PATH="$(node -p 'require("playwright").chromium.executablePath()')"
           echo "CHROMIUM_EXECUTABLE=$BROWSER_PATH" >> "$GITHUB_ENV"
